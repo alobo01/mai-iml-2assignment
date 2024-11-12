@@ -150,7 +150,7 @@ class OpticsClusterAnalyzer:
 
 # Example usage and testing
 def test_optics_analyzer():
-    df = pd.read_csv("../Preprocessed_datasets/hepatitis.csv")
+    df = pd.read_csv("../Visual_datasets/spiral.csv")
 
     # Initialize and run analyzer
     analyzer = OpticsClusterAnalyzer(df, label_column='Class')
