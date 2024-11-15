@@ -1,2 +1,2 @@
-# mai-iml-2assignment
-IML lab 2 assignments
+# mai-iml-assignment3
+IML Assignment 3
