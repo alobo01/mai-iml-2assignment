@@ -25,6 +25,7 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 # Define configurations to test
 k_values = [2, 4, 6, 8]
 distance_metrics = ['euclidean', 'manhattan', 'clark']
+max_iter = 1
 
 # Initialize results DataFrame
 results = []
@@ -39,7 +40,7 @@ for k in k_values:
 
             # Instantiate KMeans and measure performance
             start_time = time.time()
-            kmeans = KMeansAlgorithm(k, centroids.copy(), distance_metric)
+            kmeans = KMeansAlgorithm(k, centroids.copy(), distance_metric, max_iter)
             cluster_labels = kmeans.fit(X)
             end_time = time.time()
 

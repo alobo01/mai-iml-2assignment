@@ -3,11 +3,12 @@ from typing import Callable
 import numpy as np
 
 class KMeansAlgorithm:
-    def __init__(self, k, centroids, distance_metric):
+    def __init__(self, k, centroids, distance_metric, max_iter = 1):
         self.k = k
         self.centroids = centroids
         self.distance_metric = distance_metric
         self.distance = self.get_distance(distance_metric)
+        self.max_iter = max_iter
 
     def get_distance(self, distance_metric) -> Callable[[np.ndarray[float], np.ndarray[float]],np.ndarray[float]]:
         if distance_metric == 'euclidean':
@@ -35,11 +36,15 @@ class KMeansAlgorithm:
         return distances
 
     def fit(self, X):
-        distances = self.distance(X, self.centroids)
-        labels = np.argmin(distances, axis=1)
+        it = 0
+        while it < self.max_iter:
+            distances = self.distance(X, self.centroids)
+            labels = np.argmin(distances, axis=1)
 
-        for j in range(self.k):
-            cluster_points = X[labels == j]
-            self.centroids[j] = cluster_points.mean(axis=0)
+            for j in range(self.k):
+                cluster_points = X[labels == j]
+                self.centroids[j] = cluster_points.mean(axis=0)
+
+            it = it + 1
 
         return labels
