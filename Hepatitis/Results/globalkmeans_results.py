@@ -3,7 +3,7 @@ import time
 import pandas as pd
 import numpy as np
 from sklearn.metrics import cluster, adjusted_rand_score, f1_score, davies_bouldin_score
-from Classes.KMeans import KMeansAlgorithm
+from Classes.GlobalKMeans import GlobalKMeansAlgorithm
 
 def purity_score(y_true, y_pred):
     # compute contingency matrix (also called confusion matrix)
@@ -32,16 +32,13 @@ results = []
 
 # Perform tests
 for k in k_values:
-    for _ in range(3):
-        # Initialize random centroids by choosing k random samples
-        centroids = X[np.random.choice(X.shape[0], k, replace=False)]
-
+    for _ in range(1):
         for distance_metric in distance_metrics:
 
             # Instantiate KMeans and measure performance
             start_time = time.time()
-            kmeans = KMeansAlgorithm(k, centroids.copy(), distance_metric, max_iter)
-            cluster_labels, E = kmeans.fit(X)
+            global_kmeans = GlobalKMeansAlgorithm(k, distance_metric, max_iter)
+            cluster_labels, E = global_kmeans.fit(X)
             end_time = time.time()
 
             ari = adjusted_rand_score(class_labels, cluster_labels)
@@ -50,7 +47,7 @@ for k in k_values:
             purity = purity_score(class_labels, cluster_labels)
             execution_time = end_time - start_time
 
-            algorithm = f'KMeans({k}, {distance_metric})'
+            algorithm = f'GlobalKMeans({k}, {distance_metric})'
             results.append({
                 'Algorithm': algorithm,
                 'E': E,
@@ -63,5 +60,5 @@ for k in k_values:
 
 # Save results to CSV file
 results_df = pd.DataFrame(results)
-csv_path = os.path.join(dataset_path, 'Results/CSVs/kmeans_results.csv')
+csv_path = os.path.join(dataset_path, 'Results/CSVs/global_kmeans_results.csv')
 results_df.to_csv(csv_path, index=False)
