@@ -25,7 +25,7 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 # Define configurations to test
 k_values = [2, 4, 6, 8]
 distance_metrics = ['euclidean', 'manhattan', 'clark']
-max_iter = 1
+max_iter = 10
 
 # Initialize results DataFrame
 results = []
@@ -37,8 +37,8 @@ for k in k_values:
 
             # Instantiate KMeans and measure performance
             start_time = time.time()
-            kmeans = KMeansPPAlgorithm(k, distance_metric, max_iter)
-            cluster_labels = kmeans.fit(X)
+            kmeanspp = KMeansPPAlgorithm(k, distance_metric, max_iter)
+            cluster_labels, E = kmeanspp.fit(X)
             end_time = time.time()
 
             ari = adjusted_rand_score(class_labels, cluster_labels)
@@ -50,6 +50,7 @@ for k in k_values:
             algorithm = f'KMeansPP({k}, {distance_metric})'
             results.append({
                 'Algorithm': algorithm,
+                'E': E,
                 'ARI': ari,
                 'Fm': fm,
                 'DBI': dbi,
