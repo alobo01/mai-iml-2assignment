@@ -1,0 +1,20 @@
+Statistical Analysis Report - k
+==================================================
+
+Summary Statistics
+-----------------
+     mean     std
+k                
+1  0.8223  0.1893
+3  0.8207  0.1898
+5  0.8190  0.1893
+7  0.8180  0.1896
+
+Friedman Test Results
+--------------------
+Test Statistic: nan
+P-value: nan
+Significance level (alpha): 0.2
+
+No significant differences were found between the configurations at the 0.2 significance level.
+Post-hoc test was not performed.
