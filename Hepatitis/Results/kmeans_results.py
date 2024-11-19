@@ -2,14 +2,8 @@ import os
 import time
 import pandas as pd
 import numpy as np
-from sklearn.metrics import cluster, adjusted_rand_score, f1_score, davies_bouldin_score
 from Classes.KMeans import KMeansAlgorithm
-
-def purity_score(y_true, y_pred):
-    # compute contingency matrix (also called confusion matrix)
-    contingency_matrix = cluster.contingency_matrix(y_true, y_pred)
-    # return purity
-    return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix)
+from Classes.EvaluationUtils import EvaluationUtils
 
 if __name__ == "__main__":
     dataset_path = '..'
@@ -23,16 +17,17 @@ class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0','Class']).values
 
 # Define configurations to test
-k_values = [2, 4, 6, 8]
+max_k_value = 20
 distance_metrics = ['euclidean', 'manhattan', 'clark']
 max_iter = 10
+repetitions = 10
 
 # Initialize results DataFrame
 results = []
 
 # Perform tests
-for k in k_values:
-    for _ in range(3):
+for k in range(2, max_k_value):
+    for _ in range(repetitions):
         # Initialize random centroids by choosing k random samples
         centroids = X[np.random.choice(X.shape[0], k, replace=False)]
 
@@ -44,20 +39,15 @@ for k in k_values:
             cluster_labels, E = kmeans.fit(X)
             end_time = time.time()
 
-            ari = adjusted_rand_score(class_labels, cluster_labels)
-            fm = f1_score(class_labels, cluster_labels, average='macro')
-            dbi = davies_bouldin_score(X, cluster_labels)
-            purity = purity_score(class_labels, cluster_labels)
+            # Evaluate clustering performance
+            metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
             execution_time = end_time - start_time
 
             algorithm = f'KMeans({k}, {distance_metric})'
             results.append({
                 'Algorithm': algorithm,
                 'E': E,
-                'ARI': ari,
-                'Fm': fm,
-                'DBI': dbi,
-                'Purity': purity,
+                **metrics,
                 'Time': execution_time
             })
 
