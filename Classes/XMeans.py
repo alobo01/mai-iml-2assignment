@@ -1,5 +1,5 @@
 import numpy as np
-from Classes.KMeans import KMeansAlgorithm
+from sklearn.cluster import KMeans
 
 EPS = np.finfo(float).eps
 
@@ -46,9 +46,10 @@ def get_additional_k_split(K, X, clst_labels, clst_centers, n_features, K_sub, k
         bic_before_split[clst_index] = loglikelihood(clst_size, clst_size, clst_variance, n_features, 1) - clst_n_params / 2.0 * np.log(clst_size)
 
         # Run KMeans on the cluster to split it further
-        kmeans_subclst = KMeansAlgorithm(K_sub, np.random.randn(K_sub, n_features), **k_means_args)
-        subclst_labels, _ = kmeans_subclst.fit(clst_points)
-        subclst_centers = kmeans_subclst.centroids
+        kmeans_subclst = KMeans(n_clusters=K_sub, **k_means_args)
+        kmeans_subclst.fit(clst_points)
+        subclst_labels = kmeans_subclst.labels_
+        subclst_centers = kmeans_subclst.cluster_centers_
 
         log_likelihood = 0
         for subclst_index in range(K_sub):
@@ -74,7 +75,7 @@ class XMeans:
         :param kmax: maximum number of clusters that XMeans can divide the data into
         :param max_iter: maximum number of iterations for the `while` loop (hard limit)
         :param distance_metric: Distance metric used for clustering ('euclidean', 'manhattan', etc.)
-        :param k_means_args: Additional parameters for KMeansAlgorithm
+        :param k_means_args: Additional parameters for KMeans
         """
         self.KMax = kmax
         self.max_iter = max_iter
@@ -96,9 +97,10 @@ class XMeans:
 
         while not stop_splitting and iter_num < self.max_iter:
             K_old = K
-            kmeans = KMeansAlgorithm(K, np.random.randn(K, n_features), distance_metric=self.distance_metric, **self.k_means_args)
-            clst_labels, _ = kmeans.fit(X)
-            clst_centers = kmeans.centroids
+            kmeans = KMeans(n_clusters=K, **self.k_means_args)
+            kmeans.fit(X)
+            clst_labels = kmeans.labels_
+            clst_centers = kmeans.cluster_centers_
 
             # Check if additional splits are needed
             add_k = get_additional_k_split(K, X, clst_labels, clst_centers, n_features, K_sub, self.k_means_args)
@@ -109,8 +111,9 @@ class XMeans:
             iter_num += 1
 
         # Final clustering with determined number of clusters
-        kmeans_final = KMeansAlgorithm(K_old, np.random.randn(K_old, n_features), distance_metric=self.distance_metric, **self.k_means_args)
-        self.labels_, _ = kmeans_final.fit(X)
-        self.centroids = kmeans_final.centroids
+        kmeans_final = KMeans(n_clusters=K_old, **self.k_means_args)
+        kmeans_final.fit(X)
+        self.labels_ = kmeans_final.labels_
+        self.centroids = kmeans_final.cluster_centers_
         self.n_clusters = K_old
         return self.labels_
