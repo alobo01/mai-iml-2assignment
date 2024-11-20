@@ -23,7 +23,6 @@ binary_features  = [
 ]
 
 arff_path = os.path.join(dataset_path, "../Datasets/hepatitis.arff")
-
 complete_df = DataPreprocessor.load_arff(arff_path)
 
 # Initialize and fit the preprocessor on the training data and transform
