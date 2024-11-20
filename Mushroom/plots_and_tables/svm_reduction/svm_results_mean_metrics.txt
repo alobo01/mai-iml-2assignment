@@ -1,0 +1,9 @@
+Mean Metrics by Method
+=====================
+
+        Mean_Accuracy  Std_Accuracy  Mean_F1  Std_F1  Mean_Time  Std_Time
+Method                                                                   
+DROP3          0.9852        0.0041   0.9844  0.0044     0.0020    0.0008
+EENTH          0.9985        0.0014   0.9985  0.0015     0.0023    0.0005
+GCNN           0.9737        0.0173   0.9720  0.0197     0.0015    0.0008
+NONE           1.0000        0.0000   1.0000  0.0000     0.0041    0.0022
