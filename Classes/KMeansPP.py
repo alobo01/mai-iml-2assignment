@@ -1,9 +1,9 @@
-from typing import Callable
+from typing import Callable, Tuple, Any
 import numpy as np
 
 
 class KMeansPPAlgorithm:
-    def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 1):
+    def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 10):
         self.k = k
         self.distance_metric = distance_metric
         self.distance = self.get_distance(distance_metric)
@@ -90,7 +90,7 @@ class KMeansPPAlgorithm:
                 E += np.sum(squared_distances)
         return E
 
-    def fit(self, X: np.ndarray) -> np.ndarray:
+    def fit(self, X: np.ndarray) -> tuple[np.ndarray, float]:
         """
         Fit K-means clustering.
 
