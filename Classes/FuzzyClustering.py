@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 class FuzzyCMeans:
-    def __init__(self, n_clusters: int=3, m: float=2, max_iter: int=150, error: float=1e-5, random_state:Union[int,None]=None, omega=0.95, suppression_factor=0.2):
+    def __init__(self, n_clusters: int=3, m: float=2, max_iter: int=150, error: float=1e-5, random_state:Union[int,None]=None, omega=0.95, suppression_factor=0.2, rho=0.6):
         """
         Initialize the Fuzzy C-means clustering model.
 
@@ -18,6 +18,12 @@ class FuzzyCMeans:
             Stopping criterion threshold.
         - random_state: int or None, default=None
             Random seed for reproducibility.
+        - omega: float, default=0.95
+            Suppression factor for multimodality.
+        - suppression_factor: float, default=0.2
+            Default suppression factor for non-generalized case.
+        - rho: float, default=0.6
+            Linear decay factor for generalized s-FCM.
         """
         self.n_clusters = n_clusters
         self.m = m
@@ -29,6 +35,7 @@ class FuzzyCMeans:
         self.omega = omega
         # supressed FCM
         self.suppression_factor = suppression_factor
+        self.rho = rho  # Linear decay factor for f(u_w)
 
 
         self.centers = None       # Cluster centers
@@ -92,17 +99,31 @@ class FuzzyCMeans:
         self.U = U
         return self
 
-    def _calculate_mu(self,U):
-        # Find the index of the maximum value for each row
+    def _calculate_mu(self, U):
+        """
+        Calculate mu based on U and dynamically computed alpha_k.
+
+        Parameters:
+        - U: Membership matrix
+
+        Returns:
+        - Updated mu matrix.
+        """
+        # Find the index of the maximum membership value for each sample
         max_indices = np.argmax(U, axis=1)
-
-        # Initialize mu with the default formula: mu = alpha * u_ik
-        mu = self.alpha * U
-
-        # Apply the condition where i = argmax_j(u_jk)
-        # For these cases, update mu with the formula: mu = 1 - alpha + alpha * u_ik
         rows = np.arange(U.shape[0])
-        mu[rows, max_indices] = 1 - self.alpha + self.alpha * U[rows, max_indices]
+
+        # Calculate u_w (winner membership) for each sample
+        u_w = U[rows, max_indices]
+
+        # Compute alpha_k for each sample based on the provided formula
+        alpha_k = (1 - u_w + self.rho**(2 / (1 - self.m)) * u_w**((3 - self.m) / (1 - self.m)))**(-1)
+
+        # Initialize mu with the formula for "non-winners": mu = alpha_k * u_ik
+        mu = alpha_k[:, np.newaxis] * U
+
+        # Update mu for the winners: mu = 1 - alpha_k + alpha_k * u_ik
+        mu[rows, max_indices] = 1 - alpha_k + alpha_k * U[rows, max_indices]
 
         return mu
 
