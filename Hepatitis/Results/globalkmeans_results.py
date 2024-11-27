@@ -25,7 +25,7 @@ repetitions = 1
 results = []
 
 # Perform tests
-for k in range(2, max_k_value):
+for k in range(2, max_k_value+1):
     for _ in range(repetitions):
         for distance_metric in distance_metrics:
 

@@ -1,5 +1,5 @@
 from typing import Callable
-
+from functools import cache
 import numpy as np
 
 class GlobalKMeansAlgorithm:
