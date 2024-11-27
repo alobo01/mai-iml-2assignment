@@ -17,13 +17,14 @@ X = data.drop(columns=['Unnamed: 0','a17']).values
 
 # Define configurations to test
 max_k_value = 3
-distance_metrics = ['euclidean', 'manhattan', 'clark']
+distance_metrics = ['euclidean']#, 'manhattan', 'clark']
 max_iter = 1
 repetitions = 1
 
 # Initialize results DataFrame
 results = []
 
+test_time = time.time()
 # Perform tests
 for k in range(2, max_k_value+1):
     for _ in range(repetitions):
@@ -46,6 +47,7 @@ for k in range(2, max_k_value+1):
                 **metrics,
                 'Time': execution_time
             })
+print("Total test time was: ", time.time() - test_time)
 
 # Save results to CSV file
 results_df = pd.DataFrame(results)
