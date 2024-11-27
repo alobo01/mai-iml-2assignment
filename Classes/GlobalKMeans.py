@@ -1,5 +1,5 @@
 from typing import Callable
-from functools import cache
+from functools import lru_cache
 import numpy as np
 
 class GlobalKMeansAlgorithm:
@@ -10,30 +10,40 @@ class GlobalKMeansAlgorithm:
         self.max_iter = max_iter
         self.centroids = None
 
-    def get_distance(self, distance_metric) -> Callable[[np.ndarray, np.ndarray],np.ndarray]:
+    @staticmethod
+    @lru_cache(maxsize=None)
+    def calculate_distance(X_bytes: bytes, centroids_bytes: bytes, n_samples: int,
+                            n_features: int, n_centroids: int, distance_metric: str) -> bytes:
+        X = np.frombuffer(X_bytes).reshape(n_samples, n_features)
+        centroids = np.frombuffer(centroids_bytes).reshape(n_centroids, n_features)
+
         if distance_metric == 'euclidean':
-            return self.euclidean_distance
+            distance = np.sqrt(np.sum((X[:, np.newaxis, :] - centroids[np.newaxis, :, :])**2, axis=-1))
         elif distance_metric == 'manhattan':
-            return self.manhattan_distance
+            distance = np.sum(np.abs(X[:, np.newaxis, :] - centroids[np.newaxis, :, :]), axis=-1)
         elif distance_metric == 'clark':
-            return self.clark_distance
+            denominator = X[:, np.newaxis, :] + centroids[np.newaxis, :, :]
+            denominator[denominator == 0] = np.finfo(float).eps
+            distance = np.sqrt(np.sum(((X[:, np.newaxis, :] - centroids[np.newaxis, :, :]) / denominator) ** 2, axis=-1))
         else:
             raise ValueError('Invalid distance metric specified.')
 
-    @staticmethod
-    def euclidean_distance(X, centroids):
-        return np.sqrt(np.sum((X[:, np.newaxis, :] - centroids[np.newaxis, :, :])**2, axis=-1))
+        return distance.tobytes()
 
-    @staticmethod
-    def manhattan_distance(X, centroids):
-        return np.sum(np.abs(X[:, np.newaxis, :] - centroids[np.newaxis, :, :]), axis=-1)
+    def get_distance(self, distance_metric):
+        def distance_func(X: np.ndarray, centroids: np.ndarray) -> np.ndarray:
+            X_bytes = X.tobytes()
+            centroids_bytes = centroids.tobytes()
+            n_samples = X.shape[0]
+            n_features = X.shape[1]
+            n_centroids = centroids.shape[0]
 
-    @staticmethod
-    def clark_distance(X, centroids):
-        denominator = X[:, np.newaxis, :] + centroids[np.newaxis, :, :]
-        denominator[denominator == 0] = np.finfo(float).eps  # Avoid division by zero
-        distances = np.sqrt(np.sum(((X[:, np.newaxis, :] - centroids[np.newaxis, :, :]) / denominator) ** 2, axis=-1))
-        return distances
+            distance_bytes = self.calculate_distance(
+                X_bytes, centroids_bytes, n_samples, n_features, n_centroids, distance_metric
+            )
+            return np.frombuffer(distance_bytes).reshape(n_samples, n_centroids)
+
+        return distance_func
 
     def initialize_centroids(self, X: np.ndarray) -> np.ndarray:
         """
@@ -142,5 +152,6 @@ class GlobalKMeansAlgorithm:
 
         # Compute total within-cluster variance
         E = self.compute_total_variance(X, labels)
+        print(GlobalKMeansAlgorithm.calculate_distance.cache_info())
 
         return labels, E

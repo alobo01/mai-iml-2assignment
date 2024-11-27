@@ -24,6 +24,7 @@ repetitions = 1
 # Initialize results DataFrame
 results = []
 
+test_time = time.time()
 # Perform tests
 for k in range(2, max_k_value+1):
     for _ in range(repetitions):
@@ -46,6 +47,7 @@ for k in range(2, max_k_value+1):
                 **metrics,
                 'Time': execution_time
             })
+print("Total test time was: ", time.time() - test_time)
 
 # Save results to CSV file
 results_df = pd.DataFrame(results)
