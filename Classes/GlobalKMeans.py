@@ -11,7 +11,7 @@ class GlobalKMeansAlgorithm:
         self.centroids = None
 
     @staticmethod
-    @lru_cache(maxsize=None)
+    @lru_cache(maxsize=128000)
     def calculate_distance(X_bytes: bytes, centroids_bytes: bytes, n_samples: int,
                             n_features: int, n_centroids: int, distance_metric: str) -> bytes:
         X = np.frombuffer(X_bytes).reshape(n_samples, n_features)
