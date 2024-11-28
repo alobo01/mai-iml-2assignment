@@ -1,24 +1,14 @@
 import numpy as np
-from sklearn.metrics import adjusted_rand_score, f1_score, davies_bouldin_score, cluster
+from sklearn.metrics import (
+    adjusted_rand_score,
+    f1_score,
+    davies_bouldin_score,
+    silhouette_score,
+    calinski_harabasz_score
+)
+
 
 class EvaluationUtils:
-    @staticmethod
-    def purity_score(y_true, y_pred):
-        """
-        Compute purity score for clustering results.
-
-        Args:
-            y_true: Ground truth labels.
-            y_pred: Predicted cluster labels.
-
-        Returns:
-            Purity score (float).
-        """
-        # Compute contingency matrix (confusion matrix)
-        contingency_matrix = cluster.contingency_matrix(y_true, y_pred)
-        # Return purity
-        return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix)
-
     @staticmethod
     def evaluate(X, y_true, y_pred):
         """
@@ -34,18 +24,22 @@ class EvaluationUtils:
             - Adjusted Rand Index (ARI)
             - F1 Score (macro)
             - Davies-Bouldin Index (DBI)
-            - Purity score
+            - Silhouette Score
+            - Calinski-Harabasz Score
         """
         # Compute metrics
         ari = adjusted_rand_score(y_true, y_pred)
         f1 = f1_score(y_true, y_pred, average='macro')
         dbi = davies_bouldin_score(X, y_pred)
-        purity = EvaluationUtils.purity_score(y_true, y_pred)
+        silhouette = silhouette_score(X, y_pred)
+        calinski = calinski_harabasz_score(X, y_pred)
 
         # Return metrics as a dictionary
         return {
             'ARI': ari,
             'F1 Score': f1,
             'DBI': dbi,
-            'Purity': purity
+            'silhouette_score': silhouette,
+            'calinski_harabasz_score': calinski,
+            'davies_bouldin_score': dbi  # Adding this explicitly to match the column name
         }

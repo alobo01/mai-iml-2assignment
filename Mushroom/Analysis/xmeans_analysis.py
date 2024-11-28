@@ -100,10 +100,10 @@ if __name__ == "__main__":
     # Set paths
     dataset_path = '..'
 else:
-    dataset_path = 'Hepatitis'
+    dataset_path = 'Mushroom'
 
 # Load dataset
-data_path = os.path.join(dataset_path, "Preprocessing/hepatitis.csv")
+data_path = os.path.join(dataset_path, "Preprocessing/mushroom.csv")
 data = pd.read_csv(data_path, index_col=0)
 class_labels = data['Class']
 X = data.drop(columns=['Class']).values
