@@ -16,9 +16,9 @@ class_labels = data['a17']
 X = data.drop(columns=['Unnamed: 0','a17']).values
 
 # Define configurations to test
-max_k_value = 3
-distance_metrics = ['euclidean']#, 'manhattan', 'clark']
-max_iter = 1
+max_k_value = 2
+distance_metrics = ['euclidean', 'manhattan', 'clark']
+max_iter = 10
 repetitions = 1
 
 # Initialize results DataFrame
