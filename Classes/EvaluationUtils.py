@@ -40,6 +40,5 @@ class EvaluationUtils:
             'F1 Score': f1,
             'DBI': dbi,
             'silhouette_score': silhouette,
-            'calinski_harabasz_score': calinski,
-            'davies_bouldin_score': dbi  # Adding this explicitly to match the column name
+            'calinski_harabasz_score': calinski
         }
