@@ -37,6 +37,8 @@ complete_df = DataPreprocessor.load_arff(arff_path)
 # Initialize and fit the preprocessor on the training data and transform
 reader = DataPreprocessor(complete_df, class_column="class")
 preprocessed_df = reader.fit_transform(ordinal_features=categorical_features)
+# Renaming the last column
+preprocessed_df.rename(columns={preprocessed_df.columns[-1]: 'Class'}, inplace=True)
 
 preprocessed_path = os.path.join(dataset_path, "Preprocessing/mushroom.csv")
 preprocessed_df.to_csv(preprocessed_path)
