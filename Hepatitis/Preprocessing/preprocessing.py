@@ -6,7 +6,7 @@ if __name__ == "__main__":
 else:
     dataset_path = 'Hepatitis'
 
-binary_features  = [
+binary_features = [
     "SEX",
     "STEROID",
     "ANTIVIRALS",
