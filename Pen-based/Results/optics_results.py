@@ -5,10 +5,11 @@ import time
 from Classes.EvaluationUtils import EvaluationUtils
 from sklearn.cluster import OPTICS
 
+
 if __name__ == "__main__" or "__mp_main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Hepatitis'
+    dataset_path = 'Pen-based'
 
 
 def clustering(X, metric, algorithm):
@@ -18,15 +19,15 @@ def clustering(X, metric, algorithm):
     optics = OPTICS(
         metric=metric,
         algorithm=algorithm,
-        min_samples=10,  # Adjust based on dataset
-        xi=0.05,
+        min_samples=10,  # Large min_samples as pen-based is a large dataset
+        xi=0.02,         # Low value to detect smaller clusters
         min_cluster_size=0.05
     )
 
     return optics.fit_predict(X)
 
 # Load data
-data_path = os.path.join(dataset_path, "Preprocessing", "hepatitis.csv")
+data_path = os.path.join(dataset_path, "Preprocessing", "pen-based.csv")
 data = pd.read_csv(data_path)
 class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0', 'Class']).values
@@ -52,6 +53,8 @@ for dist in distances:
             **metrics,
             'Time': execution_time
         })
+        #n_clusters = len(set(cluster_pred[cluster_pred != -1]))
+        #print('numero de clusters encontrados:', n_clusters)
 
 # Save results
 results_df = pd.DataFrame(results)
