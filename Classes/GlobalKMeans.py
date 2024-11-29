@@ -1,6 +1,7 @@
-from typing import Callable
-from functools import lru_cache
+from typing import Callable, List, Tuple
+from functools import cache
 import numpy as np
+from sklearn.decomposition import PCA
 
 class GlobalKMeansAlgorithm:
     def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 10):
@@ -10,44 +11,91 @@ class GlobalKMeansAlgorithm:
         self.max_iter = max_iter
         self.centroids = None
 
-    @staticmethod
-    @lru_cache(maxsize=128000)
-    def calculate_distance(X_bytes: bytes, centroids_bytes: bytes, n_samples: int,
-                            n_features: int, n_centroids: int, distance_metric: str) -> bytes:
-        X = np.frombuffer(X_bytes).reshape(n_samples, n_features)
-        centroids = np.frombuffer(centroids_bytes).reshape(n_centroids, n_features)
-
+    def get_distance(self, distance_metric) -> Callable[[np.ndarray, np.ndarray],np.ndarray]:
         if distance_metric == 'euclidean':
-            distance = np.sqrt(np.sum((X[:, np.newaxis, :] - centroids[np.newaxis, :, :])**2, axis=-1))
+            return self.euclidean_distance
         elif distance_metric == 'manhattan':
-            distance = np.sum(np.abs(X[:, np.newaxis, :] - centroids[np.newaxis, :, :]), axis=-1)
+            return self.manhattan_distance
         elif distance_metric == 'clark':
-            denominator = X[:, np.newaxis, :] + centroids[np.newaxis, :, :]
-            denominator[denominator == 0] = np.finfo(float).eps
-            distance = np.sqrt(np.sum(((X[:, np.newaxis, :] - centroids[np.newaxis, :, :]) / denominator) ** 2, axis=-1))
+            return self.clark_distance
         else:
             raise ValueError('Invalid distance metric specified.')
 
-        return distance.tobytes()
+    @staticmethod
+    def euclidean_distance(X, centroids):
+        return np.sqrt(np.sum((X[:, np.newaxis, :] - centroids[np.newaxis, :, :])**2, axis=-1))
 
-    def get_distance(self, distance_metric):
-        def distance_func(X: np.ndarray, centroids: np.ndarray) -> np.ndarray:
-            X_bytes = X.tobytes()
-            centroids_bytes = centroids.tobytes()
-            n_samples = X.shape[0]
-            n_features = X.shape[1]
-            n_centroids = centroids.shape[0]
+    @staticmethod
+    def manhattan_distance(X, centroids):
+        return np.sum(np.abs(X[:, np.newaxis, :] - centroids[np.newaxis, :, :]), axis=-1)
 
-            distance_bytes = self.calculate_distance(
-                X_bytes, centroids_bytes, n_samples, n_features, n_centroids, distance_metric
-            )
-            return np.frombuffer(distance_bytes).reshape(n_samples, n_centroids)
+    @staticmethod
+    def clark_distance(X, centroids):
+        denominator = X[:, np.newaxis, :] + centroids[np.newaxis, :, :]
+        denominator[denominator == 0] = np.finfo(float).eps  # Avoid division by zero
+        distances = np.sqrt(np.sum(((X[:, np.newaxis, :] - centroids[np.newaxis, :, :]) / denominator) ** 2, axis=-1))
+        return distances
 
-        return distance_func
-
-    def initialize_centroids(self, X: np.ndarray) -> np.ndarray:
+    def initialize_candidate_points(self, X: np.ndarray) -> np.ndarray:
         """
-        Initialize centroids using the Global K-means algorithm.
+        Construct a k-d tree and select candidate points using PCA-based partitioning.
+
+        Args:
+            X: Input data of shape (n_samples, n_features)
+
+        Returns:
+            Candidate points for centroid initialization
+        """
+
+        def recursive_partition(buckets: List[np.ndarray]):
+            """
+            Recursively partition data using PCA and create bucket centroids.
+
+            Args:
+                buckets: List of the current partitions of the data (buckets)
+            """
+            # Select the bucket with most samples as the one to partition
+            data = buckets[0]
+            data_index = 0
+            for i in range(1, len(buckets)):
+                bucket = buckets[i]
+                if bucket.shape[0] > data.shape[0]:
+                    data = bucket
+                    data_index = i
+
+            # Compute principal component direction and project the data
+            pca = PCA(n_components=1)
+            pca.fit(data)
+            projections = pca.transform(data)
+
+            # Split data based on projection
+            # The mean of the projection is always 0, so we split based on which side of the mean the projection of each point is
+            left_mask = [projection[0] <= 0 for projection in projections]
+            right_mask = [~mask for mask in left_mask]
+
+            left_data = data[left_mask, :]
+            right_data = data[right_mask, :]
+
+            # Remove data from buckets and add partitions
+            buckets.pop(data_index)
+            buckets.append(left_data)
+            buckets.append(right_data)
+
+
+        max_buckets = 2 * self.k
+        buckets = [X]
+
+        # Generate buckets using k-d tree partitioning
+        for num_buckets in range (max_buckets):
+            recursive_partition(buckets)
+
+        candidate_points = [np.mean(bucket, axis=0) for bucket in buckets]
+
+        return np.array(candidate_points)
+
+    def calculate_centroids(self, X: np.ndarray) -> np.ndarray:
+        """
+        Initialize centroids using the Global K-means algorithm with k-d tree candidate points.
 
         Args:
             X: Input data of shape (n_samples, n_features)
@@ -57,53 +105,58 @@ class GlobalKMeansAlgorithm:
         """
         n_samples, n_features = X.shape
 
+        # Get candidate points from k-d tree initialization
+        candidate_points = self.initialize_candidate_points(X)
+        n_candidate_points = candidate_points.shape[0]
+
+        # Pre-compute pair-wise squared distances
+        squared_distances = self.distance(candidate_points, candidate_points) ** 2
+
         # Step 1: Initialize first centroid as the mean of all points
         best_centroids = np.mean(X, axis=0, keepdims=True)
+        candidate_labels = np.zeros(n_candidate_points, dtype=int)
+        distance_to_centroids = self.distance(candidate_points, best_centroids) ** 2
 
         # Step 2: Iteratively add centroids
         for k_prime in range(2, self.k + 1):
-            best_variance = float('inf')
-            candidate_centroids = None
+            # Compute the guaranteed error reduction for each candidate point
+            error_reductions = []
+            for n in range(n_candidate_points):
+                reductions = [max(distance_to_centroids[i, candidate_labels[i]] - squared_distances[n, i], 0) for i in range(n_candidate_points)]
+                error_reduction = sum(reductions)
+                error_reductions.append(error_reduction)
 
-            # Try each point as the new centroid
-            for i in range(n_samples):
-                # Current centroids: previous best centroids plus current candidate
-                current_centroids = np.vstack([best_centroids, X[i]])
+            best_candidate_index = np.argmax(error_reductions)
+            best_candidate = candidate_points[best_candidate_index]
+            # Current centroids: previous best centroids plus best candidate
+            current_centroids = np.vstack([best_centroids, best_candidate])
 
-                # Run k'-means with these initial centroids
-                temp_centroids = current_centroids.copy()
+            # Run k'-means to convergence
+            for _ in range(self.max_iter):
+                # Assign points to nearest centroids
+                distances = self.distance(X, current_centroids)
+                labels = np.argmin(distances, axis=1)
 
-                # Run k'-means to convergence (using a reasonable max_iter)
-                for _ in range(self.max_iter):
-                    # Assign points to nearest centroids
-                    distances = self.distance(X, temp_centroids)
-                    labels = np.argmin(distances, axis=1)
+                # Update centroids
+                temp_centroids = np.zeros((k_prime, n_features))
+                for j in range(k_prime):
+                    cluster_points = X[labels == j]
+                    if len(cluster_points) > 0:
+                        temp_centroids[j] = cluster_points.mean(axis=0)
+                    else:
+                        temp_centroids[j] = current_centroids[j]
 
-                    # Update centroids
-                    new_temp_centroids = np.zeros((k_prime, n_features))
-                    for j in range(k_prime):
-                        cluster_points = X[labels == j]
-                        if len(cluster_points) > 0:
-                            new_temp_centroids[j] = cluster_points.mean(axis=0)
-                        else:
-                            new_temp_centroids[j] = temp_centroids[j]
+                # Check for convergence
+                if np.allclose(current_centroids, temp_centroids):
+                    break
 
-                    # Check for convergence
-                    if np.allclose(temp_centroids, new_temp_centroids):
-                        break
-
-                    temp_centroids = new_temp_centroids
-
-                # Compute total variance for this configuration
-                current_variance = self.compute_total_variance(X, labels, k_prime, temp_centroids)
-
-                # Update best solution if current variance is lower
-                if current_variance < best_variance:
-                    best_variance = current_variance
-                    candidate_centroids = temp_centroids
+                current_centroids = temp_centroids
 
             # Update best centroids for k_prime clusters
-            best_centroids = candidate_centroids
+            best_centroids = current_centroids
+            distance_to_centroids = self.distance(candidate_points, best_centroids)
+            candidate_labels = np.argmin(distance_to_centroids, axis=1)
+            distance_to_centroids = distance_to_centroids ** 2
 
         return best_centroids
 
@@ -132,6 +185,7 @@ class GlobalKMeansAlgorithm:
                 E += np.sum(squared_distances)
         return E
 
+    # Renamed the previous fit method to use the new calculate_centroids
     def fit(self, X: np.ndarray) -> tuple[np.ndarray, float]:
         """
         Fit K-means clustering.
@@ -140,18 +194,16 @@ class GlobalKMeansAlgorithm:
             X: Input data of shape (n_samples, n_features)
 
         Returns:
-            Labels for each data point
+            Labels for each data point and total variance
         """
-        # Initialize centroids using K-means++
-        self.centroids = self.initialize_centroids(X)
+        # Initialize centroids using the new method
+        self.centroids = self.calculate_centroids(X)
 
-        for _ in range(self.max_iter):
-            # Assign points to nearest centroids
-            distances = self.distance(X, self.centroids)
-            labels = np.argmin(distances, axis=1)
+        # Assign points to nearest centroids
+        distances = self.distance(X, self.centroids)
+        labels = np.argmin(distances, axis=1)
 
         # Compute total within-cluster variance
         E = self.compute_total_variance(X, labels)
-        print(GlobalKMeansAlgorithm.calculate_distance.cache_info())
 
         return labels, E
