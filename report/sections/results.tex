@@ -1,4 +1,18 @@
-\section{Results}
-Introduction to results.
+\section{Results}\label{sec:results}
+To systematically evaluate the different configurations of each clustering algorithm, the following procedure is followed to extract results for each of the 3 data sets, in order to later perform an statistical analysis:
+
+\begin{enumerate}
+    \item \textbf{Data Preparation}: The dataset is loaded and the data samples are separated from their labels into separate 2 sets. This way, we perform the clustering analysis in a completely non-supervised way, and we then utilize the labels to extract supervised metrics of the cultering results.
+
+    \item \textbf{Parameter Configuration}: A comprehensive set of values for the algorithm's hyperparameters is defined. These combinations reflect various ways to tune the clustering algorithm.
+
+    \item \textbf{Model Evaluation}: For each parameter combination, the clustering algorithm is applied on the unlabeled data and then evaluated with different metrics. This step yields the following metrics: total cluster variance (E), Adjusted Rand Score (ARI), F1-score, Davies-Bouldin Index(DBI), Silhouette score, Calinski-Harabasz score, and execution time. Together, these metrics (some supervised, some non-supervised) measure the effectiveness and efficiency of the clustering.
+    
+    \textit{Note:} Not all clustering algorithms are based on centroids, hence the total cluster variance is not computed for those which are not.
+
+    \item \textbf{Results Compilation}: The performance metrics for each parameter combination are recorded in a structured format. These results are saved as a dataset that summarizes the outcomes of all evaluations, forming a basis for analysis.
+
+    \item \textbf{Statistical Analysis}: After results are compiled across all configurations, statistical analysis is performed to identify the best-performing configurations. This analysis helps determine the most reliable and effective parameter settings for accurate and efficient clustering. We will discuss our results in the following sections.
+\end{enumerate}
 
 \input{sections/results/kmeans.tex}

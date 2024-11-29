@@ -4,12 +4,13 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 class GlobalKMeansAlgorithm:
-    def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 10):
+    def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 10, n_buckets: int = None):
         self.k = k
         self.distance_metric = distance_metric
         self.distance = self.get_distance(distance_metric)
         self.max_iter = max_iter
         self.centroids = None
+        self.n_buckets = n_buckets if n_buckets else k*2
 
     def get_distance(self, distance_metric) -> Callable[[np.ndarray, np.ndarray],np.ndarray]:
         if distance_metric == 'euclidean':
@@ -82,11 +83,10 @@ class GlobalKMeansAlgorithm:
             buckets.append(right_data)
 
 
-        max_buckets = 2 * self.k
         buckets = [X]
 
         # Generate buckets using k-d tree partitioning
-        for num_buckets in range (max_buckets):
+        for num_buckets in range (self.n_buckets):
             recursive_partition(buckets)
 
         candidate_points = [np.mean(bucket, axis=0) for bucket in buckets]
