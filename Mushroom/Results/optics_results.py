@@ -5,11 +5,11 @@ import time
 from Classes.EvaluationUtils import EvaluationUtils
 from sklearn.cluster import OPTICS
 
+
 if __name__ == "__main__" or "__mp_main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Hepatitis'
-
+    dataset_path = 'Mushroom'
 
 def clustering(X, metric, algorithm):
     """
@@ -18,15 +18,15 @@ def clustering(X, metric, algorithm):
     optics = OPTICS(
         metric=metric,
         algorithm=algorithm,
-        min_samples=10,  # Adjust based on dataset
-        xi=0.05,
-        min_cluster_size=0.05
+        min_samples=20,  # Allows reasonable density requirement for smaller clusters
+        xi=0.02,  # Controls steepness for identifying clusters
+        min_cluster_size=0.02  # Ensures clusters with a reasonable number of mushrooms
     )
 
     return optics.fit_predict(X)
 
 # Load data
-data_path = os.path.join(dataset_path, "Preprocessing", "hepatitis.csv")
+data_path = os.path.join(dataset_path, "Preprocessing", "mushroom.csv")
 data = pd.read_csv(data_path)
 class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0', 'Class']).values
