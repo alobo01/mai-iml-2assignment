@@ -7,10 +7,10 @@ from Classes.EvaluationUtils import EvaluationUtils
 if __name__ == "__main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Pen-based'
+    dataset_path = 'Mushroom'
 
 # Load dataset
-data_path = os.path.join(dataset_path, "Preprocessing", "pen-based.csv")
+data_path = os.path.join(dataset_path, "Preprocessing", "mushroom.csv")
 data = pd.read_csv(data_path)
 class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0','Class']).values
