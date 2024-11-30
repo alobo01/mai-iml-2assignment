@@ -73,7 +73,7 @@ class XMeans:
             k=n_clusters,
             centroids=initial_centroids,
             distance_metric=self.distance_metric,
-            max_iter=self.kmeans_params.get('max_iter', 300)
+            max_iter=self.kmeans_params.get('max_iter', 10)
         )
 
     def determine_additional_splits(
