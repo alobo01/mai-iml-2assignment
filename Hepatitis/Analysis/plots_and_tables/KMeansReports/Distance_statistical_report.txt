@@ -14,54 +14,61 @@ Metric_calinski_harabasz_score 107.6947        0.0000          True
 Metric_Time          243.6947        0.0000          True           
 
 
-NEMENYI POST-HOC TEST RESULTS
+POST-HOC TEST RESULTS
 ==============================
 
 Metric: Metric_E
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.0000          True           
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
 
 Metric: Metric_ARI
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.0000          True           
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
 
 Metric: Metric_F1 Score
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.4766          False          
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.4766          False          
+euclidean            clark                0.0000          True           
 
 Metric: Metric_DBI
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  1.0000          False          
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            1.0000          False          
+euclidean            clark                0.0000          True           
 
 Metric: Metric_silhouette_score
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.0000          True           
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
 
 Metric: Metric_calinski_harabasz_score
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.0000          True           
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
 
 Metric: Metric_Time
 --------------------
+Bonferroni Test Detailed Results:
 Group 1              Group 2              P-Value         Significant    
 ----------------------------------------------------------------------
-N/A                  N/A                  0.0024          True           
-N/A                  N/A                  0.0000          True           
+euclidean            manhattan            0.0024          True           
+euclidean            clark                0.0000          True           
