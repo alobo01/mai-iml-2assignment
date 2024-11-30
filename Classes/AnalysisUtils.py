@@ -620,6 +620,90 @@ class AnalysisUtils:
         return comparison_reports
 
     @classmethod
+    def create_posthoc_pivot_table(
+            cls,
+            comparison_result: Dict[str, Any],
+            parameter_values: List[Any]
+    ) -> pd.DataFrame:
+        """
+        Create a pivot table of post-hoc test p-values.
+
+        Args:
+            comparison_result (Dict): Comparison results from statistical test
+            parameter_values (List): Unique values of the parameter
+
+        Returns:
+            pd.DataFrame: Pivot table of p-values
+        """
+        # Initialize pivot table with NaNs
+        n = len(parameter_values)
+        pivot_table = pd.DataFrame(
+            np.nan,
+            index=parameter_values,
+            columns=parameter_values
+        )
+        np.fill_diagonal(pivot_table.values, 1.0)  # Diagonal is 1 (same group)
+
+        # Populate pivot table based on test type
+        posthoc_results = comparison_result.get('posthoc_results', {})
+
+        if 'group1' in next(iter(posthoc_results.values()), {}):
+            # Nemenyi test (pairwise)
+            for comparison, result in posthoc_results.items():
+                group1 = result.get('group1')
+                group2 = result.get('group2')
+                p_value = result.get('p_value', np.nan)
+
+                pivot_table.loc[group1, group2] = p_value
+                pivot_table.loc[group2, group1] = p_value
+
+        elif 'control_group' in next(iter(posthoc_results.values()), {}):
+            # Bonferroni test (control)
+            for comparison, result in posthoc_results.items():
+                control_group = result.get('control_group')
+                compared_group = result.get('compared_group')
+                p_value = result.get('p_value', np.nan)
+
+                pivot_table.loc[control_group, compared_group] = p_value
+                pivot_table.loc[compared_group, control_group] = p_value
+
+        return pivot_table
+
+    @classmethod
+    def plot_posthoc_heatmap(
+            cls,
+            pivot_table: pd.DataFrame,
+            output_path: str,
+            title: str
+    ) -> None:
+        """
+        Create a heatmap of post-hoc test p-values.
+
+        Args:
+            pivot_table (pd.DataFrame): Pivot table of p-values
+            output_path (str): Path to save the heatmap
+            title (str): Title of the heatmap
+        """
+        plt.figure(figsize=(10, 8))
+
+        # Use log scale for p-values to better visualize small differences
+        log_data = -np.log10(pivot_table)
+
+        # Create heatmap
+        sns.heatmap(
+            log_data,
+            annot=pivot_table.round(4),
+            cmap='YlGnBu',
+            fmt='.4f',
+            cbar_kws={'label': '-log10(p-value)'}
+        )
+
+        plt.title(title)
+        plt.tight_layout()
+        plt.savefig(output_path)
+        plt.close()
+
+    @classmethod
     def generate_comprehensive_report(
             cls,
             comparison_reports: Dict[str, Dict[str, Any]],
@@ -634,6 +718,7 @@ class AnalysisUtils:
         """
         # Ensure output directory exists
         os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(os.path.join(output_dir, 'heatmaps'), exist_ok=True)
 
         # Group comparison reports by their parameter
         parameter_metrics = {}
@@ -657,12 +742,11 @@ class AnalysisUtils:
                 f.write("{:<20} {:<15} {:<15} {:<15}\n".format("Metric", "Statistic", "P-Value", "Significant"))
                 f.write("-" * 65 + "\n")
 
-                # Store metrics with significant differences for detailed Nemenyi tests
+                # Store metrics with significant differences for detailed post-hoc tests
                 significant_metrics = []
+                parameter_values = set()
 
                 for metric, comparison_result in metric_reports:
-                    print(metric)
-                    print(comparison_result)
                     # Check if Friedman test was significant
                     friedman_test = comparison_result.get('friedman_test', {})
                     statistic = friedman_test.get('statistic', 'N/A')
@@ -680,29 +764,69 @@ class AnalysisUtils:
                     if significant:
                         significant_metrics.append((metric, comparison_result))
 
-                # Detailed Nemenyi Test Results
+                        # Collect parameter values
+                        posthoc_results = comparison_result.get('posthoc_results', {})
+                        for result in posthoc_results.values():
+                            parameter_values.update([
+                                result.get('group1'), result.get('group2'),
+                                result.get('control_group'), result.get('compared_group')
+                            ])
+
+                # Remove None values
+                parameter_values = [v for v in parameter_values if v is not None]
+
+                # Detailed Post-hoc Test Results
                 if significant_metrics:
-                    f.write("\n\nNEMENYI POST-HOC TEST RESULTS\n")
+                    f.write("\n\nPOST-HOC TEST RESULTS\n")
                     f.write("=" * 30 + "\n")
 
                     for metric, comparison_result in significant_metrics:
                         f.write(f"\nMetric: {metric}\n")
                         f.write("-" * 20 + "\n")
 
-                        # Nemenyi Results Table
-                        f.write("{:<20} {:<20} {:<15} {:<15}\n".format(
-                            "Group 1", "Group 2", "P-Value", "Significant"
-                        ))
-                        f.write("-" * 70 + "\n")
+                        # Create pivot table
+                        pivot_table = cls.create_posthoc_pivot_table(
+                            comparison_result,
+                            parameter_values
+                        )
 
-                        posthoc_results = comparison_result.get('posthoc_results', {})
-                        for comparison, result in posthoc_results.items():
-                            f.write("{:<20} {:<20} {:<15.4f} {:<15}\n".format(
-                                str(result.get('group1', 'N/A')),
-                                str(result.get('group2', 'N/A')),
-                                result.get('p_value', 0),
-                                str(result.get('significant', False))
+                        # Determine test type for reporting
+                        first_result = next(iter(comparison_result.get('posthoc_results', {}).values()), {})
+                        test_type = 'Nemenyi' if 'group1' in first_result else 'Bonferroni'
+
+                        if test_type == 'Nemenyi':
+                            # For Nemenyi, only write the pivot table
+                            f.write("Pivot Table of P-Values:\n")
+                            f.write(pivot_table.to_string())
+                            f.write("\n\n")
+                        else:
+                            # For Bonferroni, write detailed comparisons
+                            f.write(f"{test_type} Test Detailed Results:\n")
+                            f.write("{:<20} {:<20} {:<15} {:<15}\n".format(
+                                "Group 1", "Group 2", "P-Value", "Significant"
                             ))
+                            f.write("-" * 70 + "\n")
+
+                            posthoc_results = comparison_result.get('posthoc_results', {})
+                            for comparison, result in posthoc_results.items():
+                                f.write("{:<20} {:<20} {:<15.4f} {:<15}\n".format(
+                                    str(result.get('control_group', 'N/A')),
+                                    str(result.get('compared_group', 'N/A')),
+                                    result.get('p_value', 0),
+                                    str(result.get('significant', False))
+                                ))
+
+                        # Generate heatmap
+                        heatmap_path = os.path.join(
+                            output_dir,
+                            'heatmaps',
+                            f"{param}_{metric}_posthoc_heatmap.png"
+                        )
+                        cls.plot_posthoc_heatmap(
+                            pivot_table,
+                            heatmap_path,
+                            f"{test_type} Post-hoc Test P-Values for {metric}"
+                        )
 
     @classmethod
     def bulk_report_generation(
