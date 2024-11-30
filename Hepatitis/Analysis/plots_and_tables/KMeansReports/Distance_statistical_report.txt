@@ -1,0 +1,67 @@
+Statistical Analysis Report for Parameter: Distance
+==================================================
+
+FRIEDMAN TEST RESULTS
+--------------------
+Metric               Statistic       P-Value         Significant    
+-----------------------------------------------------------------
+Metric_E             297.1684        0.0000          True           
+Metric_ARI           237.2947        0.0000          True           
+Metric_F1 Score      32.4644         0.0000          True           
+Metric_DBI           244.7158        0.0000          True           
+Metric_silhouette_score 249.5684        0.0000          True           
+Metric_calinski_harabasz_score 107.6947        0.0000          True           
+Metric_Time          243.6947        0.0000          True           
+
+
+NEMENYI POST-HOC TEST RESULTS
+==============================
+
+Metric: Metric_E
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.0000          True           
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_ARI
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.0000          True           
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_F1 Score
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.4766          False          
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_DBI
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  1.0000          False          
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_silhouette_score
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.0000          True           
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_calinski_harabasz_score
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.0000          True           
+N/A                  N/A                  0.0000          True           
+
+Metric: Metric_Time
+--------------------
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+N/A                  N/A                  0.0024          True           
+N/A                  N/A                  0.0000          True           
