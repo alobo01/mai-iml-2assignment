@@ -7,6 +7,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+from scikit_posthocs import posthoc_nemenyi
 
 
 class AnalysisUtils:
@@ -60,7 +61,8 @@ class AnalysisUtils:
                         params: List[str],
                         metric: str,
                         agg_func: str,
-                        plots_path: str) -> None:
+                        plots_path: str,
+                        transposed: bool = False) -> None:
         """
         Create a comprehensive pairplot matrix for model hyperparameters.
 
@@ -70,6 +72,7 @@ class AnalysisUtils:
             metric (str): Performance metric to visualize
             agg_func (str): Aggregation function for metric
             plots_path (str): Path to save the plot
+            transposed (bool): Decides if lower triangular will be transposed
         """
         save_path = os.path.join(plots_path, 'hyperparameter_pairplot_matrix.png')
         n_params = len(params)
@@ -81,6 +84,8 @@ class AnalysisUtils:
         # Color maps
         accuracy_cmap = 'YlOrRd'
         time_cmap = 'YlGnBu'
+
+        data['Time'] = data['Time'].multiply(100)
 
         # Process each pair of parameters
         for i in range(n_params):
@@ -114,9 +119,9 @@ class AnalysisUtils:
                 elif i < j:
                     cls._plot_time_heatmap(data, ax, param1, param2, xlabels, ylabels)
 
-                # Lower triangle - Accuracy heatmaps
+                # Lower triangle - Metric heatmaps
                 else:
-                    cls._plot_accuracy_heatmap(data, ax, param1, param2, metric, agg_func, xlabels, ylabels)
+                    cls._plot_metric_heatmap(data, ax, param1, param2, metric, agg_func, xlabels, ylabels, transposed)
 
                 # Rotate x-axis labels for bottom row
                 if i == n_params - 1:
@@ -187,16 +192,17 @@ class AnalysisUtils:
         ax.set_title(f'Average Time')
 
     @staticmethod
-    def _plot_accuracy_heatmap(data: pd.DataFrame,
-                               ax: plt.Axes,
-                               param1: str,
-                               param2: str,
-                               metric: str,
-                               agg_func: str,
-                               xlabels: bool,
-                               ylabels: bool) -> None:
+    def _plot_metric_heatmap(data: pd.DataFrame,
+                             ax: plt.Axes,
+                             param1: str,
+                             param2: str,
+                             metric: str,
+                             agg_func: str,
+                             xlabels: bool,
+                             ylabels: bool,
+                             transposed: bool) -> None:
         """
-        Plot accuracy heatmap for lower triangle of pairplot matrix.
+        Plot metric heatmap for lower triangle of pairplot matrix.
 
         Args:
             data (pd.DataFrame): Input DataFrame
@@ -208,25 +214,36 @@ class AnalysisUtils:
             xlabels (bool): Whether to show x-labels
             ylabels (bool): Whether to show y-labels
         """
-        pivot_data = data.pivot_table(
-            values=metric,
-            index=param1,
-            columns=param2,
-            aggfunc=agg_func
-        )
+        if not transposed:
+            pivot_data = data.pivot_table(
+                values=metric,
+                index=param1,
+                columns=param2,
+                aggfunc=agg_func
+            )
+        else:
+            pivot_data = data.pivot_table(
+                values=metric,
+                index=param2,
+                columns=param1,
+                aggfunc=agg_func
+            )
 
         sns.heatmap(pivot_data, ax=ax, xticklabels=xlabels, yticklabels=ylabels, cmap='YlOrRd',
                     annot=True, fmt='.3f', cbar=False)
         ax.set_title(f'{agg_func} {metric}')
 
     @staticmethod
-    def plot_custom_heatmap(df: pd.DataFrame) -> None:
+    def plot_custom_heatmap(df: pd.DataFrame, plots_path: str) -> None:
         """
         Create a custom heatmap showing correlations, distributions, and scatter plots.
 
         Args:
             df (pd.DataFrame): Input DataFrame to visualize
+            plots_path: Path to plots folder
         """
+        save_path = os.path.join(plots_path, 'metrics_correlations_matrix.png')
+
         # Calculate Pearson Correlation Matrix
         corr_matrix = df.corr()
         metrics = df.columns
@@ -262,7 +279,10 @@ class AnalysisUtils:
             ax.set_ylabel(label, rotation=0, ha="right", labelpad=30)
 
         plt.suptitle("Custom Clustering Metric Matrix", fontsize=16, y=0.92)
-        plt.show()
+
+        # Save and close the plot
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.close(fig)
 
     @classmethod
     def perform_statistical_comparison(
@@ -272,8 +292,7 @@ class AnalysisUtils:
             metric: str,
             test_type: str = 'pairwise',
             control_value: Any = None,
-            alpha: float = 0.05,
-            test_method: str = 'mannwhitneyu'
+            alpha: float = 0.05
     ) -> Dict[str, Any]:
         """
         Perform statistical comparison of a metric across different parameter values.
@@ -285,7 +304,6 @@ class AnalysisUtils:
             test_type (str): Type of comparison - 'pairwise' or 'control'
             control_value (Any, optional): Reference value for control comparison
             alpha (float): Significance level for statistical tests
-            test_method (str): Statistical test to use ('mannwhitneyu' or 't-test')
 
         Returns:
             Dict containing statistical test results
@@ -299,176 +317,114 @@ class AnalysisUtils:
         # Get unique parameter values
         param_values = data[parameter].unique()
 
-        # Select appropriate statistical test
-        if test_method == 'mannwhitneyu':
-            test_func = cls._mann_whitney_test
-        elif test_method == 't-test':
-            test_func = cls._t_test
-        else:
-            raise ValueError("Invalid test method. Choose 'mannwhitneyu' or 't-test'")
+        # Prepare data for Friedman test
+        grouped_data = [
+            data[data[parameter] == val][metric].values
+            for val in param_values
+        ]
 
-        # Perform comparisons based on test type
+        # Perform Friedman test
+        friedman_statistic, friedman_pvalue = stats.friedmanchisquare(*grouped_data)
+
+        # Check for significant differences
+        if friedman_pvalue >= alpha:
+            return {
+                'test': 'Friedman',
+                'statistic': friedman_statistic,
+                'p_value': friedman_pvalue,
+                'significant': False,
+                'interpretation': 'No significant differences among groups'
+            }
+
+        # If significant, perform post-hoc test
         if test_type == 'pairwise':
-            return cls._pairwise_comparison(
-                data, parameter, metric, param_values,
-                test_func, alpha
-            )
+            # Nemenyi post-hoc test
+            posthoc_results = posthoc_nemenyi(grouped_data)
+
+            # Create detailed pairwise comparison results
+            results = {}
+            for i in range(len(param_values)):
+                for j in range(i + 1, len(param_values)):
+                    val1, val2 = param_values[i], param_values[j]
+                    results[f'{val1}_vs_{val2}'] = {
+                        'group1': val1,
+                        'group2': val2,
+                        'p_value': posthoc_results.iloc[i, j],
+                        'significant': posthoc_results.iloc[i, j] < (
+                                    alpha / ((len(param_values) * (len(param_values) - 1)) / 2)),
+                        'interpretation': (
+                            'Significant difference' if posthoc_results.iloc[i, j] < (
+                                        alpha / ((len(param_values) * (len(param_values) - 1)) / 2))
+                            else 'No significant difference'
+                        )
+                    }
+
+
         elif test_type == 'control':
+
             if control_value is None:
                 raise ValueError("Control value must be specified for control comparison")
-            return cls._control_comparison(
-                data, parameter, metric, control_value,
-                test_func, alpha
-            )
+
+            # Find index and data for control value
+
+            control_index = list(param_values).index(control_value)
+
+            control_group = grouped_data[control_index]
+
+            # Perform Bonferroni-corrected Wilcoxon signed-rank test
+
+            results = {}
+
+            for i, val in enumerate(param_values):
+
+                if val == control_value:
+                    continue
+
+                # Perform Wilcoxon signed-rank test
+
+                statistic, p_value = stats.wilcoxon(control_group, grouped_data[i])
+
+                # Bonferroni correction
+
+                corrected_p_value = p_value * (len(param_values) - 1)
+
+                corrected_p_value = min(corrected_p_value, 1.0)  # Cap at 1.0
+
+                results[f'control_{control_value}_vs_{val}'] = {
+
+                    'control_group': control_value,
+
+                    'compared_group': val,
+
+                    'statistic': statistic,
+
+                    'p_value': corrected_p_value,
+
+                    'significant': corrected_p_value < alpha,
+
+                    'interpretation': (
+
+                        'Significant difference' if corrected_p_value < alpha
+
+                        else 'No significant difference'
+
+                    )
+
+                }
+
         else:
             raise ValueError("Invalid test type. Choose 'pairwise' or 'control'")
 
-    @staticmethod
-    def _mann_whitney_test(group1: np.ndarray, group2: np.ndarray, alpha: float) -> Dict[str, Any]:
-        """
-        Perform Mann-Whitney U test between two groups.
-
-        Args:
-            group1 (np.ndarray): First group of values
-            group2 (np.ndarray): Second group of values
-            alpha (float): Significance level
-
-        Returns:
-            Dict with test statistics and interpretation
-        """
-        statistic, p_value = stats.mannwhitneyu(group1, group2, alternative='two-sided')
-
+        # Add Friedman test details to the results
         return {
-            'test': 'Mann-Whitney U',
-            'statistic': statistic,
-            'p_value': p_value,
-            'significant': p_value < alpha,
-            'interpretation': (
-                'Significant difference' if p_value < alpha
-                else 'No significant difference'
-            )
+            'friedman_test': {
+                'statistic': friedman_statistic,
+                'p_value': friedman_pvalue,
+                'significant': True,
+                'interpretation': 'Significant differences among groups'
+            },
+            'posthoc_results': results
         }
-
-    @staticmethod
-    def _t_test(group1: np.ndarray, group2: np.ndarray, alpha: float) -> Dict[str, Any]:
-        """
-        Perform independent t-test between two groups.
-
-        Args:
-            group1 (np.ndarray): First group of values
-            group2 (np.ndarray): Second group of values
-            alpha (float): Significance level
-
-        Returns:
-            Dict with test statistics and interpretation
-        """
-        statistic, p_value = stats.ttest_ind(group1, group2)
-
-        return {
-            'test': 'Independent t-test',
-            'statistic': statistic,
-            'p_value': p_value,
-            'significant': p_value < alpha,
-            'interpretation': (
-                'Significant difference' if p_value < alpha
-                else 'No significant difference'
-            )
-        }
-
-    @classmethod
-    def _pairwise_comparison(
-            cls,
-            data: pd.DataFrame,
-            parameter: str,
-            metric: str,
-            param_values: List[Any],
-            test_func: callable,
-            alpha: float
-    ) -> Dict[str, Any]:
-        """
-        Perform pairwise comparisons for all parameter values.
-
-        Args:
-            data (pd.DataFrame): Input DataFrame
-            parameter (str): Parameter to compare
-            metric (str): Performance metric
-            param_values (List[Any]): Unique parameter values
-            test_func (callable): Statistical test function
-            alpha (float): Significance level
-
-        Returns:
-            Dict of pairwise comparison results
-        """
-        results = {}
-
-        for i in range(len(param_values)):
-            for j in range(i + 1, len(param_values)):
-                val1, val2 = param_values[i], param_values[j]
-
-                # Extract metric values for each parameter value
-                group1 = data[data[parameter] == val1][metric].values
-                group2 = data[data[parameter] == val2][metric].values
-
-                # Perform statistical test
-                comparison_result = test_func(group1, group2, alpha)
-
-                # Store results with a descriptive key
-                results[f'{val1}_vs_{val2}'] = {
-                    **comparison_result,
-                    'group1': val1,
-                    'group2': val2
-                }
-
-        return results
-
-    @classmethod
-    def _control_comparison(
-            cls,
-            data: pd.DataFrame,
-            parameter: str,
-            metric: str,
-            control_value: Any,
-            test_func: callable,
-            alpha: float
-    ) -> Dict[str, Any]:
-        """
-        Compare all parameter values against a control value.
-
-        Args:
-            data (pd.DataFrame): Input DataFrame
-            parameter (str): Parameter to compare
-            metric (str): Performance metric
-            control_value (Any): Reference value to compare against
-            test_func (callable): Statistical test function
-            alpha (float): Significance level
-
-        Returns:
-            Dict of control comparison results
-        """
-        results = {}
-
-        # Get control group metrics
-        control_group = data[data[parameter] == control_value][metric].values
-
-        # Compare other parameter values against control
-        for val in data[parameter].unique():
-            if val == control_value:
-                continue
-
-            # Extract metric values for current parameter value
-            current_group = data[data[parameter] == val][metric].values
-
-            # Perform statistical test
-            comparison_result = test_func(control_group, current_group, alpha)
-
-            # Store results
-            results[f'control_{control_value}_vs_{val}'] = {
-                **comparison_result,
-                'control_group': control_value,
-                'compared_group': val
-            }
-
-        return results
 
     @classmethod
     def generate_statistical_report(
@@ -486,13 +442,29 @@ class AnalysisUtils:
         Returns:
             pd.DataFrame with statistical comparison details
         """
-        # Convert results to DataFrame
+        # Check if no significant differences were found
+        if not comparison_results.get('friedman_test', {}).get('significant', False):
+            report_df = pd.DataFrame({
+                'Test': ['Friedman'],
+                'Statistic': [comparison_results['friedman_test']['statistic']],
+                'P-Value': [comparison_results['friedman_test']['p_value']],
+                'Significant': [False],
+                'Interpretation': ['No significant differences among groups']
+            })
+
+            # Optional: Save to CSV
+            if output_path:
+                report_df.to_csv(output_path, index=False)
+
+            return report_df
+
+        # Convert posthoc results to DataFrame
         report_data = []
-        for comparison, results in comparison_results.items():
+        for comparison, results in comparison_results.get('posthoc_results', {}).items():
             report_data.append({
                 'Comparison': comparison,
-                'Test': results['test'],
-                'Statistic': results['statistic'],
+                'Group 1': results.get('group1', results.get('control_group', '')),
+                'Group 2': results.get('group2', results.get('compared_group', '')),
                 'P-Value': results['p_value'],
                 'Significant': results['significant'],
                 'Interpretation': results['interpretation']
@@ -500,78 +472,23 @@ class AnalysisUtils:
 
         report_df = pd.DataFrame(report_data)
 
+        # Add Friedman test details
+        friedman_row = pd.DataFrame({
+            'Comparison': ['Friedman Test'],
+            'Group 1': ['-'],
+            'Group 2': ['-'],
+            'P-Value': [comparison_results['friedman_test']['p_value']],
+            'Significant': [True],
+            'Interpretation': ['Significant differences among groups']
+        })
+
+        report_df = pd.concat([friedman_row, report_df], ignore_index=True)
+
         # Optional: Save to CSV
         if output_path:
             report_df.to_csv(output_path, index=False)
 
         return report_df
-
-    @classmethod
-    def bulk_statistical_comparisons(
-            cls,
-            data: pd.DataFrame,
-            comparison_configs: List[Tuple[str, str, str, Optional[Any]]],
-            output_dir: Optional[str] = None,
-            test_method: str = 'mannwhitneyu',
-            alpha: float = 0.05
-    ) -> Dict[str, pd.DataFrame]:
-        """
-        Perform bulk statistical comparisons based on multiple configuration tuples.
-
-        Args:
-            data (pd.DataFrame): Input DataFrame
-            comparison_configs (List[Tuple]): List of comparison configurations
-                Each tuple contains:
-                - parameter (str): Parameter to compare
-                - metric (str): Performance metric
-                - test_type (str): 'pairwise' or 'control'
-                - control_value (Optional[Any]): Control value for 'control' test type
-            output_dir (Optional[str]): Directory to save individual reports
-            test_method (str): Statistical test to use ('mannwhitneyu' or 't-test')
-            alpha (float): Significance level for statistical tests
-
-        Returns:
-            Dict[str, pd.DataFrame]: Dictionary of statistical comparison reports
-        """
-        # Validate output directory if provided
-        if output_dir:
-            cls.create_plots_folder(output_dir)
-
-        # Store results for each comparison
-        comparison_reports = {}
-
-        # Perform statistical comparisons for each configuration
-        for param, metric, test_type, control_value in comparison_configs:
-            # Generate a unique identifier for the comparison
-            comparison_id = f"{param}_{metric}"
-            try:
-                # Perform statistical comparison
-                comparison_results = cls.perform_statistical_comparison(
-                    data=data,
-                    parameter=param,
-                    metric=metric,
-                    test_type=test_type,
-                    control_value=control_value,
-                    test_method=test_method,
-                    alpha=alpha
-                )
-
-                # Generate report
-                report = cls.generate_statistical_report(comparison_results)
-
-                # Store the report
-                comparison_reports[comparison_id] = report
-
-                # Optionally save to CSV
-                if output_dir:
-                    output_path = os.path.join(output_dir, f"{comparison_id}_statistical_report.csv")
-                    report.to_csv(output_path, index=False)
-
-            except Exception as e:
-                print(f"Error in comparison {param}_{metric}: {e}")
-                comparison_reports[comparison_id] = pd.DataFrame()  # Empty DataFrame for failed comparisons
-
-        return comparison_reports
 
     @classmethod
     def summarize_statistical_comparisons(
@@ -593,15 +510,32 @@ class AnalysisUtils:
             if report.empty:
                 continue
 
-            # Count significant and non-significant comparisons
-            significant_count = report[report['Significant'] == True].shape[0]
-            total_comparisons = report.shape[0]
+            # Determine if Friedman test showed significant differences
+            friedman_row = report[report['Comparison'] == 'Friedman Test']
+            is_friedman_significant = not friedman_row.empty and friedman_row['Significant'].iloc[0]
 
-            # Extract main insights
+            # If Friedman test was not significant, add minimal information
+            if not is_friedman_significant:
+                summary_data.append({
+                    'Comparison': comparison_id,
+                    'Friedman P-Value': friedman_row['P-Value'].iloc[0] if not friedman_row.empty else None,
+                    'Significant Comparisons': 0,
+                    'Significance Percentage': 0,
+                    'Most Significant Comparison': 'No significant differences',
+                    'Lowest P-Value': None
+                })
+                continue
+
+            # Count significant pairwise/control comparisons
             significant_rows = report[report['Significant'] == True]
+            significant_rows = significant_rows[significant_rows['Comparison'] != 'Friedman Test']
+
+            total_comparisons = report[report['Comparison'] != 'Friedman Test'].shape[0]
+            significant_count = significant_rows.shape[0]
 
             summary_data.append({
                 'Comparison': comparison_id,
+                'Friedman P-Value': friedman_row['P-Value'].iloc[0],
                 'Total Comparisons': total_comparisons,
                 'Significant Comparisons': significant_count,
                 'Significance Percentage': (
@@ -619,3 +553,194 @@ class AnalysisUtils:
             })
 
         return pd.DataFrame(summary_data)
+
+    @classmethod
+    def bulk_statistical_comparisons(
+            cls,
+            data: pd.DataFrame,
+            comparison_configs: List[Tuple[str, str, str, Optional[Any]]],
+            output_dir: Optional[str] = None,
+            alpha: float = 0.05
+    ) -> Dict[str, pd.DataFrame]:
+        """
+        Perform bulk statistical comparisons based on multiple configuration tuples.
+
+        Args:
+            data (pd.DataFrame): Input DataFrame
+            comparison_configs (List[Tuple]): List of comparison configurations
+                Each tuple contains:
+                - parameter (str): Parameter to compare
+                - metric (str): Performance metric
+                - test_type (str): 'pairwise' or 'control'
+                - control_value (Optional[Any]): Control value for 'control' test type
+            output_dir (Optional[str]): Directory to save individual reports
+            alpha (float): Significance level for statistical tests
+
+        Returns:
+            Dict[str, pd.DataFrame]: Dictionary of statistical comparison reports
+        """
+        # Validate output directory if provided
+        if output_dir:
+            cls.create_plots_folder(output_dir)
+
+        # Store results for each comparison
+        comparison_reports = {}
+
+        # Perform statistical comparisons for each configuration
+        for param, metric, test_type, control_value in comparison_configs:
+            # Generate a unique identifier for the comparison
+            comparison_id = f"{param}_{metric}"
+
+            try:
+                # Perform statistical comparison
+                comparison_results = cls.perform_statistical_comparison(
+                    data=data,
+                    parameter=param,
+                    metric=metric,
+                    test_type=test_type,
+                    control_value=control_value,
+                    alpha=alpha
+                )
+
+                # Generate report
+                report = cls.generate_statistical_report(comparison_results)
+
+                # Store the report
+                comparison_reports[comparison_id] = comparison_results
+
+                # Optionally save to CSV
+                if output_dir:
+                    output_path = os.path.join(output_dir, f"{comparison_id}_statistical_report.csv")
+                    report.to_csv(output_path, index=False)
+
+            except Exception as e:
+                print(f"Error in comparison {param}_{metric}: {e}")
+                comparison_reports[comparison_id] = pd.DataFrame()  # Empty DataFrame for failed comparisons
+
+        return comparison_reports
+
+    @classmethod
+    def generate_comprehensive_report(
+            cls,
+            comparison_reports: Dict[str, Dict[str, Any]],
+            output_dir: str
+    ) -> None:
+        """
+        Generate comprehensive statistical reports for each parameter.
+
+        Args:
+            comparison_reports (Dict[str, Dict[str, Any]]): Statistical comparison results
+            output_dir (str): Directory to save report files
+        """
+        # Ensure output directory exists
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Group comparison reports by their parameter
+        parameter_metrics = {}
+        for comparison_id, report_data in comparison_reports.items():
+            param, metric = comparison_id.split('_', 1)
+            if param not in parameter_metrics:
+                parameter_metrics[param] = []
+            parameter_metrics[param].append((metric, report_data))
+
+        # Generate a report for each parameter
+        for param, metric_reports in parameter_metrics.items():
+            report_path = os.path.join(output_dir, f"{param}_statistical_report.txt")
+
+            with open(report_path, 'w') as f:
+                f.write(f"Statistical Analysis Report for Parameter: {param}\n")
+                f.write("=" * 50 + "\n\n")
+
+                # Friedman Test Results Table
+                f.write("FRIEDMAN TEST RESULTS\n")
+                f.write("-" * 20 + "\n")
+                f.write("{:<20} {:<15} {:<15} {:<15}\n".format("Metric", "Statistic", "P-Value", "Significant"))
+                f.write("-" * 65 + "\n")
+
+                # Store metrics with significant differences for detailed Nemenyi tests
+                significant_metrics = []
+
+                for metric, comparison_result in metric_reports:
+                    print(metric)
+                    print(comparison_result)
+                    # Check if Friedman test was significant
+                    friedman_test = comparison_result.get('friedman_test', {})
+                    statistic = friedman_test.get('statistic', 'N/A')
+                    p_value = friedman_test.get('p_value', 'N/A')
+                    significant = friedman_test.get('significant', False)
+
+                    f.write("{:<20} {:<15.4f} {:<15.4f} {:<15}\n".format(
+                        metric,
+                        statistic if isinstance(statistic, (int, float)) else 0,
+                        p_value if isinstance(p_value, (int, float)) else 0,
+                        str(significant)
+                    ))
+
+                    # Track metrics with significant differences
+                    if significant:
+                        significant_metrics.append((metric, comparison_result))
+
+                # Detailed Nemenyi Test Results
+                if significant_metrics:
+                    f.write("\n\nNEMENYI POST-HOC TEST RESULTS\n")
+                    f.write("=" * 30 + "\n")
+
+                    for metric, comparison_result in significant_metrics:
+                        f.write(f"\nMetric: {metric}\n")
+                        f.write("-" * 20 + "\n")
+
+                        # Nemenyi Results Table
+                        f.write("{:<20} {:<20} {:<15} {:<15}\n".format(
+                            "Group 1", "Group 2", "P-Value", "Significant"
+                        ))
+                        f.write("-" * 70 + "\n")
+
+                        posthoc_results = comparison_result.get('posthoc_results', {})
+                        for comparison, result in posthoc_results.items():
+                            f.write("{:<20} {:<20} {:<15.4f} {:<15}\n".format(
+                                str(result.get('group1', 'N/A')),
+                                str(result.get('group2', 'N/A')),
+                                result.get('p_value', 0),
+                                str(result.get('significant', False))
+                            ))
+
+    @classmethod
+    def bulk_report_generation(
+            cls,
+            data: pd.DataFrame,
+            comparison_configs: List[Tuple[str, str, str, Optional[Any]]],
+            output_dir: str,
+            test_method: str = 'friedman',
+            alpha: float = 0.05
+    ) -> Dict[str, pd.DataFrame]:
+        """
+        Perform bulk statistical comparisons and generate reports.
+
+        Args:
+            data (pd.DataFrame): Input DataFrame
+            comparison_configs (List[Tuple]): Comparison configurations
+            output_dir (str): Directory to save reports
+            test_method (str): Statistical test method
+            alpha (float): Significance level
+
+        Returns:
+            Dict of statistical comparison reports
+        """
+        # Ensure output directory exists
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Perform bulk statistical comparisons using AnalysisUtils
+        comparison_reports = cls.bulk_statistical_comparisons(
+            data=data,
+            comparison_configs=comparison_configs,
+            output_dir=None,  # We'll handle reporting separately
+            alpha=alpha
+        )
+
+        # Generate comprehensive reports
+        cls.generate_comprehensive_report(
+            comparison_reports,
+            output_dir
+        )
+
+        return comparison_reports

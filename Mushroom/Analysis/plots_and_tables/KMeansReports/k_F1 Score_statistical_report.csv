@@ -1,0 +1,173 @@
+Comparison,Group 1,Group 2,P-Value,Significant,Interpretation
+Friedman Test,-,-,5.228422748095187e-63,True,Significant differences among groups
+2_vs_3,2,3,0.9999999994377667,False,No significant difference
+2_vs_4,2,4,0.99818601631694,False,No significant difference
+2_vs_5,2,5,0.8972442701045722,False,No significant difference
+2_vs_6,2,6,0.9885443587438196,False,No significant difference
+2_vs_7,2,7,0.41543931802677003,False,No significant difference
+2_vs_8,2,8,0.09439925396786207,False,No significant difference
+2_vs_9,2,9,0.00037105317451503864,True,Significant difference
+2_vs_10,2,10,0.0004957258552703892,True,Significant difference
+2_vs_11,2,11,0.011110973670754079,False,No significant difference
+2_vs_12,2,12,4.79824395614306e-08,True,Significant difference
+2_vs_13,2,13,1.119099890481544e-05,True,Significant difference
+2_vs_14,2,14,3.998125111873323e-09,True,Significant difference
+2_vs_15,2,15,1.1278499366905844e-06,True,Significant difference
+2_vs_16,2,16,6.8691950154162415e-09,True,Significant difference
+2_vs_17,2,17,3.143003320758737e-13,True,Significant difference
+2_vs_18,2,18,4.530623789030287e-10,True,Significant difference
+2_vs_19,2,19,1.3385833690193348e-12,True,Significant difference
+2_vs_20,2,20,4.85965966451973e-13,True,Significant difference
+3_vs_4,3,4,0.9999988724338154,False,No significant difference
+3_vs_5,3,5,0.9969768511673854,False,No significant difference
+3_vs_6,3,6,0.9999582842631258,False,No significant difference
+3_vs_7,3,7,0.8640935946671262,False,No significant difference
+3_vs_8,3,8,0.46698532197988174,False,No significant difference
+3_vs_9,3,9,0.012517805172976,False,No significant difference
+3_vs_10,3,10,0.015491256831170908,False,No significant difference
+3_vs_11,3,11,0.13383580014583515,False,No significant difference
+3_vs_12,3,12,1.0261043874812246e-05,True,Significant difference
+3_vs_13,3,13,0.0008575356884063342,True,Significant difference
+3_vs_14,3,14,1.2802086123222236e-06,True,Significant difference
+3_vs_15,3,15,0.00013696725558679917,True,Significant difference
+3_vs_16,3,16,2.0197600781289937e-06,True,Significant difference
+3_vs_17,3,17,3.737548028959444e-10,True,Significant difference
+3_vs_18,3,18,2.0178225704067646e-07,True,Significant difference
+3_vs_19,3,19,1.325089906895272e-09,True,Significant difference
+3_vs_20,3,20,5.471884183647708e-10,True,Significant difference
+4_vs_5,4,5,0.9999999970158671,False,No significant difference
+4_vs_6,4,6,0.9999999999999999,False,No significant difference
+4_vs_7,4,7,0.9997610815209073,False,No significant difference
+4_vs_8,4,8,0.980300241515978,False,No significant difference
+4_vs_9,4,9,0.36033664215573125,False,No significant difference
+4_vs_10,4,10,0.39480809830364516,False,No significant difference
+4_vs_11,4,11,0.8130062267281096,False,No significant difference
+4_vs_12,4,12,0.006053753978691003,False,No significant difference
+4_vs_13,4,13,0.0934387298944099,False,No significant difference
+4_vs_14,4,14,0.0014670179351273366,False,No significant difference
+4_vs_15,4,15,0.03182128374794654,False,No significant difference
+4_vs_16,4,16,0.002011894925247097,False,No significant difference
+4_vs_17,4,17,3.660809883419941e-06,True,Significant difference
+4_vs_18,4,18,0.0003973789994538661,True,Significant difference
+4_vs_19,4,19,9.627962296466467e-06,True,Significant difference
+4_vs_20,4,20,4.903781616211364e-06,True,Significant difference
+5_vs_6,5,6,0.9999999999989819,False,No significant difference
+5_vs_7,5,7,0.9999999959923529,False,No significant difference
+5_vs_8,5,8,0.9999429148176473,False,No significant difference
+5_vs_9,5,9,0.8602814115718824,False,No significant difference
+5_vs_10,5,10,0.8811960448963275,False,No significant difference
+5_vs_11,5,11,0.9933106641541758,False,No significant difference
+5_vs_12,5,12,0.11140102742279148,False,No significant difference
+5_vs_13,5,13,0.5163656691254837,False,No significant difference
+5_vs_14,5,14,0.043917962459000974,False,No significant difference
+5_vs_15,5,15,0.2985463375271604,False,No significant difference
+5_vs_16,5,16,0.054338190052652904,False,No significant difference
+5_vs_17,5,17,0.0005311326547586963,True,Significant difference
+5_vs_18,5,18,0.0177195127161482,False,No significant difference
+5_vs_19,5,19,0.0011218903058522608,False,No significant difference
+5_vs_20,5,20,0.0006665563412867919,True,Significant difference
+6_vs_7,6,7,0.9999885045364492,False,No significant difference
+6_vs_8,6,8,0.9963154315460507,False,No significant difference
+6_vs_9,6,9,0.5623097421235621,False,No significant difference
+6_vs_10,6,10,0.5988080625035982,False,No significant difference
+6_vs_11,6,11,0.9261273872161266,False,No significant difference
+6_vs_12,6,12,0.020569684786983494,False,No significant difference
+6_vs_13,6,13,0.20323890003403028,False,No significant difference
+6_vs_14,6,14,0.005952115552573223,False,No significant difference
+6_vs_15,6,15,0.08440028948665934,False,No significant difference
+6_vs_16,6,16,0.007862728297982326,False,No significant difference
+6_vs_17,6,17,2.6338869596825166e-05,True,Significant difference
+6_vs_18,6,18,0.0018634596850606942,False,No significant difference
+6_vs_19,6,19,6.397502119100446e-05,True,Significant difference
+6_vs_20,6,20,3.4456829277669405e-05,True,Significant difference
+7_vs_8,7,8,0.9999999999150565,False,No significant difference
+7_vs_9,7,9,0.9967868066519504,False,No significant difference
+7_vs_10,7,10,0.9977489736320052,False,No significant difference
+7_vs_11,7,11,0.9999949395155885,False,No significant difference
+7_vs_12,7,12,0.5689396266760505,False,No significant difference
+7_vs_13,7,13,0.9391091359094544,False,No significant difference
+7_vs_14,7,14,0.364017767901159,False,No significant difference
+7_vs_15,7,15,0.8214330574321682,False,No significant difference
+7_vs_16,7,16,0.4058280068882541,False,No significant difference
+7_vs_17,7,17,0.022938411052934402,False,No significant difference
+7_vs_18,7,18,0.22117382294810403,False,No significant difference
+7_vs_19,7,19,0.03841348880064938,False,No significant difference
+7_vs_20,7,20,0.026865458909042673,False,No significant difference
+8_vs_9,8,9,0.9999910436343281,False,No significant difference
+8_vs_10,8,10,0.9999953299422035,False,No significant difference
+8_vs_11,8,11,0.9999999999785353,False,No significant difference
+8_vs_12,8,12,0.9156772782555951,False,No significant difference
+8_vs_13,8,13,0.998140505743866,False,No significant difference
+8_vs_14,8,14,0.7921504833358175,False,No significant difference
+8_vs_15,8,15,0.9859778571943245,False,No significant difference
+8_vs_16,8,16,0.8241921100357079,False,No significant difference
+8_vs_17,8,17,0.1761854185826741,False,No significant difference
+8_vs_18,8,18,0.6423248500377654,False,No significant difference
+8_vs_19,8,19,0.24439289830809774,False,No significant difference
+8_vs_20,8,20,0.19506531587438417,False,No significant difference
+9_vs_10,9,10,1.0,False,No significant difference
+9_vs_11,9,11,0.9999999997207237,False,No significant difference
+9_vs_12,9,12,0.9999897308776815,False,No significant difference
+9_vs_13,9,13,0.9999999999913355,False,No significant difference
+9_vs_14,9,14,0.9997729997890034,False,No significant difference
+9_vs_15,9,15,0.9999999780443408,False,No significant difference
+9_vs_16,9,16,0.9998737807225343,False,No significant difference
+9_vs_17,9,17,0.9179207365049933,False,No significant difference
+9_vs_18,9,18,0.9983396219801746,False,No significant difference
+9_vs_19,9,19,0.9522110683082203,False,No significant difference
+9_vs_20,9,20,0.9295871464316423,False,No significant difference
+10_vs_11,10,11,0.9999999999283394,False,No significant difference
+10_vs_12,10,12,0.9999810766127467,False,No significant difference
+10_vs_13,10,13,0.9999999999596366,False,No significant difference
+10_vs_14,10,14,0.9996396993179416,False,No significant difference
+10_vs_15,10,15,0.9999999430036953,False,No significant difference
+10_vs_16,10,16,0.9997940644302982,False,No significant difference
+10_vs_17,10,17,0.9015134767454039,False,No significant difference
+10_vs_18,10,18,0.9975964383784918,False,No significant difference
+10_vs_19,10,19,0.9410243059141363,False,No significant difference
+10_vs_20,10,20,0.9148248985185988,False,No significant difference
+11_vs_12,11,12,0.9953419883350377,False,No significant difference
+11_vs_13,11,13,0.9999938283910359,False,No significant difference
+11_vs_14,11,14,0.9760087724934818,False,No significant difference
+11_vs_15,11,15,0.9997952469246172,False,No significant difference
+11_vs_16,11,16,0.9824261865044728,False,No significant difference
+11_vs_17,11,17,0.541918068846231,False,No significant difference
+11_vs_18,11,18,0.931638079288888,False,No significant difference
+11_vs_19,11,19,0.6393508060593522,False,No significant difference
+11_vs_20,11,20,0.5713674875688901,False,No significant difference
+12_vs_13,12,13,0.9999999992368735,False,No significant difference
+12_vs_14,12,14,0.9999999999999999,False,No significant difference
+12_vs_15,12,15,0.9999999999999746,False,No significant difference
+12_vs_16,12,16,1.0,False,No significant difference
+12_vs_17,12,17,0.9999918312340658,False,No significant difference
+12_vs_18,12,18,0.9999999999963217,False,No significant difference
+12_vs_19,12,19,0.999998710538291,False,No significant difference
+12_vs_20,12,20,0.9999951578156077,False,No significant difference
+13_vs_14,13,14,0.9999997644194131,False,No significant difference
+13_vs_15,13,15,0.9999999999999996,False,No significant difference
+13_vs_16,13,16,0.9999999171915683,False,No significant difference
+13_vs_17,13,17,0.9946331554002945,False,No significant difference
+13_vs_18,13,18,0.9999926123282997,False,No significant difference
+13_vs_19,13,19,0.9978742833060881,False,No significant difference
+13_vs_20,13,20,0.9958782578015561,False,No significant difference
+14_vs_15,14,15,0.9999999996303057,False,No significant difference
+14_vs_16,14,16,1.0,False,No significant difference
+14_vs_17,14,17,0.9999998839288603,False,No significant difference
+14_vs_18,14,18,1.0,False,No significant difference
+14_vs_19,14,19,0.9999999911756835,False,No significant difference
+14_vs_20,14,20,0.999999943634718,False,No significant difference
+15_vs_16,15,16,0.9999999999271046,False,No significant difference
+15_vs_17,15,17,0.9994890508466541,False,No significant difference
+15_vs_18,15,18,0.9999999400818026,False,No significant difference
+15_vs_19,15,19,0.9998529240155161,False,No significant difference
+15_vs_20,15,20,0.99964165249372,False,No significant difference
+16_vs_17,16,17,0.9999996775340275,False,No significant difference
+16_vs_18,16,18,0.9999999999999999,False,No significant difference
+16_vs_19,16,19,0.9999999703722326,False,No significant difference
+16_vs_20,16,20,0.9999998351902099,False,No significant difference
+17_vs_18,17,18,0.9999999990765123,False,No significant difference
+17_vs_19,17,19,1.0,False,No significant difference
+17_vs_20,17,20,1.0,False,No significant difference
+18_vs_19,18,19,0.9999999999755982,False,No significant difference
+18_vs_20,18,20,0.999999999660493,False,No significant difference
+19_vs_20,19,20,1.0,False,No significant difference

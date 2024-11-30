@@ -45,6 +45,9 @@ for k in range(2, max_k_value+1):
             algorithm = f'GlobalKMeans({k}, {distance_metric}, {n_buckets})'
             results.append({
                 'Algorithm': algorithm,
+                'k': k,
+                'Distance_Metric': distance_metric,
+                'N_Buckets': n_buckets,
                 'E': E,
                 **metrics,
                 'Time': execution_time

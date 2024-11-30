@@ -1,0 +1,4 @@
+Comparison,Group 1,Group 2,P-Value,Significant,Interpretation
+Friedman Test,-,-,5.41804191313637e-51,True,Significant differences among groups
+control_euclidean_vs_manhattan,euclidean,manhattan,1.3371748698039766e-10,True,Significant difference
+control_euclidean_vs_clark,euclidean,clark,3.132837977090896e-32,True,Significant difference
