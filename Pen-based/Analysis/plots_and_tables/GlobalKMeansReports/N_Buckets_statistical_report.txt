@@ -1,0 +1,93 @@
+Statistical Analysis Report for Parameter: N_Buckets
+==================================================
+
+FRIEDMAN TEST RESULTS
+--------------------
+Metric               Statistic       P-Value         Significant    
+-----------------------------------------------------------------
+E                    8.3289          0.0155          True           
+ARI                  7.6502          0.0218          True           
+F1 Score             nan             nan             False          
+DBI                  nan             nan             False          
+silhouette_score     13.6771         0.0011          True           
+calinski_harabasz_score 7.8117          0.0201          True           
+Time                 42.0000         0.0000          True           
+
+
+POST-HOC TEST RESULTS
+==============================
+
+Metric: E
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.994503  0.996848
+4k  0.994503  1.000000  0.999674
+2k  0.996848  0.999674  1.000000
+
+Metric Averages:
+N_Buckets      Average  Standard Deviation
+       2k 31124.111362        26834.379756
+       3k 31134.943831        26393.714461
+       4k 30903.547039        26389.409484
+
+
+Metric: ARI
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.867793  0.826812
+4k  0.867793  1.000000  0.996463
+2k  0.826812  0.996463  1.000000
+
+Metric Averages:
+N_Buckets  Average  Standard Deviation
+       2k 0.436187            0.134715
+       3k 0.425029            0.129939
+       4k 0.436316            0.136072
+
+
+Metric: silhouette_score
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.970436  0.575112
+4k  0.970436  1.000000  0.722160
+2k  0.575112  0.722160  1.000000
+
+Metric Averages:
+N_Buckets  Average  Standard Deviation
+       2k 0.228998            0.078629
+       3k 0.241816            0.074673
+       4k 0.240356            0.075038
+
+
+Metric: calinski_harabasz_score
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.979154  0.886062
+4k  0.979154  1.000000  0.784275
+2k  0.886062  0.784275  1.000000
+
+Metric Averages:
+N_Buckets     Average  Standard Deviation
+       2k 2336.764991          600.651525
+       3k 2401.392544          572.172470
+       4k 2417.410306          582.234165
+
+
+Metric: Time
+--------------------
+Pivot Table of P-Values:
+          3k        4k       2k
+3k  1.000000  0.994404  0.99176
+4k  0.994404  1.000000  0.97286
+2k  0.991760  0.972860  1.00000
+
+Metric Averages:
+N_Buckets   Average  Standard Deviation
+       2k 82.108081           73.220798
+       3k 83.722202           74.803668
+       4k 84.103815           74.514409
+

@@ -1,0 +1,53 @@
+\subsection{K-Means}\label{sec:kmeans}
+K-Means intro.
+
+\subsubsection{Hyperparameters}
+\begin{enumerate}
+    \item \textbf{k:}
+    \begin{itemize}
+        \item The number of clusters to partition the dataset. Determines the complexity and granularity of the clustering.
+    \end{itemize}
+    \item \textbf{Distance Metrics:}
+    \begin{itemize}
+        \item \textbf{Euclidean Distance:} Calculates the root of the sum of squared differences between feature values. Standard metric for continuous data:
+        \[
+        d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
+        \]
+        \item \textbf{Manhattan Distance:} Computes the sum of absolute differences between feature values, suitable for both categorical and continuous data:
+        \[
+        d(x, y) = \sum_{i=1}^{n} |x_i - y_i|
+        \]
+        \item \textbf{Clark Distance:} Accounts for proportional differences between feature values, enhancing interpretability for attributes with varying scales:
+        \[
+        d(x, y) = \sqrt{\sum_{i=1}^{n} \left(\frac{|x_i - y_i|}{x_i + y_i + \epsilon}\right)^2}
+        \]
+        where $\epsilon$ is a small constant to avoid division by zero.
+    \end{itemize}
+
+    \item \textbf{Additional Parameters:}
+    \begin{itemize}
+        \item \textbf{Initial Centroids:} Pre-defined initial cluster centers used as the starting point for the clustering algorithm.
+        \item \textbf{Maximum Iterations:} Limits the number of iterations to prevent excessive computational time, with a default of 10 iterations.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Clustering Methodology}
+\begin{itemize}
+    \item \textbf{Clustering Process:}
+    \begin{enumerate}
+        \item Assign each data point to the nearest centroid using the specified distance metric.
+        \item Recalculate centroids by computing the mean of all points in each cluster.
+        \item Repeat assignment and recalculation until convergence or maximum iterations are reached.
+    \end{enumerate}
+        \item \textbf{Convergence Criteria:} 
+    \begin{itemize}
+        \item Clusters are considered stable when centroids no longer significantly change between iterations.
+    \end{itemize}
+
+    \item \textbf{Variance Computation:}
+    \begin{itemize}
+        \item Total within-cluster variance (E) is calculated by summing squared distances of points to their respective cluster centroids.
+        \item Provides a measure of clustering compactness and quality.
+    \end{itemize}
+\end{itemize}
+This methodology allows for flexible clustering configurations, enabling analysis across different datasets and hyperparameter values.

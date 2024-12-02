@@ -11,7 +11,7 @@ else:
     dataset_path = 'Hepatitis'
 
 # Load dataset
-data_path = os.path.join(dataset_path, "Preprocessing/hepatitis.csv")
+data_path = os.path.join(dataset_path, "Preprocessing", "hepatitis.csv")
 data = pd.read_csv(data_path)
 class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0','Class']).values
@@ -46,6 +46,8 @@ for k in range(2, max_k_value+1):
             algorithm = f'KMeans({k}, {distance_metric})'
             results.append({
                 'Algorithm': algorithm,
+                'k': k,
+                'Distance_Metric': distance_metric,
                 'E': E,
                 **metrics,
                 'Time': execution_time
@@ -53,5 +55,5 @@ for k in range(2, max_k_value+1):
 
 # Save results to CSV file
 results_df = pd.DataFrame(results)
-csv_path = os.path.join(dataset_path, 'Results/CSVs/kmeans_results.csv')
+csv_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
 results_df.to_csv(csv_path, index=False)

@@ -4,3 +4,5 @@ scikit-learn
 numpy
 joblib
 matplotlib
+seaborn
+scikit_posthocs

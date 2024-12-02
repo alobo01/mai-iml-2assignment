@@ -1,21 +1,51 @@
-%! Author = Usuario
-%! Date = 25/11/2024
-
 % Preamble
-\documentclass[11pt]{article}
+\documentclass{article}
 
-% Packages
+\usepackage[a4paper, left=2.5cm, right=2cm, top=3cm, bottom=3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{graphicx} % For including images
-\usepackage{caption}  % For customizing captions
-\usepackage{subcaption} % For subfigures
+\usepackage{ulem}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{placeins}
 
+% Title
+\title{Introduction to Machine Learning: Work 3}
+\author{
+	Pedro Agúndez\textsuperscript{*}, 
+	Bruno Sánchez\textsuperscript{*}, 
+	María del Carmen Ramírez\textsuperscript{*}, 
+	Antonio Lobo\textsuperscript{*}
+}
+\date{December 8, 2024}
 
 % Document
 \begin{document}
 
-\input{antonio}
+\maketitle
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\footnotetext[1]{Universitat de Barcelona \\ 
+    \texttt{pedro.agundez@estudiantat.upc.edu} \\
+    \texttt{bruno.sanchez.gomez@estudiantat.upc.edu} \\
+    \texttt{maria.del.carmen.ramirez@estudiantat.upc.edu} \\
+    \texttt{antonio.lobo@estudiantat.upc.edu}
+}
 
+\begin{abstract}
+\input{sections/abstract} 
+\end{abstract}
+
+\newpage
+
+\input{sections/introduction}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/conclusion}
+\newpage
 
 \bibliographystyle{plain}
 \bibliography{references}
