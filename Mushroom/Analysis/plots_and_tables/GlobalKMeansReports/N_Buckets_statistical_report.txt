@@ -20,10 +20,10 @@ POST-HOC TEST RESULTS
 Metric: F1 Score
 --------------------
 Pivot Table of P-Values:
-          3k        4k        2k
-3k  1.000000  0.997485  0.983634
-4k  0.997485  1.000000  0.993891
-2k  0.983634  0.993891  1.000000
+          4k        2k        3k
+4k  1.000000  0.993891  0.997485
+2k  0.993891  1.000000  0.983634
+3k  0.997485  0.983634  1.000000
 
 Metric Averages:
 N_Buckets  Average  Standard Deviation
@@ -35,10 +35,10 @@ N_Buckets  Average  Standard Deviation
 Metric: silhouette_score
 --------------------
 Pivot Table of P-Values:
-          3k        4k        2k
-3k  1.000000  0.858408  0.466016
-4k  0.858408  1.000000  0.791872
-2k  0.466016  0.791872  1.000000
+          4k        2k        3k
+4k  1.000000  0.791872  0.858408
+2k  0.791872  1.000000  0.466016
+3k  0.858408  0.466016  1.000000
 
 Metric Averages:
 N_Buckets  Average  Standard Deviation
@@ -50,10 +50,10 @@ N_Buckets  Average  Standard Deviation
 Metric: calinski_harabasz_score
 --------------------
 Pivot Table of P-Values:
-          3k        4k        2k
-3k  1.000000  0.965513  0.959474
-4k  0.965513  1.000000  0.858409
-2k  0.959474  0.858409  1.000000
+          4k        2k        3k
+4k  1.000000  0.858409  0.965513
+2k  0.858409  1.000000  0.959474
+3k  0.965513  0.959474  1.000000
 
 Metric Averages:
 N_Buckets     Average  Standard Deviation
