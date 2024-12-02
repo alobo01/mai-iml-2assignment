@@ -29,8 +29,7 @@ AnalysisUtils.create_pairplot(
     params=['k', 'Distance_Metric'],
     metric='F1 Score',  # Using ARI as primary performance metric
     agg_func='max',
-    plots_path=plots_path,
-    transposed=True
+    plots_path=plots_path
 )
 
 # 2. Create Custom Heatmap for Metric Correlations

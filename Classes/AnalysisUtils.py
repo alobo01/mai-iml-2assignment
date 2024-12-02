@@ -61,8 +61,7 @@ class AnalysisUtils:
                         params: List[str],
                         metric: str,
                         agg_func: str,
-                        plots_path: str,
-                        transposed: bool = False) -> None:
+                        plots_path: str) -> None:
         """
         Create a comprehensive pairplot matrix for model hyperparameters.
 
@@ -72,7 +71,6 @@ class AnalysisUtils:
             metric (str): Performance metric to visualize
             agg_func (str): Aggregation function for metric
             plots_path (str): Path to save the plot
-            transposed (bool): Decides if lower triangular will be transposed
         """
         save_path = os.path.join(plots_path, 'hyperparameter_pairplot_matrix.png')
         n_params = len(params)
@@ -121,7 +119,7 @@ class AnalysisUtils:
 
                 # Lower triangle - Metric heatmaps
                 else:
-                    cls._plot_metric_heatmap(data, ax, param1, param2, metric, agg_func, xlabels, ylabels, transposed)
+                    cls._plot_metric_heatmap(data, ax, param1, param2, metric, agg_func, xlabels, ylabels)
 
                 # Rotate x-axis labels for bottom row
                 if i == n_params - 1:
@@ -180,12 +178,21 @@ class AnalysisUtils:
             xlabels (bool): Whether to show x-labels
             ylabels (bool): Whether to show y-labels
         """
-        pivot_data = data.pivot_table(
-            values='Time',
-            index=param1,
-            columns=param2,
-            aggfunc='min'
-        )
+        transposed = len(param1) > len(param2)
+        if not transposed:
+            pivot_data = data.pivot_table(
+                values='Time',
+                index=param1,
+                columns=param2,
+                aggfunc='min'
+            )
+        else:
+            pivot_data = data.pivot_table(
+                values='Time',
+                index=param2,
+                columns=param1,
+                aggfunc='min'
+            )
 
         sns.heatmap(pivot_data, ax=ax, xticklabels=xlabels, yticklabels=ylabels, cmap='YlGnBu',
                     annot=True, fmt='.2f', cbar=False)
@@ -199,8 +206,7 @@ class AnalysisUtils:
                              metric: str,
                              agg_func: str,
                              xlabels: bool,
-                             ylabels: bool,
-                             transposed: bool) -> None:
+                             ylabels: bool) -> None:
         """
         Plot metric heatmap for lower triangle of pairplot matrix.
 
@@ -214,6 +220,7 @@ class AnalysisUtils:
             xlabels (bool): Whether to show x-labels
             ylabels (bool): Whether to show y-labels
         """
+        transposed = len(param1) > len(param2)
         if not transposed:
             pivot_data = data.pivot_table(
                 values=metric,
@@ -330,8 +337,8 @@ class AnalysisUtils:
         if friedman_pvalue >= alpha:
             return {
                 'test': 'Friedman',
-                'statistic': friedman_statistic,
-                'p_value': friedman_pvalue,
+                'statistic': friedman_statistic if friedman_statistic else 'nan',
+                'p_value': friedman_pvalue if friedman_pvalue else 'nan',
                 'significant': False,
                 'interpretation': 'No significant differences among groups'
             }
@@ -361,57 +368,37 @@ class AnalysisUtils:
 
 
         elif test_type == 'control':
-
             if control_value is None:
                 raise ValueError("Control value must be specified for control comparison")
 
             # Find index and data for control value
-
             control_index = list(param_values).index(control_value)
-
             control_group = grouped_data[control_index]
 
             # Perform Bonferroni-corrected Wilcoxon signed-rank test
-
             results = {}
-
             for i, val in enumerate(param_values):
-
                 if val == control_value:
                     continue
 
                 # Perform Wilcoxon signed-rank test
-
                 statistic, p_value = stats.wilcoxon(control_group, grouped_data[i])
 
                 # Bonferroni correction
-
                 corrected_p_value = p_value * (len(param_values) - 1)
-
                 corrected_p_value = min(corrected_p_value, 1.0)  # Cap at 1.0
 
                 results[f'control_{control_value}_vs_{val}'] = {
-
                     'control_group': control_value,
-
                     'compared_group': val,
-
                     'statistic': statistic,
-
                     'p_value': corrected_p_value,
-
                     'significant': corrected_p_value < alpha,
-
                     'interpretation': (
-
                         'Significant difference' if corrected_p_value < alpha
-
                         else 'No significant difference'
-
                     )
-
                 }
-
         else:
             raise ValueError("Invalid test type. Choose 'pairwise' or 'control'")
 
@@ -614,7 +601,7 @@ class AnalysisUtils:
                     report.to_csv(output_path, index=False)
 
             except Exception as e:
-                print(f"Error in comparison {param}_{metric}: {e}")
+                # print(f"Error in comparison {param}_{metric}: {e}")
                 comparison_reports[comparison_id] = pd.DataFrame()  # Empty DataFrame for failed comparisons
 
         return comparison_reports
@@ -749,16 +736,24 @@ class AnalysisUtils:
                 for metric, comparison_result in metric_reports:
                     # Check if Friedman test was significant
                     friedman_test = comparison_result.get('friedman_test', {})
-                    statistic = friedman_test.get('statistic', 'N/A')
-                    p_value = friedman_test.get('p_value', 'N/A')
+                    statistic = friedman_test.get('statistic', 'nan')
+                    p_value = friedman_test.get('p_value', 'nan')
                     significant = friedman_test.get('significant', False)
 
-                    f.write("{:<20} {:<15.4f} {:<15.4f} {:<15}\n".format(
-                        metric,
-                        statistic if isinstance(statistic, (int, float)) else 0,
-                        p_value if isinstance(p_value, (int, float)) else 0,
-                        str(significant)
-                    ))
+                    if isinstance(statistic, (int, float)):
+                        f.write("{:<20} {:<15.4f} {:<15.4f} {:<15}\n".format(
+                            metric,
+                            statistic,
+                            p_value,
+                            str(significant)
+                        ))
+                    else:
+                        f.write("{:<20} {:<15} {:<15} {:<15}\n".format(
+                            metric,
+                            statistic,
+                            p_value,
+                            str(significant)
+                        ))
 
                     # Track metrics with significant differences
                     if significant:
