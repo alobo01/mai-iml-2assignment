@@ -20,10 +20,10 @@ POST-HOC TEST RESULTS
 Metric: E
 --------------------
 Pivot Table of P-Values:
-          4k        2k        3k
-4k  1.000000  0.999742  0.926995
-2k  0.999742  1.000000  0.934997
-3k  0.926995  0.934997  1.000000
+          3k        2k        4k
+3k  1.000000  0.934997  0.926995
+2k  0.934997  1.000000  0.999742
+4k  0.926995  0.999742  1.000000
 
 Metric Averages:
 N_Buckets    Average  Standard Deviation
@@ -35,10 +35,10 @@ N_Buckets    Average  Standard Deviation
 Metric: ARI
 --------------------
 Pivot Table of P-Values:
-          4k        2k        3k
-4k  1.000000  0.422166  0.949068
-2k  0.422166  1.000000  0.262036
-3k  0.949068  0.262036  1.000000
+          3k        2k        4k
+3k  1.000000  0.262036  0.949068
+2k  0.262036  1.000000  0.422166
+4k  0.949068  0.422166  1.000000
 
 Metric Averages:
 N_Buckets  Average  Standard Deviation
@@ -50,10 +50,10 @@ N_Buckets  Average  Standard Deviation
 Metric: F1 Score
 --------------------
 Pivot Table of P-Values:
-          4k        2k        3k
-4k  1.000000  0.283776  0.985400
-2k  0.283776  1.000000  0.212993
-3k  0.985400  0.212993  1.000000
+          3k        2k        4k
+3k  1.000000  0.212993  0.985400
+2k  0.212993  1.000000  0.283776
+4k  0.985400  0.283776  1.000000
 
 Metric Averages:
 N_Buckets  Average  Standard Deviation
@@ -65,10 +65,10 @@ N_Buckets  Average  Standard Deviation
 Metric: Time
 --------------------
 Pivot Table of P-Values:
-          4k        2k        3k
-4k  1.000000  0.003572  0.311803
-2k  0.003572  1.000000  0.187301
-3k  0.311803  0.187301  1.000000
+          3k        2k        4k
+3k  1.000000  0.187301  0.311803
+2k  0.187301  1.000000  0.003572
+4k  0.311803  0.003572  1.000000
 
 Metric Averages:
 N_Buckets  Average  Standard Deviation

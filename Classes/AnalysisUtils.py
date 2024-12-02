@@ -76,7 +76,7 @@ class AnalysisUtils:
         n_params = len(params)
 
         # Create figure
-        fig, axes = plt.subplots(n_params, n_params, figsize=(20, 20))
+        fig, axes = plt.subplots(n_params, n_params, figsize=(10, 10))
         plt.subplots_adjust(hspace=0.3, wspace=0.3)
 
         # Color maps
@@ -158,7 +158,8 @@ class AnalysisUtils:
         ax.set_title(f'{metric} Distribution by {param}')
         ax.set_xlabel(f'{metric}')
         ax.set_ylabel('Count')
-        ax.legend()
+        if len(unique_values) < 6:
+            ax.legend()
 
     @staticmethod
     def _plot_time_heatmap(data: pd.DataFrame,
@@ -255,7 +256,7 @@ class AnalysisUtils:
         corr_matrix = df.corr()
         metrics = df.columns
         n = len(metrics)
-        fig, axes = plt.subplots(n, n, figsize=(15, 15))
+        fig, axes = plt.subplots(n, n, figsize=(10, 10))
         plt.subplots_adjust(hspace=0.5, wspace=0.5)
 
         for i in range(n):
@@ -285,7 +286,7 @@ class AnalysisUtils:
         for ax, label in zip(axes[:, 0], metrics):
             ax.set_ylabel(label, rotation=0, ha="right", labelpad=30)
 
-        plt.suptitle("Custom Clustering Metric Matrix", fontsize=16, y=0.92)
+        plt.suptitle("Metric Correlations", fontsize=16, y=0.92)
 
         # Save and close the plot
         plt.savefig(save_path, bbox_inches='tight', dpi=300)
