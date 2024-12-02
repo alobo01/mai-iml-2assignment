@@ -27,9 +27,9 @@ test_time = time.time()
 # Perform tests
 for k in range(2, max_k_value+1):
 
-    n_buckets_list = [2*k, 3*k, 4*k]
+    n_buckets_dict = {'2k': 2*k,'3k': 3*k,'4k': 4*k}
 
-    for n_buckets in n_buckets_list:
+    for n_buckets_str, n_buckets in n_buckets_dict.items():
         for distance_metric in distance_metrics:
 
             # Instantiate KMeans and measure performance
@@ -47,7 +47,7 @@ for k in range(2, max_k_value+1):
                 'Algorithm': algorithm,
                 'k': k,
                 'Distance_Metric': distance_metric,
-                'N_Buckets': n_buckets,
+                'N_Buckets': n_buckets_str,
                 'E': E,
                 **metrics,
                 'Time': execution_time

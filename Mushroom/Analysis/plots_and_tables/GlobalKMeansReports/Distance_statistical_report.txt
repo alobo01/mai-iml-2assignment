@@ -1,0 +1,74 @@
+Statistical Analysis Report for Parameter: Distance
+==================================================
+
+FRIEDMAN TEST RESULTS
+--------------------
+Metric               Statistic       P-Value         Significant    
+-----------------------------------------------------------------
+Metric_E             114.0000        0.0000          True           
+Metric_ARI           44.3509         0.0000          True           
+Metric_F1 Score      6.1404          0.0464          True           
+Metric_DBI           102.4211        0.0000          True           
+Metric_silhouette_score 85.9298         0.0000          True           
+Metric_calinski_harabasz_score 36.3509         0.0000          True           
+Metric_Time          85.9298         0.0000          True           
+
+
+POST-HOC TEST RESULTS
+==============================
+
+Metric: Metric_E
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
+
+Metric: Metric_ARI
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.0000          True           
+euclidean            clark                1.0000          False          
+
+Metric: Metric_F1 Score
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.4889          False          
+euclidean            clark                0.1022          True           
+
+Metric: Metric_DBI
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0000          True           
+
+Metric: Metric_silhouette_score
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.0124          True           
+euclidean            clark                0.0000          True           
+
+Metric: Metric_calinski_harabasz_score
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            0.0000          True           
+euclidean            clark                0.0013          True           
+
+Metric: Metric_Time
+--------------------
+Bonferroni Test Detailed Results:
+Group 1              Group 2              P-Value         Significant    
+----------------------------------------------------------------------
+euclidean            manhattan            1.0000          False          
+euclidean            clark                0.0000          True           
