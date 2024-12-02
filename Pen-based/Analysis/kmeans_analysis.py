@@ -27,7 +27,7 @@ metrics = ['E', 'ARI', 'F1 Score', 'DBI', 'silhouette_score', 'calinski_harabasz
 AnalysisUtils.create_pairplot(
     data=results_df,
     params=['k', 'Distance_Metric'],
-    metric='F1 Score',  # Using ARI as primary performance metric
+    metric='F1 Score',  # Using F1-Score as primary performance metric
     agg_func='max',
     plots_path=plots_path
 )

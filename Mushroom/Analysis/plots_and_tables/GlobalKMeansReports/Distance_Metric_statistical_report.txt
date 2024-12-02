@@ -1,0 +1,74 @@
+Statistical Analysis Report for Parameter: Distance_Metric
+==================================================
+
+FRIEDMAN TEST RESULTS
+--------------------
+Metric               Statistic       P-Value         Significant    
+-----------------------------------------------------------------
+E                    114.0000        0.0000          True           
+ARI                  44.3509         0.0000          True           
+F1 Score             6.1404          0.0464          True           
+DBI                  102.4211        0.0000          True           
+silhouette_score     85.9298         0.0000          True           
+calinski_harabasz_score 36.3509         0.0000          True           
+Time                 85.9298         0.0000          True           
+
+
+POST-HOC TEST RESULTS
+==============================
+
+Metric: E
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.0000          True            1121690.2622        
+euclidean            clark                0.0000          True            -131645.9785        
+
+Metric: ARI
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.0000          True            0.0461              
+euclidean            clark                1.0000          False           0.0038              
+
+Metric: F1 Score
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.4889          False           -0.0193             
+euclidean            clark                0.1022          True            0.0234              
+
+Metric: DBI
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.0000          True            0.1709              
+euclidean            clark                0.0000          True            0.6755              
+
+Metric: silhouette_score
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.0124          True            -0.0074             
+euclidean            clark                0.0000          True            -0.0909             
+
+Metric: calinski_harabasz_score
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            0.0000          True            -242.3245           
+euclidean            clark                0.0013          True            -291.0888           
+
+Metric: Time
+--------------------
+Bonferroni Test Detailed Results:
+Control Group        Compared Group       P-Value         Significant     Metric Difference   
+------------------------------------------------------------------------------------------
+euclidean            manhattan            1.0000          False           -1.4150             
+euclidean            clark                0.0000          True            53.5783             
