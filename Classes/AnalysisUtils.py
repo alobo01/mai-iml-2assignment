@@ -414,139 +414,34 @@ class AnalysisUtils:
         }
 
     @classmethod
-    def generate_statistical_report(
+    def calculate_metric_averages(
             cls,
-            comparison_results: Dict[str, Any],
-            output_path: str = None
+            data: pd.DataFrame,
+            parameter: str,
+            metric: str
     ) -> pd.DataFrame:
         """
-        Generate a comprehensive statistical comparison report.
+        Calculate average metric values for each parameter value.
 
         Args:
-            comparison_results (Dict[str, Any]): Results from statistical comparisons
-            output_path (str, optional): Path to save the report
+            data (pd.DataFrame): Input DataFrame
+            parameter (str): Parameter to group by
+            metric (str): Metric to calculate average for
 
         Returns:
-            pd.DataFrame with statistical comparison details
+            pd.DataFrame: Average metric values for each parameter value
         """
-        # Check if no significant differences were found
-        if not comparison_results.get('friedman_test', {}).get('significant', False):
-            report_df = pd.DataFrame({
-                'Test': ['Friedman'],
-                'Statistic': [comparison_results['friedman_test']['statistic']],
-                'P-Value': [comparison_results['friedman_test']['p_value']],
-                'Significant': [False],
-                'Interpretation': ['No significant differences among groups']
-            })
+        # Calculate average metric for each parameter value
+        metric_averages = data.groupby(parameter)[metric].agg(['mean', 'std'])
+        metric_averages.columns = ['Average', 'Standard Deviation']
 
-            # Optional: Save to CSV
-            if output_path:
-                report_df.to_csv(output_path, index=False)
-
-            return report_df
-
-        # Convert posthoc results to DataFrame
-        report_data = []
-        for comparison, results in comparison_results.get('posthoc_results', {}).items():
-            report_data.append({
-                'Comparison': comparison,
-                'Group 1': results.get('group1', results.get('control_group', '')),
-                'Group 2': results.get('group2', results.get('compared_group', '')),
-                'P-Value': results['p_value'],
-                'Significant': results['significant'],
-                'Interpretation': results['interpretation']
-            })
-
-        report_df = pd.DataFrame(report_data)
-
-        # Add Friedman test details
-        friedman_row = pd.DataFrame({
-            'Comparison': ['Friedman Test'],
-            'Group 1': ['-'],
-            'Group 2': ['-'],
-            'P-Value': [comparison_results['friedman_test']['p_value']],
-            'Significant': [True],
-            'Interpretation': ['Significant differences among groups']
-        })
-
-        report_df = pd.concat([friedman_row, report_df], ignore_index=True)
-
-        # Optional: Save to CSV
-        if output_path:
-            report_df.to_csv(output_path, index=False)
-
-        return report_df
-
-    @classmethod
-    def summarize_statistical_comparisons(
-            cls,
-            comparison_reports: Dict[str, pd.DataFrame]
-    ) -> pd.DataFrame:
-        """
-        Create a summary of all statistical comparisons.
-
-        Args:
-            comparison_reports (Dict[str, pd.DataFrame]): Dictionary of comparison reports
-
-        Returns:
-            pd.DataFrame: Summary of significant differences across comparisons
-        """
-        summary_data = []
-
-        for comparison_id, report in comparison_reports.items():
-            if report.empty:
-                continue
-
-            # Determine if Friedman test showed significant differences
-            friedman_row = report[report['Comparison'] == 'Friedman Test']
-            is_friedman_significant = not friedman_row.empty and friedman_row['Significant'].iloc[0]
-
-            # If Friedman test was not significant, add minimal information
-            if not is_friedman_significant:
-                summary_data.append({
-                    'Comparison': comparison_id,
-                    'Friedman P-Value': friedman_row['P-Value'].iloc[0] if not friedman_row.empty else None,
-                    'Significant Comparisons': 0,
-                    'Significance Percentage': 0,
-                    'Most Significant Comparison': 'No significant differences',
-                    'Lowest P-Value': None
-                })
-                continue
-
-            # Count significant pairwise/control comparisons
-            significant_rows = report[report['Significant'] == True]
-            significant_rows = significant_rows[significant_rows['Comparison'] != 'Friedman Test']
-
-            total_comparisons = report[report['Comparison'] != 'Friedman Test'].shape[0]
-            significant_count = significant_rows.shape[0]
-
-            summary_data.append({
-                'Comparison': comparison_id,
-                'Friedman P-Value': friedman_row['P-Value'].iloc[0],
-                'Total Comparisons': total_comparisons,
-                'Significant Comparisons': significant_count,
-                'Significance Percentage': (
-                                                       significant_count / total_comparisons) * 100 if total_comparisons > 0 else 0,
-                'Most Significant Comparison': (
-                    significant_rows['Comparison'].iloc[0]
-                    if not significant_rows.empty
-                    else 'No significant differences'
-                ),
-                'Lowest P-Value': (
-                    significant_rows['P-Value'].min()
-                    if not significant_rows.empty
-                    else None
-                )
-            })
-
-        return pd.DataFrame(summary_data)
+        return metric_averages.reset_index()
 
     @classmethod
     def bulk_statistical_comparisons(
             cls,
             data: pd.DataFrame,
             comparison_configs: List[Tuple[str, str, str, Optional[Any]]],
-            output_dir: Optional[str] = None,
             alpha: float = 0.05
     ) -> Dict[str, pd.DataFrame]:
         """
@@ -560,23 +455,19 @@ class AnalysisUtils:
                 - metric (str): Performance metric
                 - test_type (str): 'pairwise' or 'control'
                 - control_value (Optional[Any]): Control value for 'control' test type
-            output_dir (Optional[str]): Directory to save individual reports
             alpha (float): Significance level for statistical tests
 
         Returns:
             Dict[str, pd.DataFrame]: Dictionary of statistical comparison reports
         """
-        # Validate output directory if provided
-        if output_dir:
-            cls.create_plots_folder(output_dir)
 
         # Store results for each comparison
-        comparison_reports = {}
+        comparisons_results = {}
 
         # Perform statistical comparisons for each configuration
         for param, metric, test_type, control_value in comparison_configs:
             # Generate a unique identifier for the comparison
-            comparison_id = f"{param}_{metric}"
+            comparison_id = f"{param}-{metric}"
 
             try:
                 # Perform statistical comparison
@@ -589,22 +480,14 @@ class AnalysisUtils:
                     alpha=alpha
                 )
 
-                # Generate report
-                report = cls.generate_statistical_report(comparison_results)
-
                 # Store the report
-                comparison_reports[comparison_id] = comparison_results
-
-                # Optionally save to CSV
-                if output_dir:
-                    output_path = os.path.join(output_dir, f"{comparison_id}_statistical_report.csv")
-                    report.to_csv(output_path, index=False)
+                comparisons_results[comparison_id] = comparison_results
 
             except Exception as e:
                 # print(f"Error in comparison {param}_{metric}: {e}")
-                comparison_reports[comparison_id] = pd.DataFrame()  # Empty DataFrame for failed comparisons
+                comparisons_results[comparison_id] = pd.DataFrame()  # Empty DataFrame for failed comparisons
 
-        return comparison_reports
+        return comparisons_results
 
     @classmethod
     def create_posthoc_pivot_table(
@@ -694,7 +577,8 @@ class AnalysisUtils:
     def generate_comprehensive_report(
             cls,
             comparison_reports: Dict[str, Dict[str, Any]],
-            output_dir: str
+            output_dir: str,
+            original_data: pd.DataFrame  # Add original data as a parameter
     ) -> None:
         """
         Generate comprehensive statistical reports for each parameter.
@@ -702,6 +586,7 @@ class AnalysisUtils:
         Args:
             comparison_reports (Dict[str, Dict[str, Any]]): Statistical comparison results
             output_dir (str): Directory to save report files
+            original_data (pd.DataFrame): Original input data for metric calculations
         """
         # Ensure output directory exists
         os.makedirs(output_dir, exist_ok=True)
@@ -710,7 +595,7 @@ class AnalysisUtils:
         # Group comparison reports by their parameter
         parameter_metrics = {}
         for comparison_id, report_data in comparison_reports.items():
-            param, metric = comparison_id.split('_', 1)
+            param, metric = comparison_id.split('-', 1)
             if param not in parameter_metrics:
                 parameter_metrics[param] = []
             parameter_metrics[param].append((metric, report_data))
@@ -790,25 +675,52 @@ class AnalysisUtils:
                         test_type = 'Nemenyi' if 'group1' in first_result else 'Bonferroni'
 
                         if test_type == 'Nemenyi':
-                            # For Nemenyi, only write the pivot table
+                            # For Nemenyi, write pivot table and metric averages
                             f.write("Pivot Table of P-Values:\n")
                             f.write(pivot_table.to_string())
                             f.write("\n\n")
+
+                            # Calculate and display metric averages
+                            metric_averages = cls.calculate_metric_averages(
+                                original_data,
+                                param,
+                                metric
+                            )
+
+                            f.write("Metric Averages:\n")
+                            f.write(metric_averages.to_string(index=False))
+                            f.write("\n\n")
+
                         else:
-                            # For Bonferroni, write detailed comparisons
+                            # For Bonferroni (control), write detailed comparisons with differences
                             f.write(f"{test_type} Test Detailed Results:\n")
-                            f.write("{:<20} {:<20} {:<15} {:<15}\n".format(
-                                "Group 1", "Group 2", "P-Value", "Significant"
+                            f.write("{:<20} {:<20} {:<15} {:<15} {:<20}\n".format(
+                                "Control Group", "Compared Group", "P-Value", "Significant", "Metric Difference"
                             ))
-                            f.write("-" * 70 + "\n")
+                            f.write("-" * 90 + "\n")
 
                             posthoc_results = comparison_result.get('posthoc_results', {})
                             for comparison, result in posthoc_results.items():
-                                f.write("{:<20} {:<20} {:<15.4f} {:<15}\n".format(
-                                    str(result.get('control_group', 'N/A')),
-                                    str(result.get('compared_group', 'N/A')),
+                                control_group = result.get('control_group', 'N/A')
+                                compared_group = result.get('compared_group', 'N/A')
+
+                                # Calculate mean difference
+                                control_mean = original_data[
+                                    original_data[param] == control_group
+                                    ][metric].mean()
+
+                                compared_mean = original_data[
+                                    original_data[param] == compared_group
+                                    ][metric].mean()
+
+                                mean_difference = compared_mean - control_mean
+
+                                f.write("{:<20} {:<20} {:<15.4f} {:<15} {:<20.4f}\n".format(
+                                    str(control_group),
+                                    str(compared_group),
                                     result.get('p_value', 0),
-                                    str(result.get('significant', False))
+                                    str(result.get('significant', False)),
+                                    mean_difference
                                 ))
 
                         # Generate heatmap
@@ -852,14 +764,14 @@ class AnalysisUtils:
         comparison_reports = cls.bulk_statistical_comparisons(
             data=data,
             comparison_configs=comparison_configs,
-            output_dir=None,  # We'll handle reporting separately
             alpha=alpha
         )
 
         # Generate comprehensive reports
         cls.generate_comprehensive_report(
             comparison_reports,
-            output_dir
+            output_dir,
+            original_data=data  # Pass original data for metric calculations
         )
 
         return comparison_reports

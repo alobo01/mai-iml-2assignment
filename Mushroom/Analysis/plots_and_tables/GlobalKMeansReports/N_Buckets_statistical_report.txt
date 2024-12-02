@@ -1,0 +1,63 @@
+Statistical Analysis Report for Parameter: N_Buckets
+==================================================
+
+FRIEDMAN TEST RESULTS
+--------------------
+Metric               Statistic       P-Value         Significant    
+-----------------------------------------------------------------
+E                    nan             nan             False          
+ARI                  nan             nan             False          
+F1 Score             4.5943          0.1005          True           
+DBI                  nan             nan             False          
+silhouette_score     6.4811          0.0391          True           
+calinski_harabasz_score 4.0283          0.1334          True           
+Time                 nan             nan             False          
+
+
+POST-HOC TEST RESULTS
+==============================
+
+Metric: F1 Score
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.997485  0.983634
+4k  0.997485  1.000000  0.993891
+2k  0.983634  0.993891  1.000000
+
+Metric Averages:
+N_Buckets  Average  Standard Deviation
+       2k 0.160705            0.155804
+       3k 0.148355            0.116929
+       4k 0.150529            0.123985
+
+
+Metric: silhouette_score
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.858408  0.466016
+4k  0.858408  1.000000  0.791872
+2k  0.466016  0.791872  1.000000
+
+Metric Averages:
+N_Buckets  Average  Standard Deviation
+       2k 0.223089            0.044627
+       3k 0.228167            0.046271
+       4k 0.226127            0.047251
+
+
+Metric: calinski_harabasz_score
+--------------------
+Pivot Table of P-Values:
+          3k        4k        2k
+3k  1.000000  0.965513  0.959474
+4k  0.965513  1.000000  0.858409
+2k  0.959474  0.858409  1.000000
+
+Metric Averages:
+N_Buckets     Average  Standard Deviation
+       2k 1442.433010          448.600458
+       3k 1458.077573          469.387394
+       4k 1478.176871          447.150221
+
