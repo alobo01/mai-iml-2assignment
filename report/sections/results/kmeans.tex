@@ -33,4 +33,22 @@ Parallelly, a different set of interesting relationship are displayed in Figure 
 \end{figure}
 
 \subsubsection{Statistical Analysis}
-For the statistical analysis, we have first performed Friedman tests to determine if there are significant differences in each of the metrics for the different possible values of each hyperparameter. 
+For the statistical analysis, we have first performed Friedman tests to determine if there are significant differences in each of the metrics among the different possible values of each hyperparameter. With a confidence level of $\alpha = 0.15$, all of the metrics agree across all 3 datasets that \textbf{there are significant differences} when varying across values of k, and also when changing the distance metric. 
+
+\textit{Note:} Due to the vast amount of statistical results extracted, not all of them will be displayed; only the most relevant ones will be explicitly highlighted. All of the results can be found in the \texttt{code} folder, inside \texttt{Analysis/plot\_and\_tables/KMeansReports}, for each dataset.
+
+Since we have found significant differences between different values of the hyperparameters, we have then applied post-hoc tests on all of the metrics to find more specifically where these differences lie:
+\begin{itemize}
+    \item For the k, we have performed Nemenyi tests on each of the 3 datasets.
+    \begin{enumerate}
+        \item \textbf{Hepatitis:} Most of the metrics agree that the lower values of k show better clustering performance. We observe this in the grouped metric averages, which generally get worse as the k increases. The only exception is the DBI, for which the differences are mostly not significant. For the rest of metrics, k=2 always shows significant differences when compared with k=19 and k=20, for instance. These results make sense, since the Hepatitis dataset has 2 classes.
+        \item \textbf{Mushroom:} In this case, there are some metrics that cannot find any case of pairwise significant differences. The two that find the most relevant differences are F1 Score and Calinski-Harabasz score, which in both cases we can see that values of k from 2 to 4 show significantly better clustering performance than values from 12 to 20. Once again, since the Mushroom dataset also has 2 classes, these conclusions were to be expected.
+        \item \textbf{Pen-based:} For this dataset, most of the metrics do not identify significant differences among values of k. The only 2 exceptions are ARI and Calinski-Harabasz score: the ARI identifies values 2 through 5 to be significantly worse than those greater than 10, while there are no differences among high values of k; meanwhile, the Calinski-Harabasz score seems to find significant differences between the lowest values (below 5) and the highest values (above 14), favoring the small values. Additionally, by studying the F1 Score averages, we see a clear trend of better performance between values 7 and 10 (though statistically these differences are not meaningful). Overall, these results are not very conclusive, and we only deduce that the K-Means might not be the most appropiate clustering algorithm for the Pen-based dataset.
+    \end{enumerate}
+    \item For the distance metric, we decided on applying Bonferroni tests instead of Nemenyi, considering the Euclidean distance to be the ``control'' value.
+    \begin{enumerate}
+        \item \textbf{Hepatitis:} 
+        \item \textbf{Mushroom:} 
+        \item \textbf{Pen-based:} 
+    \end{enumerate}
+\end{itemize}
