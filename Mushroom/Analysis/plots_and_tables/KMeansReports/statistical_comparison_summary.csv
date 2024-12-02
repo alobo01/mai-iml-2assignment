@@ -1,0 +1,14 @@
+Comparison,Friedman P-Value,Total Comparisons,Significant Comparisons,Significance Percentage,Most Significant Comparison,Lowest P-Value
+k_E,1.7888902051052675e-96,171,0,0.0,No significant differences,
+k_ARI,3.805810398037461e-14,171,0,0.0,No significant differences,
+k_F1 Score,5.228422748095187e-63,171,29,16.95906432748538,2_vs_9,3.143003320758737e-13
+k_DBI,1.6385305275439501e-06,171,0,0.0,No significant differences,
+k_silhouette_score,8.96050475295207e-10,171,0,0.0,No significant differences,
+k_calinski_harabasz_score,2.1648088544226396e-82,171,23,13.450292397660817,2_vs_16,6.202183460515659e-10
+k_Time,2.5627550700631357e-75,171,30,17.543859649122805,2_vs_8,8.132772139234701e-12
+Distance_Metric_E,3.048234950971854e-83,2,2,100.0,control_euclidean_vs_manhattan,1.2525057600842686e-32
+Distance_Metric_ARI,2.3553423820392107e-26,2,2,100.0,control_euclidean_vs_manhattan,1.1178418042003098e-19
+Distance_Metric_DBI,5.41804191313637e-51,2,2,100.0,control_euclidean_vs_manhattan,3.132837977090896e-32
+Distance_Metric_silhouette_score,3.801696926515415e-30,2,1,50.0,control_euclidean_vs_clark,4.827251275101158e-26
+Distance_Metric_calinski_harabasz_score,2.5499664688617915e-73,2,2,100.0,control_euclidean_vs_manhattan,1.292859275440763e-32
+Distance_Metric_Time,3.53617913003245e-59,2,2,100.0,control_euclidean_vs_manhattan,1.9513512827610186e-32

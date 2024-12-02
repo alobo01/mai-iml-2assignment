@@ -1,0 +1,46 @@
+\subsection{Global K-Means}
+Out of the proposed improvements to the K-Means algorithm, the first we chose to implement was the \textbf{Global K-Means} algorithm \cite{Likas2003}, which focuses on following a deterministic and systematic approach to ``optimal'' centroid initialization and cluster formation. Additionally, we have also implemented the improvements to the Global K-Means algorithm itself, proposed in the original article by Likas et al.: \textit{Fast Global K-Means}, and \textit{Initialization with k-d Trees}. By addressing the limitations of traditional K-Means, this enhanced methodology introduces novel strategies, including PCA-based data partitioning and iterative error-reduction mechanisms, to improve both accuracy and computational efficiency.
+
+This section outlines the hyperparameter configurations and clustering methodology adopted for the Global K-Means algorithm, which was implemented in the \texttt{GlobalKMeansAlgorithm} class.
+
+\subsubsection{Hyperparameters}
+We consider the same hyperparameters as for the standard K-Means algorithm (Section \ref{sec:kmeans}), except for 2 significant modifications:
+\begin{enumerate}
+    \item \textbf{Initial Centroids:}
+    \begin{itemize}
+        \item Global K-Means no longer accepts a collection of initial centroids as a hyperparameter, since the goal of this algorithm is rooted in the deterministic calculation of the ``best possible'' centroids, which substitutes their random initialization.
+    \end{itemize}
+
+    \item \textbf{Number of Buckets:}
+    \begin{itemize}
+        \item Controls initial data partitioning, by defining the number of candidate points that we will consider as possible centroids throughout the algorithm.
+        \item Its default value is $2 \cdot k$, but we also test values $3 \cdot k$ and $4 \cdot k$.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Clustering Methodology}
+\begin{itemize}
+    \item \textbf{Initialization with k-d Trees:}
+    \begin{enumerate}
+        \item Use k-d tree partitioning based on Principal Component Analysis (PCA).
+        \item Recursively partition data samples into buckets.
+        \item Select candidate points based on bucket centroids.
+    \end{enumerate}
+    \item \textbf{Fast Global K-Means Algorithm:}
+    \begin{enumerate}
+        \item Initialize first centroid as dataset mean.
+        \item Iteratively add centroids by:
+            \begin{itemize}
+                \item For each $k'=2,\ldots,k$ , we already have $k'-1$ centroids.
+                \item Compute guaranteed error reduction for candidate points with respect to the $k'-1$ centroids,
+                \[
+                b_n = \sum\limits_{j=1}^N \max\left(d_{k'-1}^j - || x_n - x_j ||^2 , 0 \right) \ ,
+                \]
+                where $ d_{k'-1}^j $ is the squared distance between $ x_j $ and the closest centroid among the $k'-1$ obtained so far. The pair-wise squared distances between points are precomputed at the start.
+                \item Select point with maximum guaranteed error reduction.
+                \item Run $k'$-means with the $k'-1$ centroids plus the selected point, unitl convergence.
+            \end{itemize}
+        \item Repeat until $k$ clusters are formed.
+    \end{enumerate}
+\end{itemize}
+This methodology provides a sophisticated approach to centroid initialization and clustering, leveraging PCA-based partitioning and error reduction strategies in order to achieve an improvement in consistency and speed with respect to the base K-Means algorithm.

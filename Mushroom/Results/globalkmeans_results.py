@@ -19,7 +19,6 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 max_k_value = 20
 distance_metrics = ['euclidean', 'manhattan', 'clark']
 max_iter = 10
-repetitions = 1
 
 # Initialize results DataFrame
 results = []
@@ -27,12 +26,15 @@ results = []
 test_time = time.time()
 # Perform tests
 for k in range(2, max_k_value+1):
-    for _ in range(repetitions):
+
+    n_buckets_list = [2*k, 3*k, 4*k]
+
+    for n_buckets in n_buckets_list:
         for distance_metric in distance_metrics:
 
             # Instantiate KMeans and measure performance
             start_time = time.time()
-            global_kmeans = GlobalKMeansAlgorithm(k, distance_metric, max_iter)
+            global_kmeans = GlobalKMeansAlgorithm(k, distance_metric, max_iter, n_buckets)
             cluster_labels, E = global_kmeans.fit(X)
             end_time = time.time()
 
@@ -40,9 +42,12 @@ for k in range(2, max_k_value+1):
             metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
             execution_time = end_time - start_time
 
-            algorithm = f'GlobalKMeans({k}, {distance_metric})'
+            algorithm = f'GlobalKMeans({k}, {distance_metric}, {n_buckets})'
             results.append({
                 'Algorithm': algorithm,
+                'k': k,
+                'Distance_Metric': distance_metric,
+                'N_Buckets': n_buckets,
                 'E': E,
                 **metrics,
                 'Time': execution_time

@@ -46,6 +46,8 @@ for k in range(2, max_k_value+1):
             algorithm = f'KMeans({k}, {distance_metric})'
             results.append({
                 'Algorithm': algorithm,
+                'k': k,
+                'Distance_Metric': distance_metric,
                 'E': E,
                 **metrics,
                 'Time': execution_time
