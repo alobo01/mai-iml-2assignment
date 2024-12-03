@@ -292,3 +292,28 @@ class AnalysisUtils:
         plt.savefig(save_path, bbox_inches='tight', dpi=300)
         plt.close(fig)
 
+    @staticmethod
+    def extract_best_runs(df: pd.DataFrame):
+        """
+        Load a CSV file and extract the rows with maximum values for specified metrics.
+
+        Parameters:
+        df (pd.DataFrame): DataFrame with extracted metrics
+
+        Returns:
+        dict: A dictionary with metric names as keys and corresponding rows with best values as values
+        """
+
+        # List of metrics to extract best values for
+        metrics = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']
+
+        # Dictionary to store results
+        max_metrics_dict = {}
+
+        # Find rows with best values for each metric
+        for metric in metrics:
+            # Find the row with the best value for the current metric
+            max_row = df.loc[df[metric].idxmax()] if metric != 'DBI' else df.loc[df[metric].idxmin()]
+            max_metrics_dict[metric] = max_row.to_dict()
+
+        return max_metrics_dict

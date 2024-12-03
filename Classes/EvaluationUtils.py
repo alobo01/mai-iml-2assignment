@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.metrics import (
     adjusted_rand_score,
-    f1_score,
+    normalized_mutual_info_score,
     davies_bouldin_score,
     silhouette_score,
     calinski_harabasz_score
@@ -29,16 +29,16 @@ class EvaluationUtils:
         """
         # Compute metrics
         ari = adjusted_rand_score(y_true, y_pred)
-        f1 = f1_score(y_true, y_pred, average='macro')
+        nmi = normalized_mutual_info_score(y_true, y_pred)
         dbi = davies_bouldin_score(X, y_pred)
         silhouette = silhouette_score(X, y_pred)
-        calinski = calinski_harabasz_score(X, y_pred)
+        chs = calinski_harabasz_score(X, y_pred)
 
         # Return metrics as a dictionary
         return {
             'ARI': ari,
-            'F1 Score': f1,
+            'NMI': nmi,
             'DBI': dbi,
-            'silhouette_score': silhouette,
-            'calinski_harabasz_score': calinski
+            'Silhouette': silhouette,
+            'CHS': chs
         }
