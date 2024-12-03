@@ -1,6 +1,11 @@
+import os
+
 from sklearn.cluster import SpectralClustering
 from typing import Optional, Dict, Any
 import numpy as np
+
+#Avoid memory leaks
+os.environ['OMP_NUM_THREADS'] = '1'
 
 class SpectralClusteringWrapper:
     def __init__(
