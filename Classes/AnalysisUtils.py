@@ -6,9 +6,6 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import scipy.stats as stats
-from scikit_posthocs import posthoc_nemenyi
-from torch.onnx._internal.fx._pass import Analysis
 
 from Classes.ViolinPlotsUtils import ViolinPlotter
 
@@ -296,7 +293,7 @@ class AnalysisUtils:
         plt.close(fig)
 
     @staticmethod
-    def extract_best_runs(df: pd.DataFrame, metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
+    def extract_best_runs(results_df: pd.DataFrame, metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
         """
         Load a CSV file and extract the rows with maximum values for specified metrics.
 
@@ -306,28 +303,185 @@ class AnalysisUtils:
         Returns:
         dict: A dictionary with metric names as keys and corresponding rows with best values as values
         """
-
-
         # Dictionary to store results
         max_metrics_dict = {}
 
         # Find rows with best values for each metric
         for metric in metrics:
             # Find the row with the best value for the current metric
-            max_row = df.loc[df[metric].idxmax()] if metric != 'DBI' else df.loc[df[metric].idxmin()]
+            max_row = results_df.loc[results_df[metric].idxmax()] if metric != 'DBI' else results_df.loc[results_df[metric].idxmin()]
             max_metrics_dict[metric] = max_row.to_dict()
 
         return max_metrics_dict
 
     @staticmethod
-    def totalAnalysis(results_dataframe: pd.DataFrame, plots_path: str, features_explored: List[str] = ["n_clusters"], metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
+    def generate_best_runs_table(best_runs: dict, best_runs_path: str, features_explored: List[str]):
+        """
+        Generates a table with best runs for each metric and saves it to a text file.
 
+        Parameters:
+        best_runs (dict): Dictionary containing the best rows for each metric
+        best_runs_path (str): Path to save the output text file
+        features_explored (List[str]): List of features used in the exploration
+
+        Returns:
+        str: Formatted table as a string
+        """
+        # Create a table header
+        table_header = "| Metric | " + " | ".join(features_explored) + " | Best Value |"
+        table_separator = "|" + "---|" * (len(features_explored) + 2)
+
+        # Initialize table rows
+        table_rows = [table_header, table_separator]
+
+        # Populate table rows
+        for metric, best_row in best_runs.items():
+            # Extract feature values for this run
+            feature_values = [str(best_row.get(feature, 'N/A')) for feature in features_explored]
+
+            # Create row with metric, feature values, and best metric value
+            row = f"| {metric} | " + " | ".join(feature_values) + f" | {best_row.get(metric, 'N/A')} |"
+            table_rows.append(row)
+
+        # Convert table to string
+        table_str = "\n".join(table_rows)
+
+        # Print the table
+        print(table_str)
+
+        # Ensure the directory exists
+        os.makedirs(best_runs_path, exist_ok=True)
+        file_path = os.path.join(best_runs_path, 'best_runs_table.md')
+
+        # Write table to file
+        with open(file_path, 'w') as f:
+            f.write(table_str)
+
+        return table_str
+
+    @staticmethod
+    def plot_best_runs(best_runs: dict, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame, best_runs_path: str):
+        """
+        Generate scatter plots for best runs using PCA-transformed data with separate legends.
+
+        Parameters:
+        best_runs (dict): Dictionary of best runs for each metric
+        labels_df (pd.DataFrame): DataFrame containing cluster labels
+        pca_dataset_df (pd.DataFrame): PCA-transformed dataset with original class labels
+        best_runs_path (str): Path to store the generated plots
+        """
+        # Ensure the directory exists
+        os.makedirs(best_runs_path, exist_ok=True)
+
+        # Define marker shapes for true labels
+        marker_shapes = ['o', 's', '^', 'D', 'v', 'p', '*', 'h', '+', 'x']
+
+        # Color palette for clusters
+        color_palette = plt.cm.get_cmap('tab10')
+
+        # Iterate through best runs for each metric
+        for metric, run in best_runs.items():
+            # Get the algorithm name for this run
+            algorithm = run.get('Algorithm', 'Unknown')
+
+            # Create a new figure with extra space for legends
+            plt.figure(figsize=(12, 8))
+
+            # Get cluster labels for this run
+            cluster_labels = labels_df[algorithm].values
+
+            # Get true labels
+            true_labels = pca_dataset_df['Class'].values
+
+            # Unique true labels and clusters
+            unique_true_labels = np.unique(true_labels)
+            unique_clusters = np.unique(cluster_labels)
+
+            # Plot each true label with a different marker shape
+            for true_label_idx, true_label in enumerate(unique_true_labels):
+                # Select points with this true label
+                true_label_mask = true_labels == true_label
+
+                # Plot each cluster with a different color
+                for cluster_idx, cluster in enumerate(unique_clusters):
+                    # Select points with this cluster and true label
+                    cluster_mask = cluster_labels == cluster
+                    mask = true_label_mask & cluster_mask
+
+                    plt.scatter(
+                        pca_dataset_df.iloc[mask, 0],  # First PCA feature
+                        pca_dataset_df.iloc[mask, 1],  # Second PCA feature
+                        c=[color_palette(cluster_idx)],  # Cluster color
+                        marker=marker_shapes[true_label_idx % len(marker_shapes)],  # True label marker
+                        alpha=0.7,
+                        edgecolors='black',
+                        linewidth=0.5,
+                        label=f'Cluster {cluster}' if true_label_idx == 0 else ''
+                    )
+
+            plt.title(f'Best Run for {metric} - {algorithm}')
+            plt.xlabel('First PCA Component')
+            plt.ylabel('Second PCA Component')
+
+            # Create a custom legend with two groups
+            from matplotlib.lines import Line2D
+
+            # Create color legend handles
+            color_handles = [
+                Line2D([0], [0], marker='o', color='w',
+                       markerfacecolor=color_palette(i), markersize=10,
+                       label=f'Cluster {cluster}')
+                for i, cluster in enumerate(unique_clusters)
+            ]
+
+            # Create shape legend handles
+            shape_handles = [
+                Line2D([0], [0], marker=marker_shapes[i % len(marker_shapes)], color='k',
+                       markerfacecolor='gray', markersize=10,
+                       label=f'True Label {true_label}')
+                for i, true_label in enumerate(unique_true_labels)
+            ]
+
+            # Combine handles and labels
+            first_legend = plt.legend(handles=color_handles, title='Clusters',
+                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+
+            # Add the second legend
+            plt.gca().add_artist(first_legend)
+            plt.legend(handles=shape_handles, title='True Labels',
+                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+
+            plt.tight_layout()
+
+            # Save the plot
+            plot_filename = os.path.join(best_runs_path, f'best_run_{metric}.png')
+            plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
+
+            # Close the plot to free up memory
+            plt.close()
+
+    @staticmethod
+    def totalAnalysis(results_df: pd.DataFrame, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame, plots_path: str, features_explored: List[str], metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
+
+        # Pair-plot for Hyperparameter Analysis
+        AnalysisUtils.create_pairplot(
+            data=results_df,
+            params=features_explored,
+            metric='ARI',  # Using ARI as primary performance metric
+            agg_func='max',
+            plots_path=plots_path
+        )
+
+        # 2. Create Custom Heatmap for Metric Correlations
+        AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
 
         # Violin Analysis
-        ViolinPlotter.createViolinPlots(results_dataframe, features_explored, metrics, plotsPath = os.path.join(plots_path,"violinPlots"))
-
-        max_metrics_dict = AnalysisUtils.extract_best_runs(results_dataframe, metrics=metrics)
+        ViolinPlotter.createViolinPlots(results_df, features_explored, metrics, plotsPath = os.path.join(plots_path, "violinPlots"))
 
         # Best Result Plots / tables
+        best_runs_path = os.path.join(plots_path, "bestRuns")
+        best_runs = AnalysisUtils.extract_best_runs(results_df, metrics=metrics)
+        AnalysisUtils.generate_best_runs_table(best_runs, best_runs_path, features_explored)
 
         # PCA Plots
+        AnalysisUtils.plot_best_runs(best_runs, labels_df, pca_dataset_df, best_runs_path)

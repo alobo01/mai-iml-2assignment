@@ -3,7 +3,7 @@ from typing import Callable
 import numpy as np
 
 class KMeansAlgorithm:
-    def __init__(self, k: int, centroids: np.ndarray, distance_metric: str = 'euclidean', max_iter: int = 10):
+    def __init__(self, k: int, centroids: np.ndarray = None, distance_metric: str = 'euclidean', max_iter: int = 10):
         self.k = k
         self.centroids = centroids
         self.distance_metric = distance_metric
@@ -68,6 +68,10 @@ class KMeansAlgorithm:
             Labels for each data point
         """
         n_samples, n_features = X.shape
+
+        if self.centroids is None:
+            # Initialize random centroids by choosing k random samples
+            self.centroids = X[np.random.choice(X.shape[0], self.k, replace=False)]
 
         for _ in range(self.max_iter):
             # Assign points to nearest centroids
