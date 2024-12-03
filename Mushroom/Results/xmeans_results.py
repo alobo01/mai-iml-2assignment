@@ -26,7 +26,4 @@ grid = {
 results_file = os.path.join(dataset_path, "Results", "CSVs", "xmeans_results.csv")
 labels_file = os.path.join(dataset_path, "Results", "CSVs", "xmeans_cluster_labels.csv")
 
-# Main execution
-if __name__ == "__main__":
-    # Run grid search and save results
-    ResultUtils.runGrid(grid, XMeans, X, class_labels, results_file, labels_file)
+ResultUtils.runGrid(grid, XMeans, X, class_labels, results_file, labels_file)
