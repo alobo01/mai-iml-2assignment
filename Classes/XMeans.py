@@ -39,7 +39,7 @@ def compute_log_likelihood(
 
 
 class XMeans:
-    def __init__(self, max_clusters=50, max_iterations=1000, distance_metric='euclidean', **kmeans_params):
+    def __init__(self, max_clusters=20, max_iterations=100, distance_metric='euclidean', **kmeans_params):
         """
         XMeans clustering algorithm.
 
@@ -54,26 +54,35 @@ class XMeans:
         self.distance_metric = distance_metric
         self.kmeans_params = kmeans_params
 
-    def _initialize_kmeans(self, n_clusters: int, data: np.ndarray) -> KMeansAlgorithm:
+    def _initialize_kmeans(self, n_clusters: int, data: np.ndarray,
+                           initial_centroids: np.ndarray = None) -> KMeansAlgorithm:
         """
-        Initialize KMeansAlgorithm with random centroids.
+        Initialize KMeansAlgorithm with either provided or randomly selected centroids.
 
         Args:
             n_clusters: Number of clusters
             data: Input data
+            initial_centroids: Optional pre-defined initial centroids
 
         Returns:
             Initialized KMeansAlgorithm instance
         """
-        # Randomly select initial centroids from data points
+        # If initial centroids are provided, use them
+        if initial_centroids is not None:
+            return KMeansAlgorithm(
+                k=n_clusters,
+                centroids=initial_centroids,
+                distance_metric=self.distance_metric
+            )
+
+        # If no centroids provided, randomly select from data points
         indices = np.random.choice(data.shape[0], n_clusters, replace=False)
-        initial_centroids = data[indices]
+        random_initial_centroids = data[indices]
 
         return KMeansAlgorithm(
             k=n_clusters,
-            centroids=initial_centroids,
-            distance_metric=self.distance_metric,
-            max_iter=self.kmeans_params.get('max_iter', 300)
+            centroids=random_initial_centroids,
+            distance_metric=self.distance_metric
         )
 
     def determine_additional_splits(
@@ -106,18 +115,33 @@ class XMeans:
             if cluster_size <= num_subclusters:
                 continue
 
-            # Compute variance for the current cluster
+            # Compute variance and standard deviation for the current cluster
             cluster_variance = np.sum(
                 (cluster_points - cluster_centroids[cluster_idx]) ** 2
             ) / (cluster_size - 1)
+            cluster_std = np.sqrt(cluster_variance)
 
             # Compute BIC before split
             bic_before_split[cluster_idx] = compute_log_likelihood(
                 cluster_size, cluster_size, cluster_variance, num_features, 1
             ) - (params_per_cluster / 2.0) * np.log(cluster_size)
 
-            # Initialize and fit KMeans for subclustering
-            kmeans_subclusters = self._initialize_kmeans(num_subclusters, cluster_points)
+            # Generate initial centroids for subclustering
+            initial_centroids = np.zeros((num_subclusters, num_features))
+            parent_centroid = cluster_centroids[cluster_idx]
+
+            for subcluster_idx in range(num_subclusters):
+                # Generate a random direction vector
+                random_direction = np.random.randn(num_features)
+                random_direction /= np.linalg.norm(random_direction)  # Normalize
+
+                # Create two opposite centroids based on cluster standard deviation
+                # Use a scaling factor to control the spread (e.g., 1.0 or 1.5 times std)
+                offset = random_direction * cluster_std * (1.0 if subcluster_idx % 2 == 0 else -1.0)
+                initial_centroids[subcluster_idx] = parent_centroid + offset
+
+            # Initialize and fit KMeans for subclustering with custom initial centroids
+            kmeans_subclusters = self._initialize_kmeans(num_subclusters, cluster_points, initial_centroids)
             subcluster_labels, _ = kmeans_subclusters.fit(cluster_points)
             subcluster_centroids = kmeans_subclusters.centroids
 

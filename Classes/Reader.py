@@ -248,20 +248,15 @@ class DataPreprocessor:
 
     @staticmethod
     def convert_dataframe_to_principal_components(dataframe, n_components=None):
-        # Separate indices and features
-        indices = dataframe.iloc[:, 0]
-        features = dataframe.iloc[:, 1:]
-
-        # Perform PCA
-        pca = PCA()
-        principal_components = pca.fit_transform(features)
-
+        data_without_labels = dataframe.drop(columns=["Class"])
+        pca = PCA(n_components=3)
+        principal_components = pca.fit_transform(data_without_labels)
         # Create a new DataFrame with the indices and principal components
         principal_df = pd.DataFrame(
             principal_components,
             columns=[f"PC{i + 1}" for i in range(principal_components.shape[1])]
         )
-        principal_df.insert(0, "Index", indices)
+        principal_df["Class"] = dataframe["Class"]
 
         return principal_df
 
