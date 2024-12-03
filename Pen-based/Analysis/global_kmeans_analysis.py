@@ -35,33 +35,5 @@ AnalysisUtils.create_pairplot(
 # 2. Create Custom Heatmap for Metric Correlations
 AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
 
-# 3. Bulk Statistical Comparisons
-
-# Pairwise comparisons for k values
-k_comparisons = [
-    ('k', metric, 'pairwise', None) for metric in metrics
-]
-
-# Control comparisons for Distance Metrics
-distance_metric_comparisons = [
-    ('Distance_Metric', metric, 'control', 'euclidean') for metric in metrics
-]
-
-# Control comparisons for Distance Metrics
-n_buckets_comparisons = [
-    ('N_Buckets', metric, 'pairwise', None) for metric in metrics
-]
-
-# Combine comparison configurations
-comparison_configs = k_comparisons + distance_metric_comparisons + n_buckets_comparisons
-
-# Perform bulk statistical comparisons
-comparison_reports = AnalysisUtils.bulk_report_generation(
-    data=results_df,
-    comparison_configs=comparison_configs,
-    output_dir=reports_path,
-    alpha=0.15
-)
-
 print("K-Means clustering analysis completed successfully.")
 print("Output files are available in:", base_path)
