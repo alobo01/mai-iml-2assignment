@@ -3,11 +3,11 @@ from typing import Callable
 import numpy as np
 
 class KMeansAlgorithm:
-    def __init__(self, k: int, centroids: np.ndarray = None, distance_metric: str = 'euclidean', max_iter: int = 10):
+    def __init__(self, k: int, centroids: np.ndarray = None, Distance_Metric: str = 'euclidean', max_iter: int = 10):
         self.k = k
         self.centroids = centroids
-        self.distance_metric = distance_metric
-        self.distance = self.get_distance(distance_metric)
+        self.distance_metric = Distance_Metric
+        self.distance = self.get_distance(Distance_Metric)
         self.max_iter = max_iter
 
     def get_distance(self, distance_metric) -> Callable[[np.ndarray, np.ndarray],np.ndarray]:
@@ -57,7 +57,7 @@ class KMeansAlgorithm:
                 E += np.sum(squared_distances)
         return E
 
-    def fit(self, X: np.ndarray) -> tuple[np.ndarray, float]:
+    def fit(self, X: np.ndarray) -> np.ndarray:
         """
         Fit K-means clustering.
 
@@ -91,7 +91,4 @@ class KMeansAlgorithm:
 
             self.centroids = new_centroids
 
-        # Compute total within-cluster variance
-        E = self.compute_total_variance(X, labels)
-
-        return labels, E
+        return labels
