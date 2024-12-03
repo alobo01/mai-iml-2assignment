@@ -42,8 +42,7 @@ def test_xmeans_configurations(
                     xmeans = XMeans(
                         max_clusters=max_clusters,
                         max_iterations=max_iterations,
-                        distance_metric=distance_metric,
-                        max_iter=300  # KMeans internal max iterations
+                        distance_metric=distance_metric
                     )
 
                     cluster_labels = xmeans.fit(X)
@@ -52,17 +51,19 @@ def test_xmeans_configurations(
                     # Check if the algorithm returned only one cluster
                     if xmeans.n_clusters == 1:
                         results.append({
-                            'Algorithm': f'XMeans(max_k={max_clusters}, max_iter={max_iterations}, metric={distance_metric})',
-                            'Actual_Clusters': xmeans.n_clusters,
+                            'Algorithm': f'XMeans({max_clusters}, {distance_metric})',# , {max_iterations})',
                             'Max_Clusters': max_clusters,
-                            'Max_Iterations': max_iterations,
                             'Distance_Metric': distance_metric,
+                            # 'Max_Iterations': max_iterations,
+                            'Actual_Clusters': xmeans.n_clusters,
                             'Repetition': rep + 1,
                             'E': np.nan,  # Not applicable
-                            'Time': end_time - start_time,
+                            'ARI': np.nan,
+                            'F1 Score': np.nan,
+                            'DBI': np.nan,
                             'silhouette_score': np.nan,
                             'calinski_harabasz_score': np.nan,
-                            'davies_bouldin_score': np.nan,
+                            'Time': end_time - start_time,
                             'Status': 'Fail (1 Cluster)'
                         })
                         continue
@@ -81,15 +82,15 @@ def test_xmeans_configurations(
 
                     # Record results
                     results.append({
-                        'Algorithm': f'XMeans(max_k={max_clusters}, max_iter={max_iterations}, metric={distance_metric})',
-                        'Actual_Clusters': xmeans.n_clusters,
+                        'Algorithm': f'XMeans({max_clusters}, {distance_metric})',# , {max_iterations})',
                         'Max_Clusters': max_clusters,
-                        'Max_Iterations': max_iterations,
                         'Distance_Metric': distance_metric,
+                        # 'Max_Iterations': max_iterations,
+                        'Actual_Clusters': xmeans.n_clusters,
                         'Repetition': rep + 1,
                         'E': E,
-                        'Time': execution_time,
                         **metrics,
+                        'Time': execution_time,
                         'Status': 'Success'
                     })
 
@@ -109,10 +110,10 @@ class_labels = data['Class']
 X = data.drop(columns=['Class']).values
 
 # Define configurations to test
-max_clusters_list = [5, 10, 15, 20]
-max_iterations_list = [10, 50, 100]
+max_clusters_list = [k for k in range(2, 21)]
 distance_metrics = ['euclidean', 'manhattan', 'clark']
-repetitions = 3
+max_iterations_list = [50]
+repetitions = 10
 
 # Run tests
 results_df = test_xmeans_configurations(
@@ -131,13 +132,13 @@ results_df.to_csv(results_path, index=False)
 
 # Print summary statistics
 print("\nSummary Statistics:")
-summary_stats = results_df.groupby(['Max_Clusters', 'Max_Iterations', 'Distance_Metric']).agg({
+summary_stats = results_df.groupby(['Max_Clusters', 'Distance_Metric']).agg({ # 'Max_Iterations', 'Distance_Metric']).agg({
     'Actual_Clusters': 'mean',
-    'E': 'mean',
+    'E': 'min',
     'Time': ['mean', 'std'],
-    'silhouette_score': 'mean',
-    'calinski_harabasz_score': 'mean',
-    'davies_bouldin_score': 'mean'
+    'silhouette_score': 'max',
+    'calinski_harabasz_score': 'max',
+    'DBI': 'min'
 }).round(3)
 
 print(summary_stats)
@@ -153,7 +154,7 @@ def get_best_configuration(df, metric_column):
         print(f"No valid rows found for {metric_column}")
         return None
 
-    if 'bouldin' in metric_column:
+    if 'DBI' or 'E' in metric_column:
         # For Davies-Bouldin, lower is better
         best_idx = valid_rows[metric_column].idxmin()
     else:
@@ -166,7 +167,7 @@ def get_best_configuration(df, metric_column):
 # Calculate best configurations
 best_silhouette = get_best_configuration(results_df, 'silhouette_score')
 best_calinski = get_best_configuration(results_df, 'calinski_harabasz_score')
-best_davies = get_best_configuration(results_df, 'davies_bouldin_score')
+best_davies = get_best_configuration(results_df, 'DBI')
 best_variance = get_best_configuration(results_df, 'E')
 
 
@@ -179,5 +180,5 @@ def print_best_config(config, metric_name):
 
 print_best_config(best_silhouette, 'silhouette_score')
 print_best_config(best_calinski, 'calinski_harabasz_score')
-print_best_config(best_davies, 'davies_bouldin_score')
+print_best_config(best_davies, 'DBI')
 print_best_config(best_variance, 'E')

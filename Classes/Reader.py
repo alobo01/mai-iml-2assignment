@@ -8,6 +8,8 @@ import numpy as np
 import joblib
 import os
 
+from sklearn.decomposition import PCA
+
 
 class DataPreprocessor:
     """
@@ -241,3 +243,25 @@ class DataPreprocessor:
         """Identify columns with missing values above a specified threshold."""
         missing_percentage = data.isnull().mean()
         return missing_percentage[missing_percentage > threshold].index
+
+    import pandas as pd
+
+    @staticmethod
+    def convert_dataframe_to_principal_components(dataframe, n_components=None):
+        # Separate indices and features
+        indices = dataframe.iloc[:, 0]
+        features = dataframe.iloc[:, 1:]
+
+        # Perform PCA
+        pca = PCA()
+        principal_components = pca.fit_transform(features)
+
+        # Create a new DataFrame with the indices and principal components
+        principal_df = pd.DataFrame(
+            principal_components,
+            columns=[f"PC{i + 1}" for i in range(principal_components.shape[1])]
+        )
+        principal_df.insert(0, "Index", indices)
+
+        return principal_df
+
