@@ -57,7 +57,7 @@ def evaluate_config(task):
             'max_iter': max_iter,
             'epsilon': epsilon,
             'rho': rho,
-            'n_init_index': init_index,
+            'repetition': init_index,
             **metrics,
             'Time': execution_time
         }
