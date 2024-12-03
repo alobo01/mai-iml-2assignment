@@ -8,17 +8,18 @@ else:
     dataset_path = 'Hepatitis'
 
 # Load the K-Means results
-csv_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
-results_df = pd.read_csv(csv_path)
+results_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
+results_df = pd.read_csv(results_path)
+
+cluster_labels_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_cluster_labels.csv")
+labels_df = pd.read_csv(cluster_labels_path)
 
 # Create output directories
 base_path = 'plots_and_tables'
 plots_path = os.path.join(base_path, 'KMeansPlots')
-reports_path = os.path.join(base_path, 'KMeansReports')
 
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
-os.makedirs(reports_path, exist_ok=True)
 
 # Metrics to analyze
 metrics = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS', 'Time']
@@ -36,7 +37,7 @@ AnalysisUtils.create_pairplot(
 AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
 
 # 3.
-best_runs = AnalysisUtils.extract_best_runs(results_df)
+best_runs = AnalysisUtils.plot_best_runs(results_df, labels_df)
 print(best_runs)
 
 print("K-Means clustering analysis completed successfully.")
