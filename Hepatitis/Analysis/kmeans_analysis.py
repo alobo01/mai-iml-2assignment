@@ -14,6 +14,9 @@ results_df = pd.read_csv(results_path)
 cluster_labels_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_cluster_labels.csv")
 labels_df = pd.read_csv(cluster_labels_path)
 
+pca_dataset_path = os.path.join(dataset_path, "Preprocessing", "hepatitis_pca.csv")
+pca_dataset_df = pd.read_csv(pca_dataset_path)
+
 # Create output directories
 base_path = 'plots_and_tables'
 plots_path = os.path.join(base_path, 'KMeansPlots')
@@ -21,24 +24,9 @@ plots_path = os.path.join(base_path, 'KMeansPlots')
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
 
-# Metrics to analyze
-metrics = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS', 'Time']
+features_explored = ['k', 'Distance_Metric']
 
-# 1. Create Pairplot for Hyperparameter Analysis
-AnalysisUtils.create_pairplot(
-    data=results_df,
-    params=['k', 'Distance_Metric'],
-    metric='ARI',  # Using ARI as primary performance metric
-    agg_func='max',
-    plots_path=plots_path
-)
-
-# 2. Create Custom Heatmap for Metric Correlations
-AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
-
-# 3.
-best_runs = AnalysisUtils.plot_best_runs(results_df, labels_df)
-print(best_runs)
+AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, plots_path, features_explored)
 
 print("K-Means clustering analysis completed successfully.")
 print("Output files are available in:", base_path)
