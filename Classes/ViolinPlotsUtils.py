@@ -52,7 +52,7 @@ class ViolinPlotter:
         return fig
 
     @staticmethod
-    def createViolinPlots(df: pd.DataFrame, x_cols: List[str], y_cols: List[str], plotsPath: str = "violinPlots", filePreffix: str = "violin", add_jitter=False, jitter_alpha=0.2):
+    def createViolinPlots(df: pd.DataFrame, x_cols: List[str], y_cols: List[str], plotsPath: str = "violinPlots", filePreffix: str = "violin", add_jitter=True, jitter_alpha=0.2):
         """
         Create multiple violin plots and save them as files.
 
