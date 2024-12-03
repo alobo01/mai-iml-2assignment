@@ -39,7 +39,7 @@ def compute_log_likelihood(
 
 
 class XMeans:
-    def __init__(self, max_clusters=20, max_iterations=100, distance_metric='euclidean', **kmeans_params):
+    def __init__(self, max_clusters=20, max_iterations=100, distance_metric='euclidean'):
         """
         XMeans clustering algorithm.
 
@@ -47,12 +47,10 @@ class XMeans:
             max_clusters: Maximum number of clusters
             max_iterations: Maximum number of iterations for the while loop
             distance_metric: Distance metric for clustering ('euclidean', 'manhattan', 'clark')
-            kmeans_params: Additional parameters for KMeans
         """
         self.max_clusters = max_clusters
         self.max_iterations = max_iterations
         self.distance_metric = distance_metric
-        self.kmeans_params = kmeans_params
 
     def _initialize_kmeans(self, n_clusters: int, data: np.ndarray,
                            initial_centroids: np.ndarray = None) -> KMeansAlgorithm:
@@ -183,13 +181,12 @@ class XMeans:
         Returns:
             XMeans clustering labels
         """
-        num_clusters = 1
+        num_clusters = 2
         num_subclusters = 2
         num_features = data.shape[1]
         iteration = 0
-        stop_splitting = False
 
-        while not stop_splitting and iteration < self.max_iterations:
+        while iteration < self.max_iterations:
             # Initialize and fit KMeans
             kmeans = self._initialize_kmeans(num_clusters, data)
             cluster_labels, _ = kmeans.fit(data)
@@ -200,10 +197,15 @@ class XMeans:
                 num_clusters, data, cluster_labels, cluster_centroids,
                 num_features, num_subclusters
             )
-            num_clusters += additional_clusters
 
-            # Stop if no new clusters are added or the maximum cluster count is reached
-            stop_splitting = additional_clusters == 0 or num_clusters >= self.max_clusters
+            new_number_of_clusters = num_clusters + additional_clusters
+            if additional_clusters == 0 or new_number_of_clusters > self.max_clusters:
+                break
+            elif new_number_of_clusters == self.max_clusters:
+                num_clusters = new_number_of_clusters
+                break
+            num_clusters = new_number_of_clusters
+
             iteration += 1
 
         # Perform final clustering with determined number of clusters
