@@ -20,3 +20,5 @@ preprocessed_df.rename(columns={preprocessed_df.columns[-1]: 'Class'}, inplace=T
 preprocessed_path = os.path.join(dataset_path, "Preprocessing/pen-based.csv")
 preprocessed_df.to_csv(preprocessed_path)
 
+pca = DataPreprocessor.convert_dataframe_to_principal_components(preprocessed_df)
+pca.to_csv(os.path.join(dataset_path, ("Preprocessing/pen-based_pca.csv")), index=False)
