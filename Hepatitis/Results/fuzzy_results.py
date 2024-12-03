@@ -9,10 +9,10 @@ from Classes.EvaluationUtils import EvaluationUtils
 if __name__ == "__main__" or "__mp_main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Pen-based'
+    dataset_path = 'Hepatitis'
 
 # Load dataset
-data_path = os.path.join(dataset_path, "Preprocessing", "pen-based.csv")
+data_path = os.path.join(dataset_path, "Preprocessing", "hepatitis.csv")
 data = pd.read_csv(data_path)
 class_labels = data['Class']
 X = data.drop(columns=['Unnamed: 0', 'Class']).values
@@ -48,7 +48,6 @@ def evaluate_config(task):
         # Evaluate clustering performance
         metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
         execution_time = end_time - start_time
-        print(f"Done ({n_clusters}, {fuzziness}, {max_iter}, {epsilon}, {rho}, {init_index})")
 
         # Return the results including hyperparameters and n_init index
         return {
@@ -85,7 +84,7 @@ if __name__ == "__main__":
     tasks = generate_configs()
 
     # Use multiprocessing Pool with max 4 workers
-    max_workers = 4
+    max_workers = 2
     with Pool(processes=max_workers) as pool:
         results = pool.map(evaluate_config, tasks)
 
