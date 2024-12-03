@@ -8,6 +8,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from scikit_posthocs import posthoc_nemenyi
+from torch.onnx._internal.fx._pass import Analysis
+
+from Classes.ViolinPlotsUtils import ViolinPlotter
 
 
 class AnalysisUtils:
@@ -293,7 +296,7 @@ class AnalysisUtils:
         plt.close(fig)
 
     @staticmethod
-    def extract_best_runs(df: pd.DataFrame):
+    def extract_best_runs(df: pd.DataFrame, metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
         """
         Load a CSV file and extract the rows with maximum values for specified metrics.
 
@@ -304,8 +307,6 @@ class AnalysisUtils:
         dict: A dictionary with metric names as keys and corresponding rows with best values as values
         """
 
-        # List of metrics to extract best values for
-        metrics = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']
 
         # Dictionary to store results
         max_metrics_dict = {}
@@ -317,3 +318,16 @@ class AnalysisUtils:
             max_metrics_dict[metric] = max_row.to_dict()
 
         return max_metrics_dict
+
+    @staticmethod
+    def totalAnalysis(results_dataframe: pd.DataFrame, plots_path: str, features_explored: List[str] = ["n_clusters"], metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
+
+
+        # Violin Analysis
+        ViolinPlotter.createViolinPlots(results_dataframe, features_explored, metrics, plotsPath = os.path.join(plots_path,"violinPlots"))
+
+        max_metrics_dict = AnalysisUtils.extract_best_runs(results_dataframe, metrics=metrics)
+
+        # Best Result Plots / tables
+
+        # PCA Plots
