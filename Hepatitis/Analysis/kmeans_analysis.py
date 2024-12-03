@@ -21,19 +21,23 @@ os.makedirs(plots_path, exist_ok=True)
 os.makedirs(reports_path, exist_ok=True)
 
 # Metrics to analyze
-metrics = ['E', 'ARI', 'F1 Score', 'DBI', 'silhouette_score', 'calinski_harabasz_score', 'Time']
+metrics = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS', 'Time']
 
 # 1. Create Pairplot for Hyperparameter Analysis
 AnalysisUtils.create_pairplot(
     data=results_df,
     params=['k', 'Distance_Metric'],
-    metric='F1 Score',  # Using F1-Score as primary performance metric
+    metric='ARI',  # Using ARI as primary performance metric
     agg_func='max',
     plots_path=plots_path
 )
 
 # 2. Create Custom Heatmap for Metric Correlations
 AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
+
+# 3.
+best_runs = AnalysisUtils.extract_best_runs(results_df)
+print(best_runs)
 
 print("K-Means clustering analysis completed successfully.")
 print("Output files are available in:", base_path)

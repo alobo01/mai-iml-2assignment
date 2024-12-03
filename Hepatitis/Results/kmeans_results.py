@@ -24,10 +24,11 @@ repetitions = 10
 
 # Initialize results DataFrame
 results = []
+labels_df = pd.DataFrame()
 
 # Perform tests
 for k in range(2, max_k_value+1):
-    for _ in range(repetitions):
+    for repetition in range(repetitions):
         # Initialize random centroids by choosing k random samples
         centroids = X[np.random.choice(X.shape[0], k, replace=False)]
 
@@ -43,17 +44,22 @@ for k in range(2, max_k_value+1):
             metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
             execution_time = end_time - start_time
 
-            algorithm = f'KMeans({k}, {distance_metric})'
+            algorithm = f'KMeans({k}, {distance_metric})_{repetition}'
             results.append({
                 'Algorithm': algorithm,
                 'k': k,
                 'Distance_Metric': distance_metric,
-                'E': E,
+                'Repetition': repetition,
                 **metrics,
                 'Time': execution_time
             })
 
-# Save results to CSV file
+            labels_df = pd.concat([labels_df, pd.DataFrame({algorithm: cluster_labels})], axis=1)
+
+# Save results to CSV files
 results_df = pd.DataFrame(results)
-csv_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
-results_df.to_csv(csv_path, index=False)
+results_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
+results_df.to_csv(results_path, index=False)
+
+cluster_labels_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_cluster_labels.csv")
+labels_df.to_csv(cluster_labels_path, index=False)
