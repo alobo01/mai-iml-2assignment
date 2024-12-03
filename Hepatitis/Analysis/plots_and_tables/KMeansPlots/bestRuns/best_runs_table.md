@@ -1,7 +1,7 @@
 | Metric | k | Distance_Metric | Best Value |
 |---|---|---|---|
-| ARI | 2 | manhattan | 0.35941706991406 |
-| NMI | 2 | manhattan | 0.2505113356085359 |
-| DBI | 20 | euclidean | 1.425456102896115 |
-| Silhouette | 19 | manhattan | 0.2176339176569323 |
-| CHS | 2 | euclidean | 37.11623497901135 |
+| ARI | 2 | manhattan | 0.3698278563168919 |
+| NMI | 3 | clark | 0.2512765715521058 |
+| DBI | 20 | euclidean | 1.4004074293802875 |
+| Silhouette | 2 | manhattan | 0.2104287009617214 |
+| CHS | 2 | euclidean | 36.77071145608097 |
