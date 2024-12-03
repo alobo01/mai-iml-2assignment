@@ -5,7 +5,7 @@ from Classes.AnalysisUtils import AnalysisUtils
 if __name__ == "__main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Hepatitis'
+    dataset_path = 'Pen-based'
 
 # Load the K-Means results
 csv_path = os.path.join(dataset_path, "Results", "CSVs", "kmeans_results.csv")
