@@ -118,9 +118,9 @@ class ResultUtils:
                 # Instantiate the model with the flattened configuration
                 model = model_class(**{k: v for k, v in config.items() if k != 'Repetition'})
 
-                # Handle multiple runs (n_init)
-
-                full_algorithm_name = f"{algorithm_name}"
+                # Handle multiple runs
+                repetition = config['Repetition']
+                full_algorithm_name = f"{algorithm_name}_{repetition}"
 
                 # Get results using getResults
                 metrics, cluster_labels = ResultUtils.getResults(full_algorithm_name, model, X, class_labels)

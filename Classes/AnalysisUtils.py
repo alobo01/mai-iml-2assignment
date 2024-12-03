@@ -76,7 +76,7 @@ class AnalysisUtils:
         n_params = len(params)
 
         # Create figure
-        fig, axes = plt.subplots(n_params, n_params, figsize=(10, 10))
+        fig, axes = plt.subplots(n_params, n_params, figsize=(8, 8))
         plt.subplots_adjust(hspace=0.3, wspace=0.3)
 
         # Color maps
@@ -130,7 +130,7 @@ class AnalysisUtils:
                      fontsize=16, y=1.02)
 
         # Save and close the plot
-        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
         plt.close(fig)
 
     @staticmethod
@@ -256,7 +256,7 @@ class AnalysisUtils:
         corr_matrix = df.corr()
         metrics = df.columns
         n = len(metrics)
-        fig, axes = plt.subplots(n, n, figsize=(10, 10))
+        fig, axes = plt.subplots(n, n, figsize=(6, 6))
         plt.subplots_adjust(hspace=0.5, wspace=0.5)
 
         for i in range(n):
@@ -271,7 +271,7 @@ class AnalysisUtils:
                     sns.histplot(df[metrics[i]], kde=True, ax=ax, color="skyblue")
                     ax.set_ylabel("")
                 else:  # Upper triangular: Scatter Plots
-                    ax.scatter(df[metrics[j]], df[metrics[i]], alpha=0.6, color="purple", s=10)
+                    ax.scatter(df[metrics[j]], df[metrics[i]], alpha=0.6, color="purple", s=2)
                     ax.set_ylabel("")
                     ax.set_xlabel("")
 
@@ -289,7 +289,7 @@ class AnalysisUtils:
         plt.suptitle("Metric Correlations", fontsize=16, y=0.92)
 
         # Save and close the plot
-        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
         plt.close(fig)
 
     @staticmethod
@@ -385,7 +385,7 @@ class AnalysisUtils:
             algorithm = run.get('Algorithm', 'Unknown')
 
             # Create a new figure with extra space for legends
-            plt.figure(figsize=(12, 8))
+            plt.figure(figsize=(8, 6))
 
             # Get cluster labels for this run
             cluster_labels = labels_df[algorithm].values
@@ -455,7 +455,7 @@ class AnalysisUtils:
 
             # Save the plot
             plot_filename = os.path.join(best_runs_path, f'best_run_{metric}.png')
-            plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
+            plt.savefig(plot_filename, dpi=100, bbox_inches='tight')
 
             # Close the plot to free up memory
             plt.close()
