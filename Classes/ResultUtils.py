@@ -128,7 +128,6 @@ class ResultUtils:
 
                 # Get results using getResults
                 metrics, cluster_labels = ResultUtils.getResults(full_algorithm_name, model, X, class_labels)
-
                 if metrics is not None:
                     # Append results
                     results.append({

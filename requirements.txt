@@ -6,3 +6,4 @@ joblib
 matplotlib
 seaborn
 scikit_posthocs
+pyamg

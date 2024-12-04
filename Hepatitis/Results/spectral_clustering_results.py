@@ -21,7 +21,7 @@ grid = {
     'n_clusters': [2],
     'n_neighbors': [5, 7, 10],
     'assign_labels': ['kmeans', 'cluster_qr'],
-    'eigen_solver': ['auto', 'arpack', 'lobpcg'],
+    'eigen_solver': ['lobpcg', 'amg', 'arpack'],
     'Repetitions': 10
 }
 
