@@ -57,5 +57,3 @@ for dist in distances:
 results_df = pd.DataFrame(results)
 csv_path = os.path.join(dataset_path, 'Results/CSVs/optics_results.csv')
 results_df.to_csv(csv_path, index=False)
-
-
