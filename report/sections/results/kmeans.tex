@@ -10,48 +10,42 @@ In Figure \ref{fig:metrics_corr} we summarize the relationship between the diffe
     \centering
     \begin{subfigure}{0.49\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/KMeans/penbased_metrics_correlations_matrix.png}
-        \caption{Pen-based metric correlations}
+        \includegraphics[width=\linewidth]{figures/KMeans/hepatitis_metrics_correlations_matrix.png}
+        \caption{Hepatitis metric correlations}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.49\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/KMeans/hepatitis_metrics_correlations_matrix.png}
-        \caption{Hepatitis metric correlations}
+        \includegraphics[width=\linewidth]{figures/KMeans/penbased_metrics_correlations_matrix.png}
+        \caption{Pen-based metric correlations}
     \end{subfigure}
     \caption{Metric correlations and distributions in two datasets}
     \label{fig:metrics_corr}
 \end{figure}
 
-Parallelly, a different set of interesting relationship are displayed in Figure \ref{fig:pairplot}, where we can see heatmaps of the ARI and the Time across the different pairwise hyperparameter configurations. We can observe a general trend regarding execution time: it seems to have considerably larger values for the Clark distance metric compared to those of the other 2, which reflects the higher computational cost that this distance metric has. Additionally, we see a noteworthy divergence in the ARI trends: in the Pen-based dataset (which has 10 classes), bigger values of k ($>$7) seem to achieve the best scores, with a somewhat lower performance with the Clark distance than with the other two; meanwhile, in the Hepatitis dataset (which has 2 classes), lower values of k seem to achieve a better ARI, with a significantly better performance with the Clark distance metric than with the other two. The behavior with respect to the k was to be expected due to the true number of labels of each dataset, yet it still is compelling to see it reflected so clearly in the results. On the other hand, it is enlightening to see opposite behaviors with respect to the distance metric, which reflects that the Clark distance fails to capture some intrinsic properties of the Pen-based dataset, while it excells to do so within the Hepatitis dataset.
+Parallelly, a different set of interesting relationship are displayed in Figure \ref{fig:pairplot}, where we can see heatmaps of the ARI and the Time across the different pairwise hyperparameter configurations. We can observe a general trend regarding execution time: it seems to have considerably larger values for the Clark distance metric compared to those of the other 2, which reflects the higher computational cost that this distance metric has. Additionally, we see a noteworthy divergence in the ARI trends: in the Hepatitis dataset (which has 2 classes), lower values of k seem to achieve a better ARI, with a significantly better performance with the Clark distance metric than with the other two; meanwhile, in the Pen-based dataset (which has 10 classes), bigger values of k ($>$7) seem to achieve the best scores, with a somewhat lower performance with the Clark distance than with the other two. The behavior with respect to the k was to be expected due to the true number of labels of each dataset, yet it still is compelling to see it reflected so clearly in the results. On the other hand, it is enlightening to see opposite behaviors with respect to the distance metric, which reflects that the Clark distance fails to capture some intrinsic properties of the Pen-based dataset, while it excells to do so within the Hepatitis dataset.
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/KMeans/penbased_hyperparameter_pairplot_matrix.png}
-        \caption{Pen-based pairplot matrix}
-    \end{subfigure}
-    \hfill
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/KMeans/hepatitis_hyperparameter_pairplot_matrix.png}
         \caption{Hepatitis pairplot matrix}
     \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/KMeans/penbased_hyperparameter_pairplot_matrix.png}
+        \caption{Pen-based pairplot matrix}
+    \end{subfigure}
     \caption{Hyperparameter pairplot matrices based on F1 Score and Time}
     \label{fig:pairplot}
 \end{figure}
 
-We can clearly observe the trends regarding the value of k in the violin plot in Figure \ref{fig:kmeans:violin}. This time, for Pen-based and Hepatitis we plot the NMI metric, which again shows the same behavior: in Pen-based, it improves as we increase the k, with a higher consistency between values 8 and 11; while, in Hepatitis, we observe a clear maximum of consistency for k=2, and then a constant decrease in performance as k increases. As for Mushroom, the overall results are more inconclusive, but in this violin plot of the CHS we can observe that the score gets consistently worse as the k increases, which once again was to be expected due to the true number of classes being 2.
+We can clearly observe the trends regarding the value of k in the violin plot in Figure \ref{fig:kmeans:violin}. This time, for Hepatitis and Pen-based we plot the NMI metric, which again shows the same behavior: in Hepatitis, we observe a clear maximum of consistency for k=2, and then a constant decrease in performance as k increases; while, in Pen-based, it improves as we increase the k, with a higher consistency between values 8 and 11. As for Mushroom, the overall results are more inconclusive, but in this violin plot of the CHS we can observe that the score gets consistently worse as the k increases, which once again was to be expected due to the true number of classes being 2.
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/KMeans/penbased_violin_k_vs_NMI.png}
-        \caption{Pen-based NMI}
-    \end{subfigure}
-    \hfill
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/KMeans/hepatitis_violin_k_vs_NMI.png}
@@ -63,12 +57,18 @@ We can clearly observe the trends regarding the value of k in the violin plot in
         \includegraphics[width=\linewidth]{figures/KMeans/mushroom_violin_k_vs_CHS.png}
         \caption{Mushroom CHS}
     \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/KMeans/penbased_violin_k_vs_NMI.png}
+        \caption{Pen-based NMI}
+    \end{subfigure}
     \caption{Violin plots with respect to k for the different datasets}
     \label{fig:kmeans:violin}
 \end{figure}
 
 \subsubsection{Best Runs}
-For each of the datasets, we extracted the run which achieved the best score for each of the metrics, which results in 5 K-Means algorithm configurations, which we consider to be the 5 best runs for that dataset (in no particular order). A summary of the best runs for the 3 datasets is displayed in Table \ref{tab:kmeans:best_runs}
+For each of the datasets, we extracted the run which achieved the best score for each of the metrics, which results in 5 K-Means algorithm configurations, which we consider to be the 5 best runs for that dataset (in no particular order). A summary of the best runs for the 3 datasets is displayed in Table \ref{tab:kmeans:best_runs}.
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|ccc|ccc|ccc|}
