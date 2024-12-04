@@ -487,7 +487,7 @@ class AnalysisUtils:
         AnalysisUtils.plot_best_runs(best_runs, labels_df, pca_dataset_df, best_runs_path)
 
     @staticmethod
-    def xmeans_analysis(results_df: pd.DataFrame, plots_path: str):
+    def predicted_k_vs_iterations(results_df: pd.DataFrame, plots_path: str):
         grouped = results_df.groupby("max_iterations").agg({
             "Predicted k": "mean",
             "max_clusters": "first"  # Assuming max_clusters doesn't vary within iterations
@@ -527,6 +527,51 @@ class AnalysisUtils:
         plt.savefig(save_path, dpi=300)
         plt.close()  # Close the plot to free up memory
         print(f"Plot saved at: {save_path}")
+
+    @staticmethod
+    def max_k_vs_actual_k(results_df: pd.DataFrame, plots_path: str):
+        # Group by max_clusters, and calculate the mean Predicted k for each group
+        grouped = results_df.groupby("max_clusters").agg({
+            "Predicted k": "median"
+        }).reset_index()
+
+        # Plot individual Predicted k points grouped by max_clusters
+        plt.figure(figsize=(12, 8))
+
+        unique_clusters = sorted(results_df["max_clusters"].unique())
+        for max_cluster in unique_clusters:
+            subset = results_df[results_df["max_clusters"] == max_cluster]
+            plt.scatter(
+                np.full(len(subset), max_cluster), subset["Predicted k"],
+                label=f"Actual Predicted k - Max Clusters {max_cluster}" if max_cluster == unique_clusters[0] else None,
+                alpha=0.7, edgecolor="black"
+            )
+
+        # Overlay the mean Predicted k as a line
+        plt.plot(grouped["max_clusters"], grouped["Predicted k"], label="Median Predicted k",
+                 marker="o", linestyle="-", color="blue")
+
+        # Customize the plot
+        plt.xticks(unique_clusters)
+        plt.xlabel("Max Clusters")
+        plt.ylabel("Predicted k")
+        plt.title("X-Means Analysis: Predicted k by Max Clusters with Median Predicted k")
+        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))  # Move legend to the side
+        plt.grid(axis="y", linestyle="--", alpha=0.7)
+        plt.tight_layout()
+
+        # Save the plot
+        if not os.path.exists(plots_path):
+            os.makedirs(plots_path)
+        save_path = os.path.join(plots_path, "xmeans_analysis_max_k_vs_actual_k.png")
+        plt.savefig(save_path, dpi=300)
+        plt.close()  # Close the plot to free up memory
+        print(f"Plot saved at: {save_path}")
+
+    @staticmethod
+    def xmeans_analysis(results_df: pd.DataFrame, plots_path: str):
+        #AnalysisUtils.predicted_k_vs_iterations(results_df, plots_path)
+        AnalysisUtils.max_k_vs_actual_k(results_df, plots_path)
 
 
 

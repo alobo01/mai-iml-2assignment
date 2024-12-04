@@ -18,9 +18,9 @@ X = data.drop(columns=['Class']).values
 # Define configurations to test
 grid = {
     'max_clusters': [20],
-    'max_iterations': [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    'distance_metric': ['euclidean', 'manhattan', 'clark'],
-    'Repetitions': 60
+    'tolerance': [0.001, 0.004, 0.008],
+    'repeat_kmeans': [1, 2, 3],
+    'Repetitions': 10
 }
 
 # File paths for saving results

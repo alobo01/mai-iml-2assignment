@@ -14,12 +14,12 @@ data = pd.read_csv(data_path, index_col=0)
 class_labels = data['Class']
 X = data.drop(columns=['Class']).values
 
-
 # Define configurations to test
 grid = {
-    'max_clusters': [x for x in range(2, 11)],
-    'max_iterations': [10, 20],
-    'distance_metric': ['euclidean', 'manhattan', 'clark']
+    'max_clusters': [20],
+    'tolerance': [0.001, 0.004, 0.008],
+    'repeat_kmeans': [1, 2, 3],
+    'Repetitions': 10
 }
 
 # File paths for saving results
