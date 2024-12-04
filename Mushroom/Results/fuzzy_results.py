@@ -17,7 +17,7 @@ X = data.drop(columns=['Unnamed: 0', 'Class']).values
 
 # Define configurations to test
 grid = {
-    'n_clusters': [6, 8, 9, 10],
+    'n_clusters': [2, 4, 6, 8],
     'fuzziness': [1.5, 2, 3, 4],  # Fuzziness parameter 'm'
     'max_iter': [100, 300, 500],  # Maximum iterations
     'error': [1e-1, 1e-4, 1e-5],  # Convergence tolerance
