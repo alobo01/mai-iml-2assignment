@@ -8,32 +8,25 @@ else:
     dataset_path = 'Pen-based'
 
 # Load the K-Means results
-csv_path = os.path.join(dataset_path, "Results", "CSVs", "global_kmeans_results.csv")
-results_df = pd.read_csv(csv_path)
+results_path = os.path.join(dataset_path, "Results", "CSVs", "global_kmeans_results.csv")
+results_df = pd.read_csv(results_path)
+
+cluster_labels_path = os.path.join(dataset_path, "Results", "CSVs", "global_kmeans_cluster_labels.csv")
+labels_df = pd.read_csv(cluster_labels_path)
+
+pca_dataset_path = os.path.join(dataset_path, "Preprocessing", "pen-based_pca.csv")
+pca_dataset_df = pd.read_csv(pca_dataset_path)
 
 # Create output directories
 base_path = 'plots_and_tables'
 plots_path = os.path.join(base_path, 'GlobalKMeansPlots')
-reports_path = os.path.join(base_path, 'GlobalKMeansReports')
 
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
-os.makedirs(reports_path, exist_ok=True)
 
-# Metrics to analyze
-metrics = ['E', 'ARI', 'F1 Score', 'DBI', 'silhouette_score', 'calinski_harabasz_score', 'Time']
+features_explored = ['k', 'Distance_Metric', 'N_Buckets']
 
-# 1. Create Pairplot for Hyperparameter Analysis
-AnalysisUtils.create_pairplot(
-    data=results_df,
-    params=['k', 'Distance_Metric', 'N_Buckets'],
-    metric='F1 Score',  # Using F1-Score as primary performance metric
-    agg_func='max',
-    plots_path=plots_path
-)
-
-# 2. Create Custom Heatmap for Metric Correlations
-AnalysisUtils.plot_custom_heatmap(results_df[metrics], plots_path=plots_path)
+AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, plots_path, features_explored)
 
 print("K-Means clustering analysis completed successfully.")
 print("Output files are available in:", base_path)
