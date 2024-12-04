@@ -485,3 +485,48 @@ class AnalysisUtils:
 
         # PCA Plots
         AnalysisUtils.plot_best_runs(best_runs, labels_df, pca_dataset_df, best_runs_path)
+
+    @staticmethod
+    def xmeans_analysis(results_df: pd.DataFrame, plots_path: str):
+        grouped = results_df.groupby("max_iterations").agg({
+            "Predicted k": "mean",
+            "max_clusters": "first"  # Assuming max_clusters doesn't vary within iterations
+        }).reset_index()
+
+        plt.figure(figsize=(12, 8))
+
+        unique_iterations = sorted(results_df["max_iterations"].unique())
+        for max_iter in unique_iterations:
+            subset = results_df[results_df["max_iterations"] == max_iter]
+            x_positions = np.full(len(subset), max_iter)  # Fixed x positions for each max_iterations
+            plt.scatter(
+                x_positions, subset["Predicted k"],
+                color="gray", alpha=0.7, edgecolor="black",
+                label="Actual Predicted k" if max_iter == unique_iterations[0] else None
+            )
+
+        # Overlay the mean Predicted k and max_clusters as lines
+        plt.plot(grouped["max_iterations"], grouped["Predicted k"], label="Mean Predicted k", marker="o", linestyle="-",
+                 color="blue")
+        plt.plot(grouped["max_iterations"], grouped["max_clusters"], label="Max Clusters", marker="s", linestyle="--",
+                 color="green")
+
+        # Customize the plot
+        plt.xticks(unique_iterations)
+        plt.xlabel("Max Iterations")
+        plt.ylabel("Predicted k / Max Clusters")
+        plt.title("X-Means Analysis: Points for Predicted k with Mean and Max Clusters")
+        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))  # Move legend to the side
+        plt.grid(axis="y", linestyle="--", alpha=0.7)
+        plt.tight_layout()
+
+        # Save the plot
+        if not os.path.exists(plots_path):
+            os.makedirs(plots_path)
+        save_path = os.path.join(plots_path, "xmeans_analysis_predicted_k_vs_iterations.png")
+        plt.savefig(save_path, dpi=300)
+        plt.close()  # Close the plot to free up memory
+        print(f"Plot saved at: {save_path}")
+
+
+
