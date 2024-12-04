@@ -4,13 +4,17 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 class GlobalKMeansAlgorithm:
-    def __init__(self, k: int, distance_metric: str = 'euclidean', max_iter: int = 10, n_buckets: int = None):
+    def __init__(self, k: int, Distance_Metric: str = 'euclidean', max_iter: int = 10, N_Buckets: str = None):
         self.k = k
-        self.distance_metric = distance_metric
-        self.distance = self.get_distance(distance_metric)
+        self.distance_metric = Distance_Metric
+        self.distance = self.get_distance(Distance_Metric)
         self.max_iter = max_iter
         self.centroids = None
-        self.n_buckets = n_buckets if n_buckets else k*2
+
+        n_buckets_dict = {'2k': 2 * k, '3k': 3 * k, '4k': 4 * k}
+        n_buckets = n_buckets_dict[N_Buckets] if N_Buckets else k*2
+
+        self.n_buckets = n_buckets
 
     def get_distance(self, distance_metric) -> Callable[[np.ndarray, np.ndarray],np.ndarray]:
         if distance_metric == 'euclidean':
@@ -203,7 +207,4 @@ class GlobalKMeansAlgorithm:
         distances = self.distance(X, self.centroids)
         labels = np.argmin(distances, axis=1)
 
-        # Compute total within-cluster variance
-        E = self.compute_total_variance(X, labels)
-
-        return labels, E
+        return labels
