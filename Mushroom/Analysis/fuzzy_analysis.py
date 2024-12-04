@@ -5,7 +5,7 @@ from Classes.AnalysisUtils import AnalysisUtils
 if __name__ == "__main__":
     dataset_path = '..'
 else:
-    dataset_path = 'Hepatitis'
+    dataset_path = 'Mushroom'
 
 # Load the K-Means results
 results_path = os.path.join(dataset_path, "Results", "CSVs", "fuzzy_c_means_results.csv")
@@ -14,7 +14,7 @@ results_df = pd.read_csv(results_path)
 cluster_labels_path = os.path.join(dataset_path, "Results", "CSVs", "fuzzy_c_means_cluster_labels.csv")
 labels_df = pd.read_csv(cluster_labels_path)
 
-pca_dataset_path = os.path.join(dataset_path, "Preprocessing", "hepatitis_pca.csv")
+pca_dataset_path = os.path.join(dataset_path, "Preprocessing", "mushroom_pca.csv")
 pca_dataset_df = pd.read_csv(pca_dataset_path)
 
 # Create output directories
