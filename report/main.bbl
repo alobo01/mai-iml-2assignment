@@ -1,8 +1,31 @@
 \begin{thebibliography}{1}
 
+\bibitem{Fan2003}
+J.L. Fan, W.Z. Zhen, and W.X. Xie.
+\newblock Suppressed fuzzy c-means clustering algorithm.
+\newblock {\em Pattern Recognition Letters}, 24:1607--1612, 2003.
+
+\bibitem{Hoppner2003}
+F.~Höppner and F.~Klawonn.
+\newblock Improved fuzzy partitions for fuzzy regression models.
+\newblock {\em International Journal of Approximate Reasoning}, 32:85--102,
+  2003.
+
 \bibitem{Likas2003}
 Aristidis Likas, Nikos Vlassis, and Jakob~J. Verbeek.
 \newblock The global k-means clustering algorithm.
 \newblock {\em Pattern Recognition}, 36(2):451--461, 2003.
+
+\bibitem{Szilagyi2014}
+L\'aszl\'o Szil\'agyi and S\'andor~M. Szil\'agyi.
+\newblock Generalization rules for the suppressed fuzzy c-means clustering
+  algorithm.
+\newblock {\em Neurocomputing}, 139:298--309, 2014.
+
+\bibitem{Szilagyi2010}
+L.~Szilágyi, S.M. Szilágyi, and Z.~Benyó.
+\newblock Analytical and numerical evaluation of the suppressed fuzzy c-means
+  algorithm: a study on the competition in c-means clustering models.
+\newblock {\em Soft Computing}, 14:495--505, 2010.
 
 \end{thebibliography}
