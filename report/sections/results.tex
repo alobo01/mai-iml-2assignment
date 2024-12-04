@@ -10,9 +10,10 @@ To systematically evaluate the different configurations of each clustering algor
 
     \item \textbf{Results Compilation}: The performance metrics for each parameter combination are recorded in a structured format. These results are saved as a dataset that summarizes the outcomes of all evaluations, forming a basis for analysis. We save as well the cluster labels of all samples for each clustering algorithm that we run, so we can recover the same clusters in the posterior analysis.
 
-    \item \textbf{Results Analysis}: After results are compiled across all configurations, quantitative and qualitative analysis is performed to identify common trends among the best-performing configurations. This analysis helps determine the most reliable and effective parameter settings for accurate and efficient clustering. We will discuss our results in the following sections.
-    
-    \textit{Note:} Since all of the tested datasets have high dimensionality, we use Principal Component Analysis (PCA) to extract the 2 principal components in order to generate the clustering scatter plots of the datasets for visualization purposes.
+    \item \textbf{Results Analysis}: After results are compiled across all configurations, quantitative and qualitative analysis is performed to identify common trends among the different algorithm configurations for each of the datasets. Additionally, we extract the top performing configuration according to each of the 5 evaluation metrics, in order to study common patterns and visualize the resulting clusters. This analysis helps determine the most reliable and effective parameter settings for accurate and efficient clustering for each dataset.
 \end{enumerate}
+Due to the vast ammount of information that can be extracted from the results, we will only explicitly showcase the most clarifying plots and results that we have extracted. However, all of the information is available in the \texttt{plots\_and\_tables} folder for each of the datasets, in the \texttt{code} attached to this report.
+
+\textit{Note:} Since all of the tested datasets have high dimensionality, we use Principal Component Analysis (PCA) to extract the 2 principal components in order to generate the clustering scatter plots of the datasets for visualization purposes.
 
 \input{sections/results/kmeans.tex}
