@@ -18,13 +18,11 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 
 # Define grid
 grid = {
-    'n_clusters': [2, 4, 6, 8],
-    'affinity': {
-        'rbf': {'gamma': [0.1, 1, 10]},
-        'nearest_neighbors': {'n_neighbors': [5, 10]}
-    },
-    'assign_labels': ['kmeans', 'discretize'],
-    'eigen_tol': [1e-3, 1e-4]
+    'n_clusters': [2],
+    'n_neighbors': [5, 7, 10],
+    'assign_labels': ['kmeans', 'cluster_qr'],
+    'eigen_solver': ['auto', 'arpack', 'lobpcg'],
+    'Repetitions': 10
 }
 
 # File paths
