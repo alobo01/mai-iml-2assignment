@@ -17,9 +17,10 @@ X = data.drop(columns=['Class']).values
 
 # Define configurations to test
 grid = {
-    'max_clusters': [x for x in range(2, 11)],
-    'max_iterations': [10, 20],
-    'distance_metric': ['euclidean', 'manhattan', 'clark']
+    'max_clusters': [20],
+    'max_iterations': [10, 20, 50],
+    'distance_metric': ['euclidean', 'manhattan', 'clark'],
+    'Repetitions': 20
 }
 
 # File paths for saving results

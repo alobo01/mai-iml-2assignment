@@ -2,6 +2,7 @@ import itertools
 import os
 import time
 from typing import Iterable
+import numpy as np
 
 import pandas as pd
 from Classes.EvaluationUtils import EvaluationUtils
@@ -84,6 +85,9 @@ class ResultUtils:
 
             # Evaluate clustering performance
             metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
+
+            # Add predicted number of clusters (for XMeans)
+            metrics['Predicted k'] = len(np.unique(cluster_labels))
 
             # Add execution time to metrics
             metrics['Time'] = execution_time

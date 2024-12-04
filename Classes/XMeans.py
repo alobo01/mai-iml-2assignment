@@ -70,7 +70,7 @@ class XMeans:
             return KMeansAlgorithm(
                 k=n_clusters,
                 centroids=initial_centroids,
-                distance_metric=self.distance_metric
+                Distance_Metric=self.distance_metric
             )
 
         # If no centroids provided, randomly select from data points
@@ -80,7 +80,7 @@ class XMeans:
         return KMeansAlgorithm(
             k=n_clusters,
             centroids=random_initial_centroids,
-            distance_metric=self.distance_metric
+            Distance_Metric=self.distance_metric
         )
 
     def determine_additional_splits(
@@ -140,7 +140,7 @@ class XMeans:
 
             # Initialize and fit KMeans for subclustering with custom initial centroids
             kmeans_subclusters = self._initialize_kmeans(num_subclusters, cluster_points, initial_centroids)
-            subcluster_labels, _ = kmeans_subclusters.fit(cluster_points)
+            subcluster_labels = kmeans_subclusters.fit(cluster_points)
             subcluster_centroids = kmeans_subclusters.centroids
 
             # Compute BIC after split
@@ -189,7 +189,7 @@ class XMeans:
         while iteration < self.max_iterations:
             # Initialize and fit KMeans
             kmeans = self._initialize_kmeans(num_clusters, data)
-            cluster_labels, _ = kmeans.fit(data)
+            cluster_labels = kmeans.fit(data)
             cluster_centroids = kmeans.centroids
 
             # Check for additional cluster splits
@@ -210,7 +210,7 @@ class XMeans:
 
         # Perform final clustering with determined number of clusters
         final_kmeans = self._initialize_kmeans(num_clusters, data)
-        self.labels_, _ = final_kmeans.fit(data)
+        self.labels_ = final_kmeans.fit(data)
         self.centroids = final_kmeans.centroids
         self.n_clusters = num_clusters
 

@@ -24,7 +24,7 @@ plots_path = os.path.join(base_path, 'XMeansPlots')
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
 
-features_explored = ['max_clusters', 'distance_metric', 'max_iterations']
+features_explored = ['max_iterations', 'Predicted k']
 
 AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, plots_path, features_explored)
 
