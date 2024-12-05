@@ -104,3 +104,28 @@ From these results, we can make some deductions as to which are the best hyperpa
     \item \textbf{Pen-based:} In this case, we do not see such a clear predominance of any specific value of k, but there seems to be a trend towards intermediate values, which was to be expected due to the 10 classes of the dataset. In contrast, we do see a constant primacy of the Euclidean distance metric over the rest, that clearly appears to be better at capturing key differences in this dataset than the other two.
 \end{enumerate}
 Additionally, we can observe that the 2 bigger datasets (Mushroom and Pen-based) have overall better top values of the metrics than the smaller, Hepatitis dataset. In particular, the Pen-based has the best results in all of the metrics except DBI (in which the difference is minimal), which leads us to the conclusion that it is the dataset for which the K-Means clustering algorithm is better suited.
+
+Finally, we display in Figure \ref{fig:kmeans:clusters} the resulting clusters for some of the best runs (one per dataset), after transforming the samples through a PCA with 2 components. Due to the high amount of samples, the Mushroom and Pen-based plots might appear somewhat cluttered, but the clusters can still be identified.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/KMeans/hepatitis_best_run_CHS.png}
+        \caption{Hepatitis}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/KMeans/mushroom_best_run_CHS.png}
+        \caption{Mushroom}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/KMeans/penbased_best_run_Silhouette.png}
+        \caption{Pen-based}
+    \end{subfigure}
+    \caption{Resulting clusters for each dataset (after PCA)}
+    \label{fig:kmeans:clusters}
+\end{figure}
