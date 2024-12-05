@@ -24,7 +24,7 @@ plots_path = os.path.join(base_path, 'FuzzyPlots')
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
 
-features_explored = ['n_clusters', 'fuzziness', 'rho']
+features_explored = ['n_clusters', 'fuzziness', 'rho'] # ['max_iter', 'error']
 
 AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, plots_path, features_explored)
 

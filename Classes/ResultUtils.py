@@ -156,7 +156,7 @@ class ResultUtils:
 
                     # Add labels to DataFrame
                     labels_df = pd.concat([labels_df, pd.DataFrame({full_algorithm_name: cluster_labels})], axis=1)
-                ResultUtils.progress_bar(i,total_configs)
+                ResultUtils.progress_bar(index,total_configs)
 
             except Exception as e:
                 print(f"Error with configuration {config}: {e}")

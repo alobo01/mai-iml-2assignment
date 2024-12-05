@@ -1,64 +1,130 @@
 
-Here's the adapted section discussing Fuzzy C-Means instead of K-Means, preserving the original structure and style but adjusted for the fuzzy clustering approach:
+\subsection{Fuzzy C-Means}
+
+We have tested 432 different configurations of the Fuzzy C-Means (FCM) algorithm on each dataset by using the fuzziness parameter \( m \) (with values from 1.5 to 4.0) and varying the number of clusters ( n\_clusters) between the following values:
+
+\begin{itemize}
+  \item Pen-based: 6, 8, 9, 10
+  \item Mushroom and Hepatitis: 2, 3, 4, 5
+\end{itemize}
 
 
-
-\subsection*{\subsection{Fuzzy C-Means}}
-
-We have tested on each dataset 57 different configurations of the Fuzzy C-Means (FCM) algorithm, by using the fuzziness parameter m (with values from 1.5 to 4.0) and varying the number of clusters (n\_clusters) between 2 and 20. For each configuration, we ran the algorithm 10 times to mitigate the effects of initialization randomness. This resulted in a total of 570 runs of the FCM algorithm per dataset. From the evaluation metrics extracted in these runs, we analyze the impact of the key hyperparameters and derive insights through statistical analysis.
+The following parameters were also varied:
 
 
-\subsection*{\subsubsection{Preliminary Study}}
+\begin{itemize}
+  \item \( \text{max\_iter} \): 100, 300, 500
+  \item \( \text{error} \): 1e-1, 1e-4, 1e-5
+  \item \( \rho \): 0.5, 0.7, 0.9
+\end{itemize}
+
+
+For each configuration, we ran the algorithm 10 times to mitigate the effects of initialization randomness, resulting in a total of 4320 runs of the FCM algorithm per dataset. From the evaluation metrics extracted in these runs, we analyze the impact of the key hyperparameters and derive insights through statistical analysis.
+
+We decided not to include \textit{max\_iter} and \textit{error tolerance} in the analysis of performance metrics, as they do not significantly affect the performance, aside from removing outliers and slightly improving execution time. To illustrate this, we include 3 heatmaps displaying execution times for each dataset, along with the distribution of ARI results for different values of \textit{max\_iter} and \textit{error tolerance} (see \textbf{Figure}\ref{fig:error-iter-fuzzy}).
+
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/FuzzyCMeans/penBased_error_iter_pairplot.png}
+        \caption{Pen-based dataset.}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/FuzzyCMeans/mushroom_error_iter_pairplot.png}
+        \caption{Mushroom dataset.}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/FuzzyCMeans/hepatitis_error_iter_pairplot}
+        \caption{Hepatitis dataset.}
+    \end{subfigure}
+    \caption{Heatmaps illustrating execution times for each dataset, showcasing performance across different configurations.}
+    \label{fig:error-iter-fuzzy}
+\end{figure}
+
+
+\subsubsection{Preliminary Study}
 
 We first explored preliminary patterns in the measured metrics and the influence of hyperparameters on clustering performance.
 
 
-Figure \ref{fig:metrics_corr} illustrates the relationships between the various metrics for the FCM algorithm. This matrix plot highlights the correlations between metrics (lower triangle), histogram distributions (diagonal), and scatterplots of metric values (upper triangle). A notable observation is the interaction between the fuzziness parameter and metrics like Silhouette and DBI. For instance, while lower fuzziness (mm) often improves silhouette scores due to sharper cluster boundaries, it can lead to higher DBI values, which might indicate a trade-off between cluster compactness and interpretability. Similar trends are observed across all datasets, though the degree of correlation varies.
+\textbf{Figure} \ref{fig:metrics_corr_fuzzy} illustrates the relationships between the various metrics for the FCM algorithm. This matrix plot highlights the correlations between metrics (lower triangle), histogram distributions (diagonal), and scatterplots of metric values (upper triangle). A notable observation is the interaction between the fuzziness parameter and metrics like Silhouette and DBI. For instance, while lower fuzziness (mm) often improves silhouette scores due to sharper cluster boundaries, it can lead to higher DBI values, which might indicate a trade-off between cluster compactness and interpretability. Similar trends are observed across all datasets, though the degree of correlation varies.
 
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.7\textwidth]{figures/metrics_correlations_matrix.png}
-\caption{Metrics correlations summary for Fuzzy C-Means}
-\label{fig:metrics_corr}
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/penBased_metrics_correlations_matrix.png}
+		\caption{Pen-based dataset.}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/mushroom_metrics_correlations_matrix.png}
+		\caption{Mushroom dataset.}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/hepatitis_metrics_correlations_matrix.png}
+		\caption{Hepatitis dataset.}
+	\end{subfigure}
+	\caption{Metrics correlation acrross the three datasets.}
+	\label{fig:metrics_corr_fuzzy}
 \end{figure}
 
 
-Additionally, Figure \ref{fig:pairplot} shows hyperparameter pairwise relationships, particularly the impact of fuzziness (mm) and number of clusters (n_clustersn\_clusters) on clustering quality and execution time. Across datasets, higher fuzziness values consistently resulted in more computationally expensive runs, likely due to the increased complexity of assigning membership values. Interestingly, for datasets like Pen-based (10 classes), intermediate cluster counts (e.g., n_clusters=10n\_clusters = 10) aligned closely with ground truth and yielded better metrics, such as ARI and NMI. Conversely, for Mushroom (2 classes), smaller values of n_clustersn\_clusters and lower fuzziness performed better.
+Additionally, Figure \ref{fig:pairplot_fuzzy} shows hyperparameter pairwise relationships, particularly the impact of fuzziness $m$ and number of clusters n\_clusters on clustering quality and execution time. Across datasets, higher fuzziness values consistently resulted in more computationally expensive runs, likely due to the increased complexity of assigning membership values. Interestingly, for datasets like Pen-based (10 classes), high cluster counts (e.g., n\_clusters$=10$) aligned closely with ground truth and yielded better metrics, such as ARI and NMI. Conversely, for Mushroom (2 classes), smaller values of n\_clusters and lower fuzziness performed better.
 
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}{0.49\textwidth}
 \centering
-\includegraphics[width=\linewidth]{figures/mushroom_hyperparameter_pairplot_matrix.png}
+\includegraphics[width=\linewidth]{figures/FuzzyCMeans/mushroom_hyperparameter_pairplot_matrix.png}
 \caption{Mushroom pairplot matrix for FCM}
 \end{subfigure}
 \hfill
 \begin{subfigure}{0.49\textwidth}
 \centering
-\includegraphics[width=\linewidth]{figures/penbased_hyperparameter_pairplot_matrix.png}
+\includegraphics[width=\linewidth]{figures/FuzzyCMeans/penBased_hyperparameter_pairplot_matrix.png}
 \caption{Pen-based pairplot matrix for FCM}
 \end{subfigure}
 \caption{Hyperparameter pairplot matrices based on clustering metrics and execution time for FCM}
-\label{fig:pairplot}
+\label{fig:pairplot_fuzzy}
 \end{figure}
 
 
-\subsection*{\subsubsection{Statistical Analysis}}
 
-For the statistical analysis, we used Friedman tests to assess whether significant differences exist among metrics for varying values of fuzziness and number of clusters. With a confidence level of α=0.15\alpha = 0.15, the results consistently indicate significant differences across all datasets when varying both hyperparameters.
+\subsubsection{Fuzziness Parameter (m):}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/penBased_violin_fuzziness_vs_DBI}
+		\caption{Pen-based dataset.}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/mushroom_violin_fuzziness_vs_Silhouette}
+		\caption{Mushroom dataset.}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/FuzzyCMeans/hepatitis_violin_fuzziness_vs_NMI}
+		\caption{Hepatitis dataset.}
+	\end{subfigure}
+	\caption{Metrics correlation acrross the three datasets.}
+	\label{fig:metrics_corr_fuzzy}
+\end{figure}
 
 
-\textit{Note:} Due to the large volume of results, only the most relevant findings are discussed here. The full set of results can be accessed in the \texttt{code} folder under \texttt{Analysis/plot_and_tables/FuzzyCMeansReports}.
 
-
-\subsubsection*{Fuzziness Parameter (mm):}
-
-Post-hoc Nemenyi tests revealed that lower values of mm (e.g., 1.5) typically resulted in sharper cluster assignments, reflected in higher ARI and NMI values. However, excessive sharpness (e.g., m=1.5m = 1.5) can negatively impact interpretability and increase DBI values. Intermediate fuzziness values (e.g., m=2.0m = 2.0) often strike a balance between cluster quality and computational efficiency. These findings were consistent across all datasets.
-
-
-\subsubsection*{Number of Clusters (n_clustersn\_clusters):}
+\begin{comment}
+\subsubsection*{Number of Clusters (n\_clusters):}
 
 \begin{enumerate}
 
@@ -87,4 +153,4 @@ These findings confirm the sensitivity of FCM to both hyperparameters and its su
 \end{itemize}
 
 This adaptation integrates Fuzzy C-Means characteristics while maintaining your original narrative structure.
-
+\end{comment}
