@@ -9,6 +9,7 @@ import joblib
 import os
 
 from sklearn.decomposition import PCA
+from umap import UMAP
 
 
 class DataPreprocessor:
@@ -259,4 +260,26 @@ class DataPreprocessor:
         principal_df["Class"] = dataframe["Class"]
 
         return principal_df
+
+    @staticmethod
+    def convert_dataframe_to_UMAP(dataframe, n_components=2):
+        # Separate features from the class label
+        data_without_labels = dataframe.drop(columns=["Class"])
+
+        # Initialize UMAP with the specified number of components
+        umap_transformer = UMAP(n_components=n_components)
+
+        # Fit and transform the data
+        umap_components = umap_transformer.fit_transform(data_without_labels)
+
+        # Create a new DataFrame with the indices and UMAP components
+        umap_df = pd.DataFrame(
+            umap_components,
+            columns=[f"UMAP{i + 1}" for i in range(umap_components.shape[1])]
+        )
+
+        # Add the class column back to the DataFrame
+        umap_df["Class"] = dataframe["Class"]
+
+        return umap_df
 
