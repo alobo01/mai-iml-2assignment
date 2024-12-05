@@ -79,6 +79,17 @@ class ResultUtils:
             # Fit the model and predict labels
             cluster_labels = model.fit(X)
 
+            # Filter out rows where labels == -1
+            # # Create a mask to exclude rows where labels == -1
+            # mask = labels != -1
+            # filtered_labels = labels[mask]
+            # filtered_X = X[mask]
+            # filtered_classes = classes[mask]
+            #
+            # # Reset index for clean output (optional)
+            # filtered_X = filtered_X.reset_index(drop=True)
+            # filtered_classes = filtered_classes.reset_index(drop=True)
+
             # Stop timing
             end_time = time.time()
             execution_time = end_time - start_time
