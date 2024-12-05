@@ -16,10 +16,8 @@ X = data.drop(columns=['Unnamed: 0', 'Class']).values
 
 # Define configurations to test
 grid = {
-    'n_clusters': [6, 8, 9, 10],
-    'fuzziness': [1.5, 2, 3, 4],  # Fuzziness parameter 'm'
-    'max_iter': [100, 300, 500],  # Maximum iterations
-    'error': [1e-1, 1e-4, 1e-5],  # Convergence tolerance
+    'n_clusters': [2, 3, 4, 5, 7, 9, 11, 13, 15],
+    'fuzziness': [1.5, 2, 3, 4, 5, 6, 7, 9],  # Fuzziness parameter 'm'
     'rho': [0.5, 0.7, 0.9],  # rho parameter
     'Repetitions': 10  # Number of repetitions
 }

@@ -1,5 +1,6 @@
 import itertools
 import os
+import sys
 import time
 from typing import Iterable
 import numpy as np
@@ -68,6 +69,22 @@ class ResultUtils:
         return final_combinations
 
     @staticmethod
+    def progress_bar(current, total, bar_length=50):
+        """
+        Displays a progress bar.
+
+        :param current: Current iteration index.
+        :param total: Total number of iterations.
+        :param bar_length: Length of the progress bar.
+        """
+        fraction = current / total
+        arrow = "=" * int(fraction * bar_length - 1) + ">" if fraction < 1 else "=" * bar_length
+        padding = " " * (bar_length - len(arrow))
+        end = "\r" if current < total else "\n"
+        sys.stdout.write(f"\r[{arrow}{padding}] {fraction:.0%}")
+        sys.stdout.flush()
+
+    @staticmethod
     def getResults(algorithm_name, model, X, class_labels):
         """
         Run clustering, evaluate results, and return performance metrics and labels.
@@ -115,8 +132,8 @@ class ResultUtils:
 
         # Flatten the grid to handle nested configurations
         flattened_configs = ResultUtils.flatten_grid(grid)
-
-        for config in flattened_configs:
+        total_configs = len(flattened_configs)
+        for index,config in enumerate(flattened_configs,start=1):
             algorithm_name = f"{model_class.__name__}({', '.join(f'{k}={v}' for k, v in config.items() if k!='Repetition')})"
             try:
                 # Instantiate the model with the flattened configuration
@@ -138,6 +155,7 @@ class ResultUtils:
 
                     # Add labels to DataFrame
                     labels_df = pd.concat([labels_df, pd.DataFrame({full_algorithm_name: cluster_labels})], axis=1)
+                ResultUtils.progress_bar(index,total_configs)
 
             except Exception as e:
                 print(f"Error with configuration {config}: {e}")

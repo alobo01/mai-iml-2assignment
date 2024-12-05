@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 class FuzzyCMeans:
-    def __init__(self, n_clusters: int=3, fuzziness: float=2, max_iter: int=150, error: float=1e-5, random_state:Union[int,None]=None, omega=0.95, suppression_factor=0.2, rho=0.6):
+    def __init__(self, n_clusters: int=3, fuzziness: float=2, max_iter: int=500, error: float=1e-5, random_state:Union[int,None]=None, omega=0.95, suppression_factor=0.2, rho=0.6):
         """
         Initialize the Fuzzy C-means clustering model.
 
