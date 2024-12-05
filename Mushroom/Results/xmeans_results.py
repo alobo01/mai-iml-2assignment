@@ -16,10 +16,8 @@ X = data.drop(columns=['Class']).values
 
 # Define configurations to test
 grid = {
-    'max_clusters': [20],
-    'tolerance': [0.001, 0.004, 0.008],
-    'repeat_kmeans': [1, 2, 3],
-    'Repetitions': 10
+    'max_clusters': [700],
+    'Repetitions': 40
 }
 
 # File paths for saving results

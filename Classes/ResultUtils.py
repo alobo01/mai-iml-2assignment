@@ -72,30 +72,27 @@ class ResultUtils:
         """
         Run clustering, evaluate results, and return performance metrics and labels.
         """
-        try:
-            # Start timing
-            start_time = time.time()
+        # Start timing
+        start_time = time.time()
 
-            # Fit the model and predict labels
-            cluster_labels = model.fit(X)
+        # Fit the model and predict labels
+        cluster_labels = model.fit(X)
 
-            # Stop timing
-            end_time = time.time()
-            execution_time = end_time - start_time
+        # Stop timing
+        end_time = time.time()
+        execution_time = end_time - start_time
 
-            # Evaluate clustering performance
-            metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
+        # Evaluate clustering performance
+        metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
 
-            # Add predicted number of clusters (for XMeans)
-            metrics['Predicted k'] = len(np.unique(cluster_labels))
+        # Add predicted number of clusters (for XMeans)
+        metrics['Predicted k'] = len(np.unique(cluster_labels))
 
-            # Add execution time to metrics
-            metrics['Time'] = execution_time
+        # Add execution time to metrics
+        metrics['Time'] = execution_time
 
-            return metrics, cluster_labels
-        except Exception as e:
-            print(f"Error during evaluation of {algorithm_name}: {e}")
-            return None, None
+        return metrics, cluster_labels
+
 
     @staticmethod
     def runGrid(grid, model_class, X, class_labels, results_file, labels_file):
@@ -118,29 +115,26 @@ class ResultUtils:
 
         for config in flattened_configs:
             algorithm_name = f"{model_class.__name__}({', '.join(f'{k}={v}' for k, v in config.items() if k!='Repetition')})"
-            try:
-                # Instantiate the model with the flattened configuration
-                model = model_class(**{k: v for k, v in config.items() if k != 'Repetition'})
+            # Instantiate the model with the flattened configuration
+            model = model_class(**{k: v for k, v in config.items() if k != 'Repetition'})
 
-                # Handle multiple runs
-                repetition = config['Repetition']
-                full_algorithm_name = f"{algorithm_name}_{repetition}"
+            # Handle multiple runs
+            repetition = config['Repetition']
+            full_algorithm_name = f"{algorithm_name}_{repetition}"
 
-                # Get results using getResults
-                metrics, cluster_labels = ResultUtils.getResults(full_algorithm_name, model, X, class_labels)
-                if metrics is not None:
-                    # Append results
-                    results.append({
-                        'Algorithm': full_algorithm_name,
-                        **config,
-                        **metrics
-                    })
+            # Get results using getResults
+            metrics, cluster_labels = ResultUtils.getResults(full_algorithm_name, model, X, class_labels)
+            if metrics is not None:
+                # Append results
+                results.append({
+                    'Algorithm': full_algorithm_name,
+                    **config,
+                    **metrics
+                })
 
-                    # Add labels to DataFrame
-                    labels_df = pd.concat([labels_df, pd.DataFrame({full_algorithm_name: cluster_labels})], axis=1)
+                # Add labels to DataFrame
+                labels_df = pd.concat([labels_df, pd.DataFrame({full_algorithm_name: cluster_labels})], axis=1)
 
-            except Exception as e:
-                print(f"Error with configuration {config}: {e}")
 
         # Save results and labels
         os.makedirs(os.path.dirname(results_file), exist_ok=True)

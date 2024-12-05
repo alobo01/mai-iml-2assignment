@@ -1,7 +1,7 @@
-| Metric | max_clusters | distance_metric | tolerance | Best Value |
-|---|---|---|---|---|
-| ARI | 10 | manhattan | 0.004 | 0.3898314833023244 |
-| NMI | 10 | manhattan | 0.004 | 0.2694304816858889 |
-| DBI | 10 | manhattan | 0.001 | 1.97281818798241 |
-| Silhouette | 10 | manhattan | 0.001 | 0.2104287009617214 |
-| CHS | 10 | euclidean | 0.001 | 36.77071145608097 |
+| Metric | use_kmeans_plus_plus | tolerance | Best Value |
+|---|---|---|---|
+| ARI | True | 0.001 | 0.2709866620584282 |
+| NMI | True | 0.001 | 0.2290633951395821 |
+| DBI | True | 0.001 | 1.9894912722358635 |
+| Silhouette | True | 0.001 | 0.206607280945913 |
+| CHS | True | 0.001 | 36.77071145608097 |
