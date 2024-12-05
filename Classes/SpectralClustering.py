@@ -11,36 +11,34 @@ class SpectralClusteringWrapper:
     def __init__(
         self,
         n_clusters: int = 8,
-        eigen_solver: Optional[str] = None,
+        eigen_solver: str = 'auto',
         random_state: Optional[int] = None,
-        n_init: int = 10,
-        gamma: float = 1.0,
-        affinity: str = 'rbf',
+        n_init: int = 1,
+        affinity: str = 'nearest_neighbors',
         n_neighbors: int = 10,
         eigen_tol: float = 0.0,
         assign_labels: str = 'kmeans',
-        degree: int = 3,
-        coef0: float = 1,
-        kernel_params: Optional[Dict[str, Any]] = None,
-        n_jobs: Optional[int] = None
+        n_jobs: int = -1
     ):
         """
         Wrapper for scikit-learn's SpectralClustering class.
         Initializes the SpectralClustering object with given parameters.
         """
+
+        self.n_clusters = n_clusters
+        self.n_neighbors = n_neighbors
+        self.eigen_solver = eigen_solver
+        self.assign_labels = assign_labels
+
         self.model = SpectralClustering(
             n_clusters=n_clusters,
             eigen_solver=eigen_solver,
             random_state=random_state,
             n_init=n_init,
-            gamma=gamma,
             affinity=affinity,
             n_neighbors=n_neighbors,
             eigen_tol=eigen_tol,
             assign_labels=assign_labels,
-            degree=degree,
-            coef0=coef0,
-            kernel_params=kernel_params,
             n_jobs=n_jobs
         )
 
