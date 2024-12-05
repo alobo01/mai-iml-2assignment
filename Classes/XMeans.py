@@ -1,217 +1,184 @@
+from math import log
+from sklearn.metrics.pairwise import euclidean_distances
 import numpy as np
 from Classes.KMeans import KMeansAlgorithm
 
-EPSILON = np.finfo(float).eps
-
-
-def compute_log_likelihood(
-        cluster_size: int,
-        subcluster_size: int,
-        variance: float,
-        num_features: int,
-        num_subclusters: int
-) -> float:
-    """
-    Compute the log likelihood for a given cluster and subcluster.
-
-    Args:
-        cluster_size: Number of points in the cluster
-        subcluster_size: Number of points in the subcluster
-        variance: Variance of the cluster or subcluster
-        num_features: Dimensionality of the data
-        num_subclusters: Number of subclusters
-
-    Returns:
-        Log-likelihood value
-    """
-    if 0 <= variance <= EPSILON:
-        return 0
-
-    likelihood = (
-            subcluster_size * (
-            np.log(subcluster_size)
-            - np.log(cluster_size)
-            - 0.5 * (np.log(2 * np.pi) + num_features * np.log(variance) + 1)
-    )
-            + 0.5 * num_subclusters
-    )
-    return 0 if likelihood == np.inf else likelihood
-
-
 class XMeans:
-    def __init__(self, max_clusters=20, max_iterations=100, distance_metric='euclidean'):
-        """
-        XMeans clustering algorithm.
+    """
+    An implementation of the X-Means clustering algorithm with KMeans++ initialization.
 
-        Args:
-            max_clusters: Maximum number of clusters
-            max_iterations: Maximum number of iterations for the while loop
-            distance_metric: Distance metric for clustering ('euclidean', 'manhattan', 'clark')
-        """
+    Parameters:
+    - max_clusters: Maximum number of clusters.
+    - tolerance: Tolerance for convergence.
+    - distance_metric: Distance metric ('euclidean', 'manhattan', 'clark').
+    - repeat_kmeans: Number of times to repeat KMeans for robust results.
+    """
+
+    def __init__(self, max_clusters=20, tolerance=0.001, repeat_kmeans=1):
         self.max_clusters = max_clusters
-        self.max_iterations = max_iterations
-        self.distance_metric = distance_metric
+        self.tolerance = tolerance
+        self.repeat_kmeans = repeat_kmeans
 
-    def _initialize_kmeans(self, n_clusters: int, data: np.ndarray,
-                           initial_centroids: np.ndarray = None) -> KMeansAlgorithm:
+        self.clusters = []
+        self.centroids = None
+        self.data = None
+
+    def _initialize_kmeans_plus_plus(self, data, num_clusters):
         """
-        Initialize KMeansAlgorithm with either provided or randomly selected centroids.
-
-        Args:
-            n_clusters: Number of clusters
-            data: Input data
-            initial_centroids: Optional pre-defined initial centroids
-
-        Returns:
-            Initialized KMeansAlgorithm instance
+        Initializes cluster centroids using KMeans++.
         """
-        # If initial centroids are provided, use them
-        if initial_centroids is not None:
-            return KMeansAlgorithm(
-                k=n_clusters,
-                centroids=initial_centroids,
-                Distance_Metric=self.distance_metric
-            )
-
-        # If no centroids provided, randomly select from data points
-        indices = np.random.choice(data.shape[0], n_clusters, replace=False)
-        random_initial_centroids = data[indices]
-
-        return KMeansAlgorithm(
-            k=n_clusters,
-            centroids=random_initial_centroids,
-            Distance_Metric=self.distance_metric
+        kmeans = KMeansAlgorithm(
+            k=num_clusters, centroids=None, max_iter=100
         )
+        kmeans.fit(data)
+        return kmeans.centroids
 
-    def determine_additional_splits(
-            self, num_clusters: int, data: np.ndarray, cluster_labels: np.ndarray,
-            cluster_centroids: np.ndarray, num_features: int, num_subclusters: int
-    ) -> int:
+    def fit(self, data):
         """
-        Determine whether clusters should be split into subclusters based on BIC comparison.
-
-        Args:
-            num_clusters: Number of current clusters
-            data: Dataset
-            cluster_labels: Labels for clusters
-            cluster_centroids: Cluster centroids
-            num_features: Number of features in the dataset
-            num_subclusters: Number of subclusters to consider when splitting
-
-        Returns:
-            Number of new clusters to create
+        Performs the X-Means clustering algorithm on the provided dataset.
         """
-        bic_before_split = np.zeros(num_clusters)
-        bic_after_split = np.zeros(num_clusters)
-        params_per_cluster = num_features + 1
-        additional_clusters = 0
+        self.data = np.array(data)
+        if self.centroids is None:
+            self.centroids = self._initialize_kmeans_plus_plus(data, 2)
 
-        for cluster_idx in range(num_clusters):
-            cluster_points = data[cluster_labels == cluster_idx]
-            cluster_size = cluster_points.shape[0]
+        while len(self.centroids) <= self.max_clusters:
+            current_cluster_count = len(self.centroids)
+            self.clusters, self.centroids = self._optimize_parameters(self.centroids)
+            updated_centroids = self._optimize_structure(self.clusters, self.centroids)
+            if current_cluster_count == len(updated_centroids):
+                break
+            else:
+                self.centroids = updated_centroids
 
-            if cluster_size <= num_subclusters:
-                continue
+        self.clusters, self.centroids = self._optimize_parameters(self.centroids)
+        return self._generate_labels()
 
-            # Compute variance and standard deviation for the current cluster
-            cluster_variance = np.sum(
-                (cluster_points - cluster_centroids[cluster_idx]) ** 2
-            ) / (cluster_size - 1)
-            cluster_std = np.sqrt(cluster_variance)
-
-            # Compute BIC before split
-            bic_before_split[cluster_idx] = compute_log_likelihood(
-                cluster_size, cluster_size, cluster_variance, num_features, 1
-            ) - (params_per_cluster / 2.0) * np.log(cluster_size)
-
-            # Generate initial centroids for subclustering
-            initial_centroids = np.zeros((num_subclusters, num_features))
-            parent_centroid = cluster_centroids[cluster_idx]
-
-            for subcluster_idx in range(num_subclusters):
-                # Generate a random direction vector
-                random_direction = np.random.randn(num_features)
-                random_direction /= np.linalg.norm(random_direction)  # Normalize
-
-                # Create two opposite centroids based on cluster standard deviation
-                # Use a scaling factor to control the spread (e.g., 1.0 or 1.5 times std)
-                offset = random_direction * cluster_std * (1.0 if subcluster_idx % 2 == 0 else -1.0)
-                initial_centroids[subcluster_idx] = parent_centroid + offset
-
-            # Initialize and fit KMeans for subclustering with custom initial centroids
-            kmeans_subclusters = self._initialize_kmeans(num_subclusters, cluster_points, initial_centroids)
-            subcluster_labels = kmeans_subclusters.fit(cluster_points)
-            subcluster_centroids = kmeans_subclusters.centroids
-
-            # Compute BIC after split
-            log_likelihood = 0
-            for subcluster_idx in range(num_subclusters):
-                subcluster_points = cluster_points[subcluster_labels == subcluster_idx]
-                subcluster_size = subcluster_points.shape[0]
-
-                if subcluster_size <= num_subclusters:
-                    continue
-
-                subcluster_variance = np.sum(
-                    (subcluster_points - subcluster_centroids[subcluster_idx]) ** 2
-                ) / (subcluster_size - num_subclusters)
-
-                log_likelihood += compute_log_likelihood(
-                    cluster_size, subcluster_size, subcluster_variance,
-                    num_features, num_subclusters
-                )
-
-            params_per_subcluster = num_subclusters * params_per_cluster
-            bic_after_split[cluster_idx] = log_likelihood - (
-                    params_per_subcluster / 2.0
-            ) * np.log(cluster_size)
-
-            if bic_before_split[cluster_idx] < bic_after_split[cluster_idx]:
-                additional_clusters += 1
-
-        return additional_clusters
-
-    def fit(self, data: np.ndarray) -> np.ndarray:
+    def _generate_labels(self):
         """
-        Fit the XMeans algorithm to the data.
-
-        Args:
-            data: Input data of shape (n_samples, n_features)
-
-        Returns:
-            XMeans clustering labels
+        Generates cluster labels for the dataset based on final clusters.
         """
-        num_clusters = 2
-        num_subclusters = 2
-        num_features = data.shape[1]
-        iteration = 0
+        labels = np.zeros(len(self.data), dtype=int)
+        for cluster_index, cluster_points in enumerate(self.clusters):
+            for point_index in cluster_points:
+                labels[point_index] = cluster_index
+        return labels
 
-        while iteration < self.max_iterations:
-            # Initialize and fit KMeans
-            kmeans = self._initialize_kmeans(num_clusters, data)
-            cluster_labels = kmeans.fit(data)
-            cluster_centroids = kmeans.centroids
+    def _find_optimal_parameters(self, subset_data):
+        """
+        Finds optimal parameters for splitting a cluster into two sub-clusters.
+        """
+        subset_data = np.array(subset_data)
+        best_wce = float('inf')
+        best_centroids, best_clusters = None, None
 
-            # Check for additional cluster splits
-            additional_clusters = self.determine_additional_splits(
-                num_clusters, data, cluster_labels, cluster_centroids,
-                num_features, num_subclusters
+        for _ in range(self.repeat_kmeans):
+            initial_centroids = self._initialize_kmeans_plus_plus(subset_data, 2)
+            kmeans = KMeansAlgorithm(
+                k=2, centroids=initial_centroids, max_iter=100
             )
+            labels = kmeans.fit(subset_data)
+            wce = kmeans.compute_total_variance(subset_data, labels)
 
-            new_number_of_clusters = num_clusters + additional_clusters
-            if additional_clusters == 0 or new_number_of_clusters > self.max_clusters:
-                break
-            elif new_number_of_clusters == self.max_clusters:
-                num_clusters = new_number_of_clusters
-                break
-            num_clusters = new_number_of_clusters
+            if wce < best_wce:
+                best_wce = wce
+                best_centroids = kmeans.centroids
+                best_clusters = self._assign_clusters(subset_data, best_centroids)
 
-            iteration += 1
+        return best_clusters, best_centroids, best_wce
 
-        # Perform final clustering with determined number of clusters
-        final_kmeans = self._initialize_kmeans(num_clusters, data)
-        self.labels_ = final_kmeans.fit(data)
-        self.centroids = final_kmeans.centroids
-        self.n_clusters = num_clusters
+    def _assign_clusters(self, data, centroids):
+        distances = euclidean_distances(data, centroids)
+        return [
+            np.where(distances[:, i] == np.min(distances, axis=1))[0].tolist()
+            for i in range(len(centroids))
+        ]
 
-        return self.labels_
+    def _optimize_parameters(self, centroids, indices=None):
+        """
+        Refines parameters of the current centroids to improve clustering.
+        """
+        if indices and len(indices) == 1:
+            return [[indices[0]]], self.data[indices[0]], 0.0
+
+        subset_data = self.data if indices is None else self.data[indices]
+        if centroids is None:
+            clusters, centroids, wce = self._find_optimal_parameters(subset_data)
+        else:
+            kmeans = KMeansAlgorithm(
+                k=len(centroids), centroids=np.array(centroids), max_iter=100
+            )
+            centroids = kmeans.centroids
+            clusters = self._assign_clusters(subset_data, centroids)
+
+        if indices:
+            clusters = self._map_local_to_global_clusters(clusters, indices)
+
+        return clusters, centroids
+
+    def _map_local_to_global_clusters(self, local_clusters, indices):
+        """
+        Maps local cluster indices back to the original dataset indices.
+        """
+        global_clusters = []
+        for cluster in local_clusters:
+            global_clusters.append([indices[idx] for idx in cluster])
+        return global_clusters
+
+    def _optimize_structure(self, clusters, centroids):
+        """
+        Evaluates the structure of the clusters to determine splits or merges.
+        """
+        new_centroids = []
+        remaining_centroids = self.max_clusters - len(centroids)
+
+        for i, cluster in enumerate(clusters):
+            child_clusters, child_centroids = self._optimize_parameters(None, cluster)
+            if len(child_clusters) > 1:
+                parent_bic = self._compute_bic([cluster], [centroids[i]])
+                child_bic = self._compute_bic(child_clusters, child_centroids)
+
+                if parent_bic < child_bic and remaining_centroids > 0:
+                    new_centroids.extend(child_centroids)
+                    remaining_centroids -= 1
+                else:
+                    new_centroids.append(centroids[i])
+            else:
+                new_centroids.append(centroids[i])
+
+        return new_centroids
+
+    def _compute_bic(self, clusters, centroids):
+        """
+        Computes the Bayesian Information Criterion (BIC) for a given clustering.
+        """
+        scores = []
+        dimensions = len(self.data[0])
+        total_points = 0
+        sigma_squared = 0.0
+        num_clusters = len(clusters)
+
+        for i, cluster in enumerate(clusters):
+            cluster_size = len(cluster)
+            total_points += cluster_size
+            for point_index in cluster:
+                sigma_squared += np.sum((self.data[point_index] - centroids[i]) ** 2)
+
+        if total_points - num_clusters > 0:
+            sigma_squared /= (total_points - num_clusters)
+            p = (num_clusters - 1) + dimensions * num_clusters + 1
+            log_likelihood = 0.0
+
+            for i, cluster in enumerate(clusters):
+                cluster_size = len(cluster)
+                if sigma_squared > 0:
+                    log_likelihood = (
+                            cluster_size * log(cluster_size)
+                            - cluster_size * log(total_points)
+                            - cluster_size * 0.5 * log(2 * np.pi)
+                            - cluster_size * dimensions * 0.5 * log(sigma_squared)
+                            - (cluster_size - num_clusters) * 0.5
+                    )
+                scores.append(log_likelihood - 0.5 * p * log(total_points))
+
+        return sum(scores)
+
