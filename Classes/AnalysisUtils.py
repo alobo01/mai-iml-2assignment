@@ -133,6 +133,66 @@ class AnalysisUtils:
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         plt.close(fig)
 
+    @classmethod
+    def create_separate_pairplots(cls,
+                                  data: pd.DataFrame,
+                                  params: List[str],
+                                  metric: str,
+                                  agg_func: str,
+                                  plots_path: str) -> None:
+        """
+        Create separate plots for each pair of parameters.
+
+        Args:
+            data (pd.DataFrame): Input DataFrame
+            params (List[str]): Parameters to analyze
+            metric (str): Performance metric to visualize
+            agg_func (str): Aggregation function for metric
+            plots_path (str): Path to save the plots
+        """
+        n_params = len(params)
+
+        # Ensure folder exists
+        os.makedirs(plots_path, exist_ok=True)
+
+        # Ensure Time column is scaled appropriately
+        if  data['Time'].max()<1:
+            data['Time'] = data['Time'].multiply(100)
+
+        # Iterate over each pair of parameters
+        for i in range(n_params):
+            for j in range(n_params):
+                param1 = params[i]
+                param2 = params[j]
+
+                # Generate a separate figure for each plot
+                fig, ax = plt.subplots(figsize=(6, 6))
+
+                # Diagonal - Histograms
+                if i == j:
+                    cls._plot_diagonal_histogram(data, ax, param1, metric)
+                    plot_title = f"Histogram_{param1}"
+
+                # Upper triangle - Time heatmaps
+                elif i < j:
+                    cls._plot_time_heatmap(data, ax, param1, param2, xlabels=True, ylabels=True)
+                    plot_title = f"Time_Heatmap_{param1}_vs_{param2}"
+
+                # Lower triangle - Metric heatmaps
+                else:
+                    cls._plot_metric_heatmap(data, ax, param1, param2, metric, agg_func, xlabels=True, ylabels=True)
+                    plot_title = f"Metric_Heatmap_{param1}_vs_{param2}"
+
+                # Configure plot titles and labels
+                ax.set_title(plot_title, fontsize=12)
+                ax.tick_params(axis='x', rotation=45)
+                ax.tick_params(axis='y', rotation=0)
+
+                # Save each plot with a unique name
+                save_path = os.path.join(plots_path, f"{plot_title}.png")
+                plt.savefig(save_path, bbox_inches='tight', dpi=100)
+                plt.close(fig)
+
     @staticmethod
     def _plot_diagonal_histogram(data: pd.DataFrame,
                                  ax: plt.Axes,
@@ -532,6 +592,15 @@ class AnalysisUtils:
             metric='ARI',  # Using ARI as primary performance metric
             agg_func='max',
             plots_path=plots_path
+        )
+
+        # Separate Pair-plot for Hyperparameter Analysis
+        AnalysisUtils.create_separate_pairplots(
+            data=results_df,
+            params=features_explored,
+            metric='ARI',  # Using ARI as primary performance metric
+            agg_func='max',
+            plots_path=os.path.join(plots_path,"pairPlots")
         )
 
         # 2. Create Custom Heatmap for Metric Correlations
