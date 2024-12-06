@@ -133,6 +133,66 @@ class AnalysisUtils:
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         plt.close(fig)
 
+    @classmethod
+    def create_separate_pairplots(cls,
+                                  data: pd.DataFrame,
+                                  params: List[str],
+                                  metric: str,
+                                  agg_func: str,
+                                  plots_path: str) -> None:
+        """
+        Create separate plots for each pair of parameters.
+
+        Args:
+            data (pd.DataFrame): Input DataFrame
+            params (List[str]): Parameters to analyze
+            metric (str): Performance metric to visualize
+            agg_func (str): Aggregation function for metric
+            plots_path (str): Path to save the plots
+        """
+        n_params = len(params)
+
+        # Ensure folder exists
+        os.makedirs(plots_path, exist_ok=True)
+
+        # Ensure Time column is scaled appropriately
+        if  data['Time'].max()<1:
+            data['Time'] = data['Time'].multiply(100)
+
+        # Iterate over each pair of parameters
+        for i in range(n_params):
+            for j in range(n_params):
+                param1 = params[i]
+                param2 = params[j]
+
+                # Generate a separate figure for each plot
+                fig, ax = plt.subplots(figsize=(6, 6))
+
+                # Diagonal - Histograms
+                if i == j:
+                    cls._plot_diagonal_histogram(data, ax, param1, metric)
+                    plot_title = f"Histogram_{param1}"
+
+                # Upper triangle - Time heatmaps
+                elif i < j:
+                    cls._plot_time_heatmap(data, ax, param1, param2, xlabels=True, ylabels=True)
+                    plot_title = f"Time_Heatmap_{param1}_vs_{param2}"
+
+                # Lower triangle - Metric heatmaps
+                else:
+                    cls._plot_metric_heatmap(data, ax, param1, param2, metric, agg_func, xlabels=True, ylabels=True)
+                    plot_title = f"Metric_Heatmap_{param1}_vs_{param2}"
+
+                # Configure plot titles and labels
+                ax.set_title(plot_title, fontsize=12)
+                ax.tick_params(axis='x', rotation=45)
+                ax.tick_params(axis='y', rotation=0)
+
+                # Save each plot with a unique name
+                save_path = os.path.join(plots_path, f"{plot_title}.png")
+                plt.savefig(save_path, bbox_inches='tight', dpi=100)
+                plt.close(fig)
+
     @staticmethod
     def _plot_diagonal_histogram(data: pd.DataFrame,
                                  ax: plt.Axes,
@@ -360,15 +420,18 @@ class AnalysisUtils:
         return table_str
 
     @staticmethod
-    def plot_best_runs(best_runs: dict, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame, best_runs_path: str):
+    def plot_best_runs(best_runs: dict, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame,
+                       umap_dataset_df: pd.DataFrame, best_runs_path: str):
         """
-        Generate scatter plots for best runs using PCA-transformed data with separate legends.
+        Generate scatter plots for best runs using both PCA-transformed and UMAP-transformed data,
+        each with separate legends. The plots will be saved with names indicating PCA or UMAP.
 
         Parameters:
-        best_runs (dict): Dictionary of best runs for each metric
-        labels_df (pd.DataFrame): DataFrame containing cluster labels
-        pca_dataset_df (pd.DataFrame): PCA-transformed dataset with original class labels
-        best_runs_path (str): Path to store the generated plots
+        best_runs (dict): Dictionary of best runs for each metric.
+        labels_df (pd.DataFrame): DataFrame containing cluster labels for each algorithm.
+        pca_dataset_df (pd.DataFrame): PCA-transformed dataset with original class labels.
+        umap_dataset_df (pd.DataFrame): UMAP-transformed dataset with original class labels.
+        best_runs_path (str): Path to store the generated plots.
         """
         # Ensure the directory exists
         os.makedirs(best_runs_path, exist_ok=True)
@@ -384,7 +447,9 @@ class AnalysisUtils:
             # Get the algorithm name for this run
             algorithm = run.get('Algorithm', 'Unknown')
 
-            # Create a new figure with extra space for legends
+            # -------------------
+            # PCA Visualization
+            # -------------------
             plt.figure(figsize=(8, 6))
 
             # Get cluster labels for this run
@@ -397,7 +462,7 @@ class AnalysisUtils:
             unique_true_labels = np.unique(true_labels)
             unique_clusters = np.unique(cluster_labels)
 
-            # Plot each true label with a different marker shape
+            # Plot each true label with a different marker shape for PCA
             for true_label_idx, true_label in enumerate(unique_true_labels):
                 # Select points with this true label
                 true_label_mask = true_labels == true_label
@@ -409,8 +474,8 @@ class AnalysisUtils:
                     mask = true_label_mask & cluster_mask
 
                     plt.scatter(
-                        pca_dataset_df.iloc[mask, 0],  # First PCA feature
-                        pca_dataset_df.iloc[mask, 1],  # Second PCA feature
+                        pca_dataset_df.iloc[mask, 0],  # First PCA component
+                        pca_dataset_df.iloc[mask, 1],  # Second PCA component
                         c=[color_palette(cluster_idx)],  # Cluster color
                         marker=marker_shapes[true_label_idx % len(marker_shapes)],  # True label marker
                         alpha=0.7,
@@ -419,11 +484,10 @@ class AnalysisUtils:
                         label=f'Cluster {cluster}' if true_label_idx == 0 else ''
                     )
 
-            plt.title(f'Best Run for {metric} - {algorithm}')
+            plt.title(f'Best Run for {metric} - {algorithm} (PCA)')
             plt.xlabel('First PCA Component')
             plt.ylabel('Second PCA Component')
 
-            # Create a custom legend with two groups
             from matplotlib.lines import Line2D
 
             # Create color legend handles
@@ -442,26 +506,84 @@ class AnalysisUtils:
                 for i, true_label in enumerate(unique_true_labels)
             ]
 
-            # Combine handles and labels
             first_legend = plt.legend(handles=color_handles, title='Clusters',
                                       loc='center left', bbox_to_anchor=(1.02, 0.5))
-
-            # Add the second legend
             plt.gca().add_artist(first_legend)
             plt.legend(handles=shape_handles, title='True Labels',
                        loc='center left', bbox_to_anchor=(1.02, 0.1))
 
             plt.tight_layout()
 
-            # Save the plot
-            plot_filename = os.path.join(best_runs_path, f'best_run_{metric}.png')
-            plt.savefig(plot_filename, dpi=100, bbox_inches='tight')
+            # Save the PCA plot
+            pca_plot_filename = os.path.join(best_runs_path, f'best_run_{metric}_pca.png')
+            plt.savefig(pca_plot_filename, dpi=100, bbox_inches='tight')
+            plt.close()
 
-            # Close the plot to free up memory
+            # -------------------
+            # UMAP Visualization
+            # -------------------
+            plt.figure(figsize=(8, 6))
+
+            # For UMAP, we assume the same clusters apply
+            cluster_labels = labels_df[algorithm].values
+            true_labels = umap_dataset_df['Class'].values
+
+            unique_true_labels = np.unique(true_labels)
+            unique_clusters = np.unique(cluster_labels)
+
+            # Plot each true label with a different marker shape for UMAP
+            for true_label_idx, true_label in enumerate(unique_true_labels):
+                true_label_mask = true_labels == true_label
+
+                for cluster_idx, cluster in enumerate(unique_clusters):
+                    cluster_mask = cluster_labels == cluster
+                    mask = true_label_mask & cluster_mask
+
+                    plt.scatter(
+                        umap_dataset_df.iloc[mask, 0],  # First UMAP component
+                        umap_dataset_df.iloc[mask, 1],  # Second UMAP component
+                        c=[color_palette(cluster_idx)],
+                        marker=marker_shapes[true_label_idx % len(marker_shapes)],
+                        alpha=0.7,
+                        edgecolors='black',
+                        linewidth=0.5,
+                        label=f'Cluster {cluster}' if true_label_idx == 0 else ''
+                    )
+
+            plt.title(f'Best Run for {metric} - {algorithm} (UMAP)')
+            plt.xlabel('First UMAP Component')
+            plt.ylabel('Second UMAP Component')
+
+            # Create legends again for UMAP
+            color_handles = [
+                Line2D([0], [0], marker='o', color='w',
+                       markerfacecolor=color_palette(i), markersize=10,
+                       label=f'Cluster {cluster}')
+                for i, cluster in enumerate(unique_clusters)
+            ]
+
+            shape_handles = [
+                Line2D([0], [0], marker=marker_shapes[i % len(marker_shapes)], color='k',
+                       markerfacecolor='gray', markersize=10,
+                       label=f'True Label {true_label}')
+                for i, true_label in enumerate(unique_true_labels)
+            ]
+
+            first_legend = plt.legend(handles=color_handles, title='Clusters',
+                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+            plt.gca().add_artist(first_legend)
+            plt.legend(handles=shape_handles, title='True Labels',
+                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+
+            plt.tight_layout()
+
+            # Save the UMAP plot
+            umap_plot_filename = os.path.join(best_runs_path, f'best_run_{metric}_umap.png')
+            plt.savefig(umap_plot_filename, dpi=100, bbox_inches='tight')
             plt.close()
 
     @staticmethod
-    def totalAnalysis(results_df: pd.DataFrame, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame, plots_path: str, features_explored: List[str], metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
+    def totalAnalysis(results_df: pd.DataFrame, labels_df: pd.DataFrame, pca_dataset_df: pd.DataFrame, umap_dataset_df: pd.DataFrame, plots_path: str, features_explored: List[str], metrics: List[str] = ['ARI', 'NMI', 'DBI', 'Silhouette', 'CHS']):
 
         # Pair-plot for Hyperparameter Analysis
         AnalysisUtils.create_pairplot(
@@ -470,6 +592,15 @@ class AnalysisUtils:
             metric='ARI',  # Using ARI as primary performance metric
             agg_func='max',
             plots_path=plots_path
+        )
+
+        # Separate Pair-plot for Hyperparameter Analysis
+        AnalysisUtils.create_separate_pairplots(
+            data=results_df,
+            params=features_explored,
+            metric='ARI',  # Using ARI as primary performance metric
+            agg_func='max',
+            plots_path=os.path.join(plots_path,"pairPlots")
         )
 
         # 2. Create Custom Heatmap for Metric Correlations
@@ -484,7 +615,7 @@ class AnalysisUtils:
         AnalysisUtils.generate_best_runs_table(best_runs, best_runs_path, features_explored)
 
         # PCA Plots
-        AnalysisUtils.plot_best_runs(best_runs, labels_df, pca_dataset_df, best_runs_path)
+        AnalysisUtils.plot_best_runs(best_runs, labels_df, pca_dataset_df, umap_dataset_df, best_runs_path)
 
     @staticmethod
     def predicted_k_vs_iterations(results_df: pd.DataFrame, plots_path: str):

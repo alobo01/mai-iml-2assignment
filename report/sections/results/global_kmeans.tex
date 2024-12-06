@@ -31,42 +31,46 @@ In Figure \ref{fig:globalkmeans:violin} we summarize the observed trends in each
 \end{figure}
 
 \subsubsection{Best Runs}
-As for the K-Means, we extracted for each of the datasets the run which achieved the best score for each of the metrics. A summary of them is displayed in Table \ref{tab:kmeans:best_runs}.
-
-\textcolor{red}{TO DO}
+As for the K-Means, we extracted for each of the datasets the run which achieved the best score for each of the metrics. A summary of them is displayed in Table \ref{tab:kmeans:best_runs}. For the sake of space efficiency, we shorten the names of the distance metrics to E (Euclidean), M (Manhattan) and C (Clark), and also we denote the number of buckets by N\_B.
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{|c|ccc|ccc|ccc|}
+    \begin{tabular}{|c|cccc|cccc|cccc|}
         \hline
-                        & \multicolumn{3}{c|}{\textbf{Hepatitis}} & \multicolumn{3}{c|}{\textbf{Mushroom}} & \multicolumn{3}{c|}{\textbf{Pen-based}} \\ \hline
-        \textbf{Metric} & \textbf{k} & \textbf{Distance} & \textbf{Value} 
-                        & \textbf{k} & \textbf{Distance} & \textbf{Value} 
-                        & \textbf{k} & \textbf{Distance} & \textbf{Value} \\ \hline
-        ARI            & 2          & manhattan         & 0.37 
-                       & 2          & clark         & 0.40 
-                       & 14          & euclidean             & 0.64 \\ \hline
-        NMI            & 3          & clark             & 0.25 
-                       & 15          & clark         & 0.43 
-                       & 14          & euclidean         & 0.74 \\ \hline
-        DBI            & 20         & euclidean         & 1.40 
-                       & 2         & euclidean             & 1.20 
-                       & 7         & euclidean         & 1.23 \\ \hline
-        Silhouette     & 2          & manhattan         & 0.21 
-                       & 2          & euclidean         & 0.28 
-                       & 10          & euclidean             & 0.32 \\ \hline
-        CHS            & 2          & euclidean         & 36.77 
-                       & 2          & euclidean         & 2996.24 
-                       & 4          & euclidean         & 3361.02 \\ \hline
+                        & \multicolumn{4}{c|}{\textbf{Hepatitis}} & \multicolumn{4}{c|}{\textbf{Mushroom}} & \multicolumn{4}{c|}{\textbf{Pen-based}} \\ \hline
+        \textbf{Metric} & \textbf{k} & \textbf{Dist.} & \textbf{N\_B} & \textbf{Value} 
+                        & \textbf{k} & \textbf{Dist.} & \textbf{N\_B} & \textbf{Value}
+                        & \textbf{k} & \textbf{Dist.} & \textbf{N\_B} & \textbf{Value} \\ \hline
+        ARI            & 4          & C         & 2k      & 0.36
+                       & 2          & C         & 2k        & 0.40
+                       & 14          & E             & 4k       & 0.62 \\ \hline
+        NMI            & 4          & C             & 2k        & 0.25
+                       & 20          & M         & 3k       & 0.38 
+                       & 20          & E         & 2k       & 0.73 \\ \hline
+        DBI            & 20         & E         & 3k        & 1.27
+                       & 2         & E             & 2k     & 1.20 
+                       & 9         & E         & 3k     & 1.17 \\ \hline
+        Silhouette     & 2          & M         & 2k        & 0.21
+                       & 2          & E         & 2k        & 0.28
+                       & 12          & E             & 3k       & 0.33 \\ \hline
+        CHS            & 2          & E         & 2k        & 36.77
+                       & 2          & E         & 2k        & 2996.24 
+                       & 4          & E         & 4k        & 3357.99 \\ \hline
     \end{tabular}
-    \caption{Metrics with corresponding values, k, and distance metrics for three datasets.}
+    \caption{Metrics with corresponding values, and hyperparameters for three datasets.}
     \label{tab:kmeans:best_runs}
 \end{table}
 
-From these results, we can make some deductions as to which are the best hyperparameter configurations of the K-Means for the 3 datasets:
+From these results, we can make some deductions as to which are the best hyperparameter configurations of the Global K-Means for the 3 datasets:
 \begin{enumerate}
-    \item \textbf{Hepatitis:} It is again clear that low values of k (2 and 3) typically achieve better scores, which we had already observed before. On the other hand, it is not so clear which of the 3 distance metrics is more appropriate for this dataset, since all of them appear in the top scoring runs.
-    \item \textbf{Mushroom:} We can observe once again that k=2 is dominant, probably due to the 2 classes that the dataset has. As for the distance metrics, Euclidean seems to be the most effective, followed by Clark, and Manhattan does not appear to be useful for the properties of this dataset.
-    \item \textbf{Pen-based:} In this case, we do not see such a clear predominance of any specific value of k, but there seems to be a trend towards intermediate values, which was to be expected due to the 10 classes of the dataset. In contrast, we do see a constant primacy of the Euclidean distance metric over the rest, that clearly appears to be better at capturing key differences in this dataset than the other two.
+    \item \textbf{Hepatitis:} Once again, we observe a trend towards low values of k, although this time it is slightly more doubious, with two appearances of k=4. As for the distance metric, the results, as for the K-Means algorithm, are inconclusive. It is clear, however, that the Global K-Means thrives with a lower number of buckets in the Hepatitis dataset, with almost all top configurations having N\_B=2k.
+    \item \textbf{Mushroom:} We can observe once again that k=2 is dominant, as for the K-Means. On the other hand, the Euclidean distance seems to be the most effective, though it is now unclear from these results which of the other two follows (although it was very clear with the violin plots, Figure \ref{fig:globalkmeans:violin}). As for the number of buckets, it again seems that a lower number of them (2k) tends to be the best option for Mushroom.
+    \item \textbf{Pen-based:} It is again unclear which value of k could be the optimal for Pen-based, but the k's seem to be slightly higher this time compared to the results of the K-Means (between 9 and 14, probably). The Euclidean distance metric still remain as the obvious choice for this dataset.  The number of buckets this time seems to benefit from having greater values than for the other datasets, having a couple of 3k and 4k appearances in the best runs.
 \end{enumerate}
-Additionally, we can observe that the 2 bigger datasets (Mushroom and Pen-based) have overall better top values of the metrics than the smaller, Hepatitis dataset. In particular, the Pen-based has the best results in all of the metrics except DBI (in which the difference is minimal), which leads us to the conclusion that it is the dataset for which the K-Means clustering algorithm is better suited.
+When we compare the metric values achieved by these runs to the best performing runs of the K-Means, we observe that the differences are minimal, being the most consistent improvement in the DBI metric (although the improvement is still very slight). This, along with the fact that all of the observed trends regarding hyperparameters repeat for the 2 algorithms, leads us to believe that the Global K-Means does not represent a significant improvement over the standard K-Means in terms of clustering performance.
+
+However, the Global K-Means does provide a consistency factor that the K-Means lacks. By having a deterministic approach to centroid initilization, the Global K-Means can guarantee to provide results equally good as the best of the K-Means without taking the risk of randomness. We have observed in our experiments that (with the 2 computational improvements proposed in \cite{Likas2003}) the 171 configurations of the Global K-Means that we ran for each dataset took significantly less amount of computation time than the 570 runs that we tested for the K-Means.
+
+Thus, our conclusion regarding the Global K-Means is that its use should be recommended over the standard K-Means whenever possible, since it essentially eliminates the risk of randomness at no apparent cost.
+
+\textit{Note:} Since the resulting configurations are mostly similar to those of the K-Means, we do not display again the resulting clusters. These would be equivalent to those visualized in Figure \ref{fig:kmeans:clusters}.

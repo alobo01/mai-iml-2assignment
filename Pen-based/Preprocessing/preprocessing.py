@@ -22,3 +22,6 @@ preprocessed_df.to_csv(preprocessed_path)
 
 pca = DataPreprocessor.convert_dataframe_to_principal_components(preprocessed_df)
 pca.to_csv(os.path.join(dataset_path, "Preprocessing/pen-based_pca.csv"))
+
+umap = DataPreprocessor.convert_dataframe_to_UMAP(preprocessed_df)
+umap.to_csv(os.path.join(dataset_path, "Preprocessing/pen-based_umap.csv"))
