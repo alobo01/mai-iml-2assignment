@@ -1,11 +1,38 @@
 \subsection{Metrics}
 
-\subsubsection{Adjusted Rand Score (ARI)}
+The following metrics have been selected to evaluate clustering performance. Each metric provides a different perspective on how well the clusters reflect underlying data structure, measuring cluster separation, cohesion, or agreement with known labels.
+
+\subsubsection{Adjusted Rand Index (ARI)}
+The Adjusted Rand Index measures the agreement between two partitions (e.g., a clustering and ground truth labels) while correcting for random assignments. Given a pair of partitions, the ARI can be expressed as:
+\[
+\text{ARI} = \frac{R - \mathbb{E}[R]}{\max(R) - \mathbb{E}[R]},
+\]
+where $R$ is the Rand Index. The ARI ranges from $-1$ to $1$, with higher values indicating stronger agreement.
 
 \subsubsection{Normalized Mutual Information (NMI)}
+Normalized Mutual Information measures how much information is shared between two partitions, normalized to ensure values between $0$ and $1$. Let $U$ and $V$ be two cluster sets:
+\[
+\text{NMI}(U, V) = \frac{2 I(U; V)}{H(U) + H(V)},
+\]
+where $I(U;V)$ is the mutual information, and $H(\cdot)$ denotes entropy. Higher values indicate greater similarity.
 
-\subsubsection{Davies-Boulding Index (DBI)}
+\subsubsection{Davies-Bouldin Index (DBI)}
+The Davies-Bouldin Index evaluates clustering quality by comparing each cluster’s dispersion to its separation from other clusters. For $K$ clusters:
+\[
+\text{DBI} = \frac{1}{K} \sum_{i=1}^K \max_{j \neq i} \frac{s_i + s_j}{d_{ij}},
+\]
+where $s_i$ is the average intra-cluster distance and $d_{ij}$ is the distance between cluster centers. Lower values imply more distinct and compact clusters.
 
-\subsubsection{Silhoutte Score}
+\subsubsection{Silhouette Score}
+The Silhouette Score measures how similar each point is to points within its own cluster compared to points in other clusters. For a point $x_i$:
+\[
+s_i = \frac{b_i - a_i}{\max(a_i, b_i)},
+\]
+where $a_i$ is the average intra-cluster distance and $b_i$ is the smallest average distance to another cluster. The final Silhouette Score is the average $s_i$ over all points, with values near $1$ indicating well-formed clusters.
 
 \subsubsection{Calinski-Harabasz Score (CHS)}
+The Calinski-Harabasz Score, or Variance Ratio Criterion, compares the variance between clusters with the variance within clusters. For $N$ data points clustered into $K$ clusters:
+\[
+\text{CHS} = \frac{\text{Tr}(B_K)}{\text{Tr}(W_K)} \cdot \frac{N - K}{K - 1},
+\]
+where $B_K$ and $W_K$ are the between- and within-cluster scatter matrices. Higher CHS values suggest better-defined clusters.
