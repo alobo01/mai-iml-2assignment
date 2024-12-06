@@ -10,16 +10,16 @@ else:
 
 # Load dataset
 data_path = os.path.join(dataset_path, "Preprocessing", "mushroom.csv")
-data = pd.read_csv(data_path)
+data = pd.read_csv(data_path, index_col=0)
 class_labels = data['Class']
-X = data.drop(columns=['Unnamed: 0', 'Class']).values
+X = data.drop(columns=['Class']).values
 
 # Define configurations to test
-max_k_value = 20
+max_k_value = 650
 grid = {
-    'k': [k for k in range(2, max_k_value+1)],
-    'Distance_Metric': ['euclidean', 'manhattan', 'clark'],
-    'Repetitions': 10  # Number of repetitions
+    'k': [k for k in range(550, max_k_value+1)],
+    'Distance_Metric': ['euclidean'],
+    'Repetitions': 5  # Number of repetitions
 }
 
 # File paths for saving results

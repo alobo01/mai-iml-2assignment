@@ -17,7 +17,7 @@ X = data.drop(columns=['Class']).values
 
 # Define configurations to test
 grid = {
-    'max_clusters': [20],
+    'max_clusters': [x for x in range(2, 11)],
     'Repetitions': 10
 }
 

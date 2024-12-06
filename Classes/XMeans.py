@@ -2,7 +2,6 @@ from math import log
 import numpy as np
 from Classes.KMeans import KMeansAlgorithm
 
-
 class XMeans:
     """
     An implementation of the X-Means clustering algorithm with customizable KMeans initialization.
@@ -25,13 +24,15 @@ class XMeans:
         data = np.array(data)
         n_samples, n_features = data.shape
 
-        # Ensure unique initial centroids
-        centroids = []
-        while len(centroids) < num_clusters:
-            candidate = data[np.random.choice(n_samples)]
-            if not any(np.array_equal(candidate, c) for c in centroids):
-                centroids.append(candidate)
+        centroids = [data[np.random.choice(n_samples)]]
 
+        for _ in range(1, num_clusters):
+            distances = np.min(
+                np.linalg.norm(data[:, np.newaxis] - np.array(centroids), axis=2), axis=1
+            )
+            probabilities = distances / distances.sum()
+            new_centroid_idx = np.random.choice(n_samples, p=probabilities)
+            centroids.append(data[new_centroid_idx])
         centroids = np.array(centroids)
 
         # Initialize KMeans with these centroids
@@ -161,21 +162,14 @@ class XMeans:
         remaining_centroids = self.max_clusters - len(centroids)
 
         for i, cluster in enumerate(clusters):
-            # Only split cluster if it contains points
-            if len(cluster) > 1:
-                child_clusters, child_centroids = self._optimize_parameters(None, cluster)
-
-                # Filter empty child clusters
-                child_clusters, child_centroids = self._filter_valid_clusters(
-                    child_clusters, child_centroids
-                )
-
+            child_clusters, child_centroids = self._optimize_parameters(None, cluster)
+            if len(child_clusters) > 1:
                 parent_bic = self._compute_bic([cluster], [centroids[i]])
                 child_bic = self._compute_bic(child_clusters, child_centroids)
 
-                if parent_bic < child_bic and remaining_centroids > 0 and len(child_centroids) > 1:
+                if parent_bic < child_bic and remaining_centroids > 0:
                     new_centroids.extend(child_centroids)
-                    remaining_centroids -= len(child_centroids) - 1
+                    remaining_centroids -= 1
                 else:
                     new_centroids.append(centroids[i])
             else:

@@ -530,42 +530,37 @@ class AnalysisUtils:
 
     @staticmethod
     def max_k_vs_actual_k(results_df: pd.DataFrame, plots_path: str):
-        # Group by max_clusters, and calculate the mean Predicted k for each group
-        grouped = results_df.groupby("max_clusters").agg({
-            "Predicted k": "median"
-        }).reset_index()
+        """
+        Generates a plot of max_clusters (x-axis) vs. the mean of Predicted_k (line) and individual predictions (points).
 
-        # Plot individual Predicted k points grouped by max_clusters
-        plt.figure(figsize=(12, 8))
+        Parameters:
+            results_df (pd.DataFrame): DataFrame containing 'max_clusters' and 'Predicted_k'.
+            plots_path (str): Path to save the generated plot.
 
-        unique_clusters = sorted(results_df["max_clusters"].unique())
-        for max_cluster in unique_clusters:
-            subset = results_df[results_df["max_clusters"] == max_cluster]
-            plt.scatter(
-                np.full(len(subset), max_cluster), subset["Predicted k"],
-                label=f"Actual Predicted k - Max Clusters {max_cluster}" if max_cluster == unique_clusters[0] else None,
-                alpha=0.7, edgecolor="black"
-            )
+        Returns:
+            None
+        """
+        # Group by 'max_clusters' and calculate mean of 'Predicted_k'
+        grouped = results_df.groupby('max_clusters')['Predicted k'].mean()
 
-        # Overlay the mean Predicted k as a line
-        plt.plot(grouped["max_clusters"], grouped["Predicted k"], label="Median Predicted k",
-                 marker="o", linestyle="-", color="blue")
+        # Plot
+        plt.figure(figsize=(10, 6))
+        plt.plot(grouped.index, grouped.values, label='Mean Predicted k', marker='o', color='blue', linewidth=2)
+        plt.scatter(results_df['max_clusters'], results_df['Predicted k'], color='red', alpha=0.6,
+                    label='Individual Predicted k', zorder=5)
 
-        # Customize the plot
-        plt.xticks(unique_clusters)
-        plt.xlabel("Max Clusters")
-        plt.ylabel("Predicted k")
-        plt.title("X-Means Analysis: Predicted k by Max Clusters with Median Predicted k")
-        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))  # Move legend to the side
-        plt.grid(axis="y", linestyle="--", alpha=0.7)
-        plt.tight_layout()
+        # Customizations
+        plt.title('Max Clusters vs Predicted k', fontsize=14)
+        plt.xlabel('Max Clusters', fontsize=12)
+        plt.ylabel('Predicted k', fontsize=12)
+        plt.legend()
+        plt.grid(alpha=0.3)
 
         # Save the plot
-        if not os.path.exists(plots_path):
-            os.makedirs(plots_path)
         save_path = os.path.join(plots_path, "xmeans_analysis_max_k_vs_actual_k.png")
-        plt.savefig(save_path, dpi=300)
-        plt.close()  # Close the plot to free up memory
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
         print(f"Plot saved at: {save_path}")
 
     @staticmethod

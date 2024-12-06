@@ -1,7 +1,7 @@
-| Metric | use_kmeans_plus_plus | tolerance | Best Value |
+| Metric | max_clusters | Predicted k | Best Value |
 |---|---|---|---|
-| ARI | True | 0.001 | 0.2709866620584282 |
-| NMI | True | 0.001 | 0.2290633951395821 |
-| DBI | True | 0.001 | 1.9894912722358635 |
-| Silhouette | True | 0.001 | 0.206607280945913 |
-| CHS | True | 0.001 | 36.77071145608097 |
+| ARI | 10 | 2 | 0.2584931351409456 |
+| NMI | 10 | 2 | 0.2221797355136312 |
+| DBI | 4 | 2 | 1.9894912722358635 |
+| Silhouette | 4 | 2 | 0.206607280945913 |
+| CHS | 2 | 2 | 36.77071145608097 |
