@@ -7,6 +7,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import plotly.express as px
+
 from Classes.ViolinPlotsUtils import ViolinPlotter
 
 
@@ -676,9 +678,10 @@ class AnalysisUtils:
 
         # Plot
         plt.figure(figsize=(10, 6))
-        plt.plot(grouped.index, grouped.values, label='Mean Predicted k', marker='o', color='blue', linewidth=2)
         plt.scatter(results_df['max_clusters'], results_df['Predicted k'], color='red', alpha=0.6,
                     label='Individual Predicted k', zorder=5)
+        plt.plot(grouped.index, grouped.values, label='Mean Predicted k', marker='o', color='blue', linewidth=2,
+                 zorder=6)
 
         # Customizations
         plt.title('Max Clusters vs Predicted k', fontsize=14)
@@ -688,16 +691,45 @@ class AnalysisUtils:
         plt.grid(alpha=0.3)
 
         # Save the plot
-        save_path = os.path.join(plots_path, "xmeans_analysis_max_k_vs_actual_k.png")
+        save_path = os.path.join(plots_path, "mushroom_max_k_vs_predicted_k.png")
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.close()
 
         print(f"Plot saved at: {save_path}")
 
     @staticmethod
-    def xmeans_analysis(results_df: pd.DataFrame, plots_path: str):
-        #AnalysisUtils.predicted_k_vs_iterations(results_df, plots_path)
-        AnalysisUtils.max_k_vs_actual_k(results_df, plots_path)
+    def plot_3d_clusters_interactive(coordinates_file, clusters_file, cluster_column):
+        # Load the coordinates
+        coordinates = pd.read_csv(coordinates_file, usecols=["PC1", "PC2", "PC3"])
 
+        # Load the clusters
+        clusters = pd.read_csv(clusters_file, usecols=[cluster_column])
+        clusters = clusters.rename(columns={cluster_column: "Cluster"})  # Rename column for clarity
 
+        if len(coordinates) != len(clusters):
+            raise ValueError("Mismatch in the number of records between coordinate and cluster files.")
 
+        # Combine coordinates and cluster data
+        data = pd.concat([coordinates, clusters], axis=1)
+
+        # Create an interactive 3D scatter plot
+        fig = px.scatter_3d(
+            data,
+            x="PC1",
+            y="PC2",
+            z="PC3",
+            color="Cluster",
+            color_discrete_sequence=px.colors.qualitative.Set3,
+            title="Interactive 3D Cluster Visualization"
+        )
+
+        # Enhance layout
+        fig.update_traces(marker=dict(size=1, opacity=0.8))
+        fig.update_layout(scene=dict(
+            xaxis_title="PC1",
+            yaxis_title="PC2",
+            zaxis_title="PC3"
+        ))
+
+        # Show the interactive plot
+        fig.show()
