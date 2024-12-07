@@ -18,7 +18,7 @@ pca_dataset_path = os.path.join(dataset_path, "Preprocessing", "hepatitis_pca.cs
 pca_dataset_df = pd.read_csv(pca_dataset_path)
 
 umap_dataset_path = os.path.join(dataset_path, "Preprocessing", "hepatitis_umap.csv")
-umap_dataset_df = pd.read_csv(pca_dataset_path)
+umap_dataset_df = pd.read_csv(umap_dataset_path)
 
 # Create output directories
 base_path = 'plots_and_tables'
