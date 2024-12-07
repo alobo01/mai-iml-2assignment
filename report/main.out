@@ -23,17 +23,23 @@
 \BOOKMARK [3][-]{subsubsection.2.8.5}{Calinski-Harabasz Score \(CHS\)}{subsection.2.8}% 23
 \BOOKMARK [2][-]{subsection.2.9}{Dimensionality Reduction Techniques}{section.2}% 24
 \BOOKMARK [1][-]{section.3}{Results}{}% 25
-\BOOKMARK [2][-]{subsection.3.1}{K-Means}{section.3}% 26
+\BOOKMARK [2][-]{subsection.3.1}{OPTICS}{section.3}% 26
 \BOOKMARK [3][-]{subsubsection.3.1.1}{Hyperparameter Study}{subsection.3.1}% 27
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Best Runs}{subsection.3.1}% 28
-\BOOKMARK [2][-]{subsection.3.2}{Global K-Means}{section.3}% 29
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Best runs}{subsection.3.1}% 28
+\BOOKMARK [2][-]{subsection.3.2}{Spectral Clustering}{section.3}% 29
 \BOOKMARK [3][-]{subsubsection.3.2.1}{Hyperparameter Study}{subsection.3.2}% 30
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Best Runs}{subsection.3.2}% 31
-\BOOKMARK [2][-]{subsection.3.3}{X-Means}{section.3}% 32
-\BOOKMARK [3][-]{subsubsection.3.3.1}{Hyper-parameters}{subsection.3.3}% 33
-\BOOKMARK [3][-]{subsubsection.3.3.2}{Visualization}{subsection.3.3}% 34
-\BOOKMARK [2][-]{subsection.3.4}{Fuzzy C-Means}{section.3}% 35
-\BOOKMARK [3][-]{subsubsection.3.4.1}{Preliminary Study}{subsection.3.4}% 36
-\BOOKMARK [3][-]{subsubsection.3.4.2}{Unified Study of Parameters}{subsection.3.4}% 37
-\BOOKMARK [3][-]{subsubsection.3.4.3}{Best Runs}{subsection.3.4}% 38
-\BOOKMARK [1][-]{section.4}{Conclusion}{}% 39
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Best runs}{subsection.3.2}% 31
+\BOOKMARK [2][-]{subsection.3.3}{K-Means}{section.3}% 32
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Hyperparameter Study}{subsection.3.3}% 33
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Best Runs}{subsection.3.3}% 34
+\BOOKMARK [2][-]{subsection.3.4}{Global K-Means}{section.3}% 35
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Hyperparameter Study}{subsection.3.4}% 36
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Best Runs}{subsection.3.4}% 37
+\BOOKMARK [2][-]{subsection.3.5}{X-Means}{section.3}% 38
+\BOOKMARK [3][-]{subsubsection.3.5.1}{Hyper-parameters}{subsection.3.5}% 39
+\BOOKMARK [3][-]{subsubsection.3.5.2}{Visualization}{subsection.3.5}% 40
+\BOOKMARK [2][-]{subsection.3.6}{Fuzzy C-Means}{section.3}% 41
+\BOOKMARK [3][-]{subsubsection.3.6.1}{Preliminary Study}{subsection.3.6}% 42
+\BOOKMARK [3][-]{subsubsection.3.6.2}{Unified Study of Parameters}{subsection.3.6}% 43
+\BOOKMARK [3][-]{subsubsection.3.6.3}{Best Runs}{subsection.3.6}% 44
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 45
