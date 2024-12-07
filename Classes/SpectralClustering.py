@@ -3,6 +3,11 @@ import os
 from sklearn.cluster import SpectralClustering
 from typing import Optional, Dict, Any
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+
+# X_normalized is now the normalized dataset
+
 
 #Avoid memory leaks
 os.environ['OMP_NUM_THREADS'] = '1'
@@ -52,6 +57,9 @@ class SpectralClusteringWrapper:
         Returns:
             labels: Cluster labels for each data point.
         """
+        # Assuming X is your dataset
+        #scaler = StandardScaler()
+        #X_normalized = scaler.fit_transform(X)
         return self.model.fit_predict(X)
 
     def get_params(self, deep: bool = True) -> Dict[str, Any]:

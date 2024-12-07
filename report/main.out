@@ -1,30 +1,35 @@
-\BOOKMARK [1][-]{section.1}{\376\377\000I\000n\000t\000r\000o\000d\000u\000c\000t\000i\000o\000n}{}% 1
-\BOOKMARK [1][-]{section.2}{\376\377\000M\000e\000t\000h\000o\000d\000o\000l\000o\000g\000y}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{\376\377\000D\000a\000t\000a\000s\000e\000t\000s}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{\376\377\000O\000r\000d\000e\000r\000i\000n\000g\000\040\000P\000o\000i\000n\000t\000s\000\040\000T\000o\000\040\000I\000d\000e\000n\000t\000i\000f\000y\000\040\000t\000h\000e\000\040\000C\000l\000u\000s\000t\000e\000r\000i\000n\000g\000\040\000S\000t\000r\000u\000c\000t\000u\000r\000e\000\040\000\050\000O\000P\000T\000I\000C\000S\000\051}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.3}{\376\377\000S\000p\000e\000c\000t\000r\000a\000l}{section.2}% 5
-\BOOKMARK [2][-]{subsection.2.4}{\376\377\000K\000-\000M\000e\000a\000n\000s}{section.2}% 6
-\BOOKMARK [3][-]{subsubsection.2.4.1}{\376\377\000H\000y\000p\000e\000r\000p\000a\000r\000a\000m\000e\000t\000e\000r\000s}{subsection.2.4}% 7
-\BOOKMARK [3][-]{subsubsection.2.4.2}{\376\377\000C\000l\000u\000s\000t\000e\000r\000i\000n\000g\000\040\000M\000e\000t\000h\000o\000d\000o\000l\000o\000g\000y}{subsection.2.4}% 8
-\BOOKMARK [2][-]{subsection.2.5}{\376\377\000G\000l\000o\000b\000a\000l\000\040\000K\000-\000M\000e\000a\000n\000s}{section.2}% 9
-\BOOKMARK [3][-]{subsubsection.2.5.1}{\376\377\000H\000y\000p\000e\000r\000p\000a\000r\000a\000m\000e\000t\000e\000r\000s}{subsection.2.5}% 10
-\BOOKMARK [3][-]{subsubsection.2.5.2}{\376\377\000C\000l\000u\000s\000t\000e\000r\000i\000n\000g\000\040\000M\000e\000t\000h\000o\000d\000o\000l\000o\000g\000y}{subsection.2.5}% 11
-\BOOKMARK [2][-]{subsection.2.6}{\376\377\000F\000u\000z\000z\000y\000\040\000C\000-\000M\000e\000a\000n\000s}{section.2}% 12
-\BOOKMARK [2][-]{subsection.2.7}{\376\377\000M\000e\000t\000r\000i\000c\000s}{section.2}% 13
-\BOOKMARK [3][-]{subsubsection.2.7.1}{\376\377\000A\000d\000j\000u\000s\000t\000e\000d\000\040\000R\000a\000n\000d\000\040\000I\000n\000d\000e\000x\000\040\000\050\000A\000R\000I\000\051}{subsection.2.7}% 14
-\BOOKMARK [3][-]{subsubsection.2.7.2}{\376\377\000N\000o\000r\000m\000a\000l\000i\000z\000e\000d\000\040\000M\000u\000t\000u\000a\000l\000\040\000I\000n\000f\000o\000r\000m\000a\000t\000i\000o\000n\000\040\000\050\000N\000M\000I\000\051}{subsection.2.7}% 15
-\BOOKMARK [3][-]{subsubsection.2.7.3}{\376\377\000D\000a\000v\000i\000e\000s\000-\000B\000o\000u\000l\000d\000i\000n\000\040\000I\000n\000d\000e\000x\000\040\000\050\000D\000B\000I\000\051}{subsection.2.7}% 16
-\BOOKMARK [3][-]{subsubsection.2.7.4}{\376\377\000S\000i\000l\000h\000o\000u\000e\000t\000t\000e\000\040\000S\000c\000o\000r\000e}{subsection.2.7}% 17
-\BOOKMARK [3][-]{subsubsection.2.7.5}{\376\377\000C\000a\000l\000i\000n\000s\000k\000i\000-\000H\000a\000r\000a\000b\000a\000s\000z\000\040\000S\000c\000o\000r\000e\000\040\000\050\000C\000H\000S\000\051}{subsection.2.7}% 18
-\BOOKMARK [1][-]{section.3}{\376\377\000R\000e\000s\000u\000l\000t\000s}{}% 19
-\BOOKMARK [2][-]{subsection.3.1}{\376\377\000K\000-\000M\000e\000a\000n\000s}{section.3}% 20
-\BOOKMARK [3][-]{subsubsection.3.1.1}{\376\377\000H\000y\000p\000e\000r\000p\000a\000r\000a\000m\000e\000t\000e\000r\000\040\000S\000t\000u\000d\000y}{subsection.3.1}% 21
-\BOOKMARK [3][-]{subsubsection.3.1.2}{\376\377\000B\000e\000s\000t\000\040\000R\000u\000n\000s}{subsection.3.1}% 22
-\BOOKMARK [2][-]{subsection.3.2}{\376\377\000G\000l\000o\000b\000a\000l\000\040\000K\000-\000M\000e\000a\000n\000s}{section.3}% 23
-\BOOKMARK [3][-]{subsubsection.3.2.1}{\376\377\000H\000y\000p\000e\000r\000p\000a\000r\000a\000m\000e\000t\000e\000r\000\040\000S\000t\000u\000d\000y}{subsection.3.2}% 24
-\BOOKMARK [3][-]{subsubsection.3.2.2}{\376\377\000B\000e\000s\000t\000\040\000R\000u\000n\000s}{subsection.3.2}% 25
-\BOOKMARK [2][-]{subsection.3.3}{\376\377\000F\000u\000z\000z\000y\000\040\000C\000-\000M\000e\000a\000n\000s}{section.3}% 26
-\BOOKMARK [3][-]{subsubsection.3.3.1}{\376\377\000P\000r\000e\000l\000i\000m\000i\000n\000a\000r\000y\000\040\000S\000t\000u\000d\000y}{subsection.3.3}% 27
-\BOOKMARK [3][-]{subsubsection.3.3.2}{\376\377\000U\000n\000i\000f\000i\000e\000d\000\040\000S\000t\000u\000d\000y\000\040\000o\000f\000\040\000P\000a\000r\000a\000m\000e\000t\000e\000r\000s}{subsection.3.3}% 28
-\BOOKMARK [3][-]{subsubsection.3.3.3}{\376\377\000B\000e\000s\000t\000\040\000R\000u\000n\000s}{subsection.3.3}% 29
-\BOOKMARK [1][-]{section.4}{\376\377\000C\000o\000n\000c\000l\000u\000s\000i\000o\000n}{}% 30
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Methodology}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Datasets}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Ordering Points To Identify the Clustering Structure \(OPTICS\)}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Spectral Clustering}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{K-Means}{section.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Hyperparameters}{subsection.2.4}% 7
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Clustering Methodology}{subsection.2.4}% 8
+\BOOKMARK [2][-]{subsection.2.5}{Global K-Means}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Hyperparameters}{subsection.2.5}% 10
+\BOOKMARK [3][-]{subsubsection.2.5.2}{Clustering Methodology}{subsection.2.5}% 11
+\BOOKMARK [2][-]{subsection.2.6}{X-Means Algorithm}{section.2}% 12
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Core Steps of X-Means Algorithm}{subsection.2.6}% 13
+\BOOKMARK [2][-]{subsection.2.7}{Fuzzy C-Means}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.8}{Metrics}{section.2}% 15
+\BOOKMARK [3][-]{subsubsection.2.8.1}{Adjusted Rand Index \(ARI\)}{subsection.2.8}% 16
+\BOOKMARK [3][-]{subsubsection.2.8.2}{Normalized Mutual Information \(NMI\)}{subsection.2.8}% 17
+\BOOKMARK [3][-]{subsubsection.2.8.3}{Davies-Bouldin Index \(DBI\)}{subsection.2.8}% 18
+\BOOKMARK [3][-]{subsubsection.2.8.4}{Silhouette Score}{subsection.2.8}% 19
+\BOOKMARK [3][-]{subsubsection.2.8.5}{Calinski-Harabasz Score \(CHS\)}{subsection.2.8}% 20
+\BOOKMARK [1][-]{section.3}{Results}{}% 21
+\BOOKMARK [2][-]{subsection.3.1}{K-Means}{section.3}% 22
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Hyperparameter Study}{subsection.3.1}% 23
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Best Runs}{subsection.3.1}% 24
+\BOOKMARK [2][-]{subsection.3.2}{Global K-Means}{section.3}% 25
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Hyperparameter Study}{subsection.3.2}% 26
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Best Runs}{subsection.3.2}% 27
+\BOOKMARK [2][-]{subsection.3.3}{X-Means}{section.3}% 28
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Hyper-parameters}{subsection.3.3}% 29
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Visualization}{subsection.3.3}% 30
+\BOOKMARK [2][-]{subsection.3.4}{Fuzzy C-Means}{section.3}% 31
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Preliminary Study}{subsection.3.4}% 32
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Unified Study of Parameters}{subsection.3.4}% 33
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Best Runs}{subsection.3.4}% 34
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 35

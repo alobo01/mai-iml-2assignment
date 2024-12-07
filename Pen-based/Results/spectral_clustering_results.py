@@ -19,7 +19,7 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 # Define grid
 grid = {
     'n_clusters': [10],
-    'n_neighbors': [10, 15, 20],
+    'n_neighbors': [150, 200, 250],
     'assign_labels': ['kmeans', 'cluster_qr'],
     'eigen_solver': ['lobpcg', 'amg', 'arpack'],
     'Repetitions': 10
