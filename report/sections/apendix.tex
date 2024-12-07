@@ -1,0 +1,22 @@
+\section*{Apendix}\label{apendix}
+\subsection*{Distances}
+\begin{itemize}
+    \item \textbf{Euclidean Distance:} Calculates the root of the sum of squared differences between feature values. Standard metric for continuous data:
+    \[
+    d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
+    \]
+    \item \textbf{Manhattan Distance:} Computes the sum of absolute differences between feature values, suitable for both categorical and continuous data:
+    \[
+    d(x, y) = \sum_{i=1}^{n} |x_i - y_i|
+    \]
+    \item \textbf{Clark Distance:} Accounts for proportional differences between feature values, enhancing interpretability for attributes with varying scales:
+    \[
+    d(x, y) = \sqrt{\sum_{i=1}^{n} \left(\frac{|x_i - y_i|}{x_i + y_i + \epsilon}\right)^2}
+    \]
+    where $\epsilon$ is a small constant to avoid division by zero.
+    \item \textbf{Chebyshev Distance:} Measures the greatest absolute difference between feature values, focusing on the dimension with the largest deviation:
+    \[
+    d(x, y) = \max_{i=1, \dots, n} |x_i - y_i|
+    \]
+\end{itemize}
+
