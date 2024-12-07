@@ -1,10 +1,10 @@
-\section*{X-Means Algorithm}
+\subsection{X-Means Algorithm}
 
 The X-Means algorithm extends the traditional K-Means clustering algorithm by addressing its main limitations:
 the need to predefine the number of clusters \( K \)
 and its susceptibility to local minima. This algorithm dynamically determines the optimal number of clusters \( K \) using the Bayesian Information Criterion (BIC).
 
-\subsection*{Core Steps of X-Means Algorithm}
+\subsubsection{Core Steps of X-Means Algorithm}
 
 The algorithm alternates between two main operations until a stopping criterion is met:
 
@@ -13,16 +13,16 @@ The algorithm alternates between two main operations until a stopping criterion 
     \item \textbf{Improve-Structure:} Dynamically decide where to split centroids to better fit the data by evaluating each potential split using BIC.
 \end{enumerate}
 
-\subsubsection*{Splitting Process}
+\textbf{Splitting Process}
 \begin{itemize}
     \item During the Improve-Structure step, a local K-Means with \( K = 2 \) is run until convergence for each of the clusters individually (without the rest of the clusters).
     \item After convergence, the model selection criterion (BIC score) determines whether the original parent centroid or the newly created children better represent the data. Only the better-performing structure is retained.
 \end{itemize}
 
-\subsubsection*{Stopping Criteria}
+\textbf{Stopping Criteria}
 The algorithm stops when the maximum allowable number of clusters \( K_{\text{max}} \) is reached, or when no further splits improve the model selection score.
 
-\subsection*{Model Selection Using BIC}
+\textbf{Model Selection Using BIC}
 The Bayesian Information Criterion (BIC) for a model \( M_j \) is defined as:
 \[
 \text{BIC}(M_j) = L_j(D) - \frac{p_j}{2} \log R,
