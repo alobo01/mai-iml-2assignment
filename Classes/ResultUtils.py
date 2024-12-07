@@ -120,6 +120,8 @@ class ResultUtils:
             # Add execution time to metrics
             metrics['Time'] = execution_time
 
+            # if filtered_classes is not empty then return metrics, cluster_labels, filtered_classes, filtered_X
+            # otherwise return this:
             return metrics, cluster_labels
         except Exception as e:
             print(f"Error during evaluation of {algorithm_name}: {e}")
