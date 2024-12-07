@@ -13,8 +13,8 @@ if __name__ == "__main__":
 
     # Define configurations to test
     grid = {
-        'max_clusters': [x for x in range(550, 651)],
-        'Repetitions': 5
+        'max_clusters': [x for x in range(520, 680)],
+        'Repetitions': 10
     }
 
     # File paths for saving results
