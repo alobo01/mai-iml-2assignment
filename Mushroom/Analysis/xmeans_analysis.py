@@ -27,9 +27,9 @@ plots_path = os.path.join(base_path, 'XMeansPlots')
 # Ensure output directories exist
 os.makedirs(plots_path, exist_ok=True)
 
-features_explored = ['repeat_kmeans', 'tolerance']
+features_explored = ['max_clusters', 'Predicted k']
 
-#AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, umap_dataset_df, plots_path, features_explored)
+AnalysisUtils.totalAnalysis(results_df, labels_df, pca_dataset_df, umap_dataset_df, plots_path, features_explored)
 AnalysisUtils.max_k_vs_actual_k(results_df, plots_path)
 
 print("X-Means clustering analysis completed successfully.")
