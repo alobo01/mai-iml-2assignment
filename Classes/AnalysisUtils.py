@@ -437,7 +437,7 @@ class AnalysisUtils:
         os.makedirs(best_runs_path, exist_ok=True)
 
         # Define marker shapes for true labels
-        marker_shapes = ['o', 's', '^', 'D', 'v', 'p', '*', 'h', '+', 'x']
+        marker_shapes =  ['o', 's', 'D', 'd', '^', 'v', '<', '>', 'p', 'h', 'H', '8']
 
         # Color palette for clusters
         color_palette = plt.cm.get_cmap('tab10')
@@ -523,10 +523,10 @@ class AnalysisUtils:
                 color_handles.append(noisy_handle)
 
             first_legend = plt.legend(handles=color_handles, title='Clusters',
-                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+                                      loc='center right', bbox_to_anchor=(1.4, 0.2))
             plt.gca().add_artist(first_legend)
             plt.legend(handles=shape_handles, title='True Labels',
-                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+                       loc='center right', bbox_to_anchor=(1.4, 0.7))
 
             plt.tight_layout()
 
@@ -606,10 +606,10 @@ class AnalysisUtils:
                 color_handles.append(noisy_handle)
 
             first_legend = plt.legend(handles=color_handles, title='Clusters',
-                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+                                      loc='center right', bbox_to_anchor=(1.4, 0.2))
             plt.gca().add_artist(first_legend)
             plt.legend(handles=shape_handles, title='True Labels',
-                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+                       loc='center right', bbox_to_anchor=(1.4, 0.7))
 
             plt.tight_layout()
 

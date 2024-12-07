@@ -1,7 +1,7 @@
 | Metric | eigen_solver | n_neighbors | assign_labels | Best Value |
 |---|---|---|---|---|
-| ARI | amg | 20 | kmeans | 0.7790602165085277 |
-| NMI | amg | 20 | kmeans | 0.8481370768311369 |
-| DBI | lobpcg | 20 | kmeans | 1.4167376443568689 |
-| Silhouette | lobpcg | 20 | cluster_qr | 0.2654973029753241 |
-| CHS | amg | 20 | kmeans | 2325.987692783851 |
+| ARI | arpack | 150 | kmeans | 0.6496539999835161 |
+| NMI | lobpcg | 150 | kmeans | 0.7662635518810034 |
+| DBI | lobpcg | 200 | kmeans | 1.2942071941226947 |
+| Silhouette | lobpcg | 250 | cluster_qr | 0.2919770265975985 |
+| CHS | lobpcg | 250 | cluster_qr | 2640.09772368045 |
