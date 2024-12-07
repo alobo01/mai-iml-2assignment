@@ -5,12 +5,11 @@ to reveal the intrinsic structure of data without requiring explicit cluster ass
 Instead of directly generating clusters, OPTICS produces an ordered list of data points annotated with metrics that
 reflect their density relationships, such as core distances and reachability distances. This ordering captures the
 clustering structure across a range of density levels, allowing hierarchical and arbitrary-shaped clusters to be identified.
-The algorithm is computationally efficient, with performance similar to DBSCAN, and excels in uncovering the natural
-distribution of complex datasets. For this work, the OPTICS method was implemented using the \textbf{sklearn} library, which provides a robust and efficient implementation for clustering tasks.
+For this work, the OPTICS method was implemented using the \textbf{sklearn} library, which provides a robust and efficient implementation for clustering tasks.
 
-A key component of OPTICS is the choice of a distance metric, which defines how proximity between points is calculated.
-This metric determines the spatial relationships that underpin density-based clustering. Three different metrics were chosen
-for the three datasets: the Euclidean distance, Manhattan distance, and Chebyshev distance.
+A key component of OPTICS algorithm is the distance metric, as it determines the spatial relationships that underpin density-based
+ clustering. Three different metrics were chosen for the three datasets: the \textbf{Euclidean} distance, \textbf{Manhattan}
+  distance, and \textbf{Chebyshev} distance.
 
 Moreover, three different methods were computed for the neighborhood queries, a fundamental operation in density-based
 clustering:
@@ -26,12 +25,12 @@ clustering:
 Finally, several parameters in OPTICS were adjusted based on the dataset, reflecting the inherent variability between
 datasets. These parameters show a crucial influence on cluster definition and extraction.
 \begin{itemize}
-    \item xi: This parameter influences the steepness of changes in the reachability plot used to
+    \item \textbf{xi}: This parameter influences the steepness of changes in the reachability plot used to
     delineate clusters. Smaller values allow for finer differentiation between clusters, whereas larger values merge
      clusters with more gradual density transitions.
-    \item min\_cluster\_size: Sets the minimum number of points required for a group to be considered
+    \item \textbf{min\_cluster\_size}: Sets the minimum number of points required for a group to be considered
      a cluster. This prevents very small, potentially noisy groups from being identified as clusters.
-    \item min\_samples: Defines the minimum number of points required to qualify as a core point,
+    \item \textbf{min\_samples}: Defines the minimum number of points required to qualify as a core point,
     impacting the density threshold for cluster membership. Higher values favor dense and well-defined clusters,
     excluding sparser areas.
 \end{itemize}
