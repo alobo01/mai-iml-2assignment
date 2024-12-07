@@ -8,3 +8,4 @@ seaborn
 scikit_posthocs
 pyamg
 umap-learn
+plotly
