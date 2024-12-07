@@ -437,7 +437,7 @@ class AnalysisUtils:
         os.makedirs(best_runs_path, exist_ok=True)
 
         # Define marker shapes for true labels
-        marker_shapes = ['o', 's', '^', 'D', 'v', 'p', '*', 'h', '+', 'x']
+        marker_shapes =  ['o', 's', 'D', 'd', '^', 'v', '<', '>', 'p', 'h', 'H', '8']
 
         # Color palette for clusters
         color_palette = plt.cm.get_cmap('tab10')
@@ -460,22 +460,31 @@ class AnalysisUtils:
 
             # Unique true labels and clusters
             unique_true_labels = np.unique(true_labels)
-            unique_clusters = np.unique(cluster_labels)
+            unique_clusters = np.unique(cluster_labels[cluster_labels != -1])  # Exclude -1
 
-            # Plot each true label with a different marker shape for PCA
-            for true_label_idx, true_label in enumerate(unique_true_labels):
-                # Select points with this true label
-                true_label_mask = true_labels == true_label
+            # Plot noisy points if they exist
+            noisy_mask = cluster_labels == -1
+            if noisy_mask.any():
+                plt.scatter(
+                    pca_dataset_df.iloc[noisy_mask, 1],
+                    pca_dataset_df.iloc[noisy_mask, 2],
+                    c='lightgray',
+                    marker='X',
+                    alpha=0.5,
+                    label='Noisy Points'
+                )
 
-                # Plot each cluster with a different color
-                for cluster_idx, cluster in enumerate(unique_clusters):
-                    # Select points with this cluster and true label
-                    cluster_mask = cluster_labels == cluster
-                    mask = true_label_mask & cluster_mask
+            # Plots for colored clusters
+            for cluster_idx, cluster in enumerate(unique_clusters):
+                cluster_mask = cluster_labels == cluster
+
+                for true_label_idx, true_label in enumerate(unique_true_labels):
+                    true_label_mask = true_labels == true_label
+                    mask = cluster_mask & true_label_mask
 
                     plt.scatter(
-                        pca_dataset_df.iloc[mask, 0],  # First PCA component
-                        pca_dataset_df.iloc[mask, 1],  # Second PCA component
+                        pca_dataset_df.iloc[mask, 1],  # First PCA component
+                        pca_dataset_df.iloc[mask, 2],  # Second PCA component
                         c=[color_palette(cluster_idx)],  # Cluster color
                         marker=marker_shapes[true_label_idx % len(marker_shapes)],  # True label marker
                         alpha=0.7,
@@ -506,11 +515,18 @@ class AnalysisUtils:
                 for i, true_label in enumerate(unique_true_labels)
             ]
 
+            # Add noisy points to legend only if they exist
+            if noisy_mask.any():
+                noisy_handle = Line2D([0], [0], marker='X', color='lightgray',
+                                      markerfacecolor='lightgray', markersize=10,
+                                      label='Noisy Points')
+                color_handles.append(noisy_handle)
+
             first_legend = plt.legend(handles=color_handles, title='Clusters',
-                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+                                      loc='center right', bbox_to_anchor=(1.4, 0.2))
             plt.gca().add_artist(first_legend)
             plt.legend(handles=shape_handles, title='True Labels',
-                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+                       loc='center right', bbox_to_anchor=(1.4, 0.7))
 
             plt.tight_layout()
 
@@ -529,19 +545,31 @@ class AnalysisUtils:
             true_labels = umap_dataset_df['Class'].values
 
             unique_true_labels = np.unique(true_labels)
-            unique_clusters = np.unique(cluster_labels)
+            unique_clusters = np.unique(cluster_labels[cluster_labels != -1])  # Exclude -1
 
-            # Plot each true label with a different marker shape for UMAP
-            for true_label_idx, true_label in enumerate(unique_true_labels):
-                true_label_mask = true_labels == true_label
+            # Plot noisy points for UMAP if they exist
+            noisy_mask = cluster_labels == -1
+            if noisy_mask.any():
+                plt.scatter(
+                    umap_dataset_df.iloc[noisy_mask, 1],
+                    umap_dataset_df.iloc[noisy_mask, 2],
+                    c='lightgray',
+                    marker='X',
+                    alpha=0.5,
+                    label='Noisy Points'
+                )
 
-                for cluster_idx, cluster in enumerate(unique_clusters):
-                    cluster_mask = cluster_labels == cluster
-                    mask = true_label_mask & cluster_mask
+            # Plots for colored clusters
+            for cluster_idx, cluster in enumerate(unique_clusters):
+                cluster_mask = cluster_labels == cluster
+
+                for true_label_idx, true_label in enumerate(unique_true_labels):
+                    true_label_mask = true_labels == true_label
+                    mask = cluster_mask & true_label_mask
 
                     plt.scatter(
-                        umap_dataset_df.iloc[mask, 0],  # First UMAP component
-                        umap_dataset_df.iloc[mask, 1],  # Second UMAP component
+                        umap_dataset_df.iloc[mask, 1],  # First UMAP component
+                        umap_dataset_df.iloc[mask, 2],  # Second UMAP component
                         c=[color_palette(cluster_idx)],
                         marker=marker_shapes[true_label_idx % len(marker_shapes)],
                         alpha=0.7,
@@ -550,11 +578,12 @@ class AnalysisUtils:
                         label=f'Cluster {cluster}' if true_label_idx == 0 else ''
                     )
 
+
             plt.title(f'Best Run for {metric} - {algorithm} (UMAP)')
             plt.xlabel('First UMAP Component')
             plt.ylabel('Second UMAP Component')
 
-            # Create legends again for UMAP
+            # Recreate legend handles for UMAP
             color_handles = [
                 Line2D([0], [0], marker='o', color='w',
                        markerfacecolor=color_palette(i), markersize=10,
@@ -569,11 +598,18 @@ class AnalysisUtils:
                 for i, true_label in enumerate(unique_true_labels)
             ]
 
+            # Add noisy points to legend only if they exist
+            if noisy_mask.any():
+                noisy_handle = Line2D([0], [0], marker='X', color='lightgray',
+                                      markerfacecolor='lightgray', markersize=10,
+                                      label='Noisy Points')
+                color_handles.append(noisy_handle)
+
             first_legend = plt.legend(handles=color_handles, title='Clusters',
-                                      loc='center left', bbox_to_anchor=(1.02, 0.5))
+                                      loc='center right', bbox_to_anchor=(1.4, 0.2))
             plt.gca().add_artist(first_legend)
             plt.legend(handles=shape_handles, title='True Labels',
-                       loc='center left', bbox_to_anchor=(1.02, 0.1))
+                       loc='center right', bbox_to_anchor=(1.4, 0.7))
 
             plt.tight_layout()
 

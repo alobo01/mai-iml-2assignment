@@ -92,99 +92,78 @@ class ResultUtils:
 
             # Fit the model and predict labels
             cluster_labels = model.fit(X)
-
-            # Filter out rows where labels == -1
-            # # Create a mask to exclude rows where labels == -1
-            # mask = labels != -1
-            # filtered_labels = labels[mask]
-            # filtered_X = X[mask]
-            # filtered_classes = classes[mask]
-            #
-            # # Reset index for clean output (optional)
-            # filtered_X = filtered_X.reset_index(drop=True)
-            # filtered_classes = filtered_classes.reset_index(drop=True)
-
             # Stop timing
             end_time = time.time()
             execution_time = end_time - start_time
 
+            # Filter out the noisy points (labels == -1)
+
+            mask = cluster_labels != -1 # Create a mask to exclude rows where labels == -1
+            filtered_labels = cluster_labels[mask]
+            filtered_x = X[mask]
+            filtered_classes = class_labels[mask].to_numpy()
+
             # Evaluate clustering performance
-            metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
+            metrics = EvaluationUtils.evaluate(filtered_x, filtered_classes, filtered_labels)
 
             # Add predicted number of clusters (for XMeans)
             metrics['Predicted k'] = len(np.unique(cluster_labels))
 
             # Add execution time to metrics
             metrics['Time'] = execution_time
-
             return metrics, cluster_labels
+
         except Exception as e:
             print(f"Error during evaluation of {algorithm_name}: {e}")
             return None, None
 
     @staticmethod
-    def run_single_config(config, model_class, X, class_labels):
-        """
-        Run a single configuration and return the results.
-
-        Parameters:
-        - config: dict, single configuration from the grid
-        - model_class: class, clustering model class
-        - X: numpy.ndarray, feature matrix
-        - class_labels: pandas.Series, true class labels
-
-        Returns:
-        - dict with results and labels
-        """
-        algorithm_name = f"{model_class.__name__}({', '.join(f'{k}={v}' for k, v in config.items() if k != 'Repetition')})"
-        try:
-            model = model_class(**{k: v for k, v in config.items() if k != 'Repetition'})
-            metrics, cluster_labels = ResultUtils.getResults(algorithm_name, model, X, class_labels)
-            if metrics is not None:
-                return {
-                    "success": True,
-                    "results": {
-                        'Algorithm': algorithm_name,
-                        **config,
-                        **metrics
-                    },
-                    "labels": pd.DataFrame({algorithm_name: cluster_labels})
-                }
-        except Exception as e:
-            print(f"Error with configuration {config}: {e}")
-
-        return {"success": False}
-
-    @staticmethod
     def runGrid(grid, model_class, X, class_labels, results_file, labels_file):
         """
-        Run a grid of configurations in parallel and save results and labels.
-        """
-        flattened_configs = ResultUtils.flatten_grid(grid)
-        total_configs = len(flattened_configs)
+        Run a grid of configurations and save results and labels.
 
+        Parameters:
+        - grid: dict, configuration grid (supports nested grids)
+        - model_class: class, clustering model class (must have fit and predict methods)
+        - X: numpy.ndarray, feature matrix
+        - class_labels: pandas.Series, true class labels
+        - results_file: str, path to save the results CSV file
+        - labels_file: str, path to save the labels CSV file
+        """
         results = []
         labels_df = pd.DataFrame()
 
-        with ProcessPoolExecutor() as executor:
-            future_to_config = {
-                executor.submit(
-                    ResultUtils.run_single_config, config, model_class, X, class_labels
-                ): config for config in flattened_configs
-            }
+        # Flatten the grid to handle nested configurations
+        flattened_configs = ResultUtils.flatten_grid(grid)
+        total_configs = len(flattened_configs)
+        for index,config in enumerate(flattened_configs,start=1):
+            algorithm_name = f"{model_class.__name__}({', '.join(f'{k}={v}' for k, v in config.items() if k!='Repetition')})"
+            try:
+                # Instantiate the model with the flattened configuration
+                model = model_class(**{k: v for k, v in config.items() if k != 'Repetition'})
 
-            for i, future in enumerate(as_completed(future_to_config), start=1):
-                config = future_to_config[future]
-                try:
-                    result = future.result()
-                    if result["success"]:
-                        results.append(result["results"])
-                        labels_df = pd.concat([labels_df, result["labels"]], axis=1)
-                except Exception as e:
-                    print(f"Error processing configuration {config}: {e}")
+                # Handle multiple runs
+                repetition = config['Repetition']
+                full_algorithm_name = f"{algorithm_name}_{repetition}"
 
-                ResultUtils.progress_bar(i, total_configs)
+                # Get results using getResults
+                metrics, cluster_labels = ResultUtils.getResults(full_algorithm_name, model, X, class_labels)
+                if metrics is not None:
+                    # Append results
+                    results.append({
+                        'Algorithm': full_algorithm_name,
+                        **config,
+                        **metrics
+                    })
 
+                    # Add labels to DataFrame
+                    labels_df = pd.concat([labels_df, pd.DataFrame({full_algorithm_name: cluster_labels})], axis=1)
+                ResultUtils.progress_bar(index,total_configs)
+
+            except Exception as e:
+                print(f"Error with configuration {config}: {e}")
+
+        # Save results and labels
         os.makedirs(os.path.dirname(results_file), exist_ok=True)
         pd.DataFrame(results).to_csv(results_file, index=False)
         labels_df.to_csv(labels_file, index=False)

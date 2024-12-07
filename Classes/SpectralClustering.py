@@ -3,6 +3,11 @@ import os
 from sklearn.cluster import SpectralClustering
 from typing import Optional, Dict, Any
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+
+# X_normalized is now the normalized dataset
+
 
 #Avoid memory leaks
 os.environ['OMP_NUM_THREADS'] = '1'
@@ -16,7 +21,7 @@ class SpectralClusteringWrapper:
         n_init: int = 1,
         affinity: str = 'nearest_neighbors',
         n_neighbors: int = 10,
-        eigen_tol: float = 0.0,
+        eigen_tol: float = 1e-3,
         assign_labels: str = 'kmeans',
         n_jobs: int = -1
     ):
@@ -39,7 +44,7 @@ class SpectralClusteringWrapper:
             n_neighbors=n_neighbors,
             eigen_tol=eigen_tol,
             assign_labels=assign_labels,
-            n_jobs=n_jobs
+            n_jobs=n_jobs,
         )
 
     def fit(self, X: np.ndarray) -> "SpectralClusteringWrapper":
@@ -52,6 +57,9 @@ class SpectralClusteringWrapper:
         Returns:
             labels: Cluster labels for each data point.
         """
+        # Assuming X is your dataset
+        #scaler = StandardScaler()
+        #X_normalized = scaler.fit_transform(X)
         return self.model.fit_predict(X)
 
     def get_params(self, deep: bool = True) -> Dict[str, Any]:

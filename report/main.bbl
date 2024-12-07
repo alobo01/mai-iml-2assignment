@@ -16,6 +16,12 @@ Aristidis Likas, Nikos Vlassis, and Jakob~J. Verbeek.
 \newblock The global k-means clustering algorithm.
 \newblock {\em Pattern Recognition}, 36(2):451--461, 2003.
 
+\bibitem{Moore2002}
+Dan Pelleg and Andrew Moore.
+\newblock X-means: Extending k-means with efficient estimation of the number of
+  clusters.
+\newblock {\em Machine Learning, p}, 01 2002.
+
 \bibitem{Szilagyi2014}
 L\'aszl\'o Szil\'agyi and S\'andor~M. Szil\'agyi.
 \newblock Generalization rules for the suppressed fuzzy c-means clustering

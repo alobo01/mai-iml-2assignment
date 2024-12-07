@@ -1,7 +1,7 @@
 | Metric | metric | algorithm | Best Value |
 |---|---|---|---|
-| ARI | euclidean | brute | -0.1232414072906909 |
-| NMI | chebyshev | brute | 0.0888879861957825 |
-| DBI | euclidean | brute | 1.3087048296183084 |
-| Silhouette | euclidean | brute | 0.0063061423759853 |
-| CHS | euclidean | brute | 9.936227704712062 |
+| ARI | euclidean | brute | 0.0 |
+| NMI | euclidean | brute | 0.0 |
+| DBI | euclidean | brute | 0.55744531803349 |
+| Silhouette | euclidean | brute | 0.6425732830759219 |
+| CHS | euclidean | brute | 54.83588489272434 |

@@ -19,7 +19,7 @@ X = data.drop(columns=['Unnamed: 0','Class']).values
 # Define grid
 grid = {
     'metric': ['euclidean', 'manhattan', 'chebyshev'],
-    'algorithm': ['auto', 'brute', 'ball_tree', 'kd_tree'],
+    'algorithm': ['brute', 'ball_tree', 'kd_tree'],
     'xi': [0.02],
     'min_cluster_size': [0.05],
     'min_samples': [10],

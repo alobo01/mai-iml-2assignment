@@ -1,0 +1,38 @@
+\subsection{X-Means Algorithm}
+
+The X-Means algorithm extends the traditional K-Means clustering algorithm by addressing its main limitations:
+the need to predefine the number of clusters \( K \)
+and its susceptibility to local minima. This algorithm dynamically determines the optimal number of clusters \( K \) using the Bayesian Information Criterion (BIC).
+\cite{Moore2002}
+
+
+\subsubsection{Core Steps of X-Means Algorithm}
+
+The algorithm alternates between two main operations until a stopping criterion is met:
+
+\begin{enumerate}
+    \item \textbf{Improve-Parameters:} Perform standard K-Means clustering to optimize the centroid locations for a fixed number of clusters.
+    \item \textbf{Improve-Structure:} Dynamically decide where to split centroids to better fit the data by evaluating each potential split using BIC.
+\end{enumerate}
+
+\textbf{Splitting Process}
+\begin{itemize}
+    \item During the Improve-Structure step, a local K-Means with \( K = 2 \) is run until convergence for each of the clusters individually (without the rest of the clusters).
+    \item After convergence, the model selection criterion (BIC score) determines whether the original parent centroid or the newly created children better represent the data. Only the better-performing structure is retained.
+\end{itemize}
+
+\textbf{Stopping Criteria}
+The algorithm stops when the maximum allowable number of clusters \( K_{\text{max}} \) is reached, or when no further splits improve the model selection score.
+
+\textbf{Model Selection Using BIC}
+The Bayesian Information Criterion (BIC) for a model \( M_j \) is defined as:
+\[
+\text{BIC}(M_j) = L_j(D) - \frac{p_j}{2} \log R,
+\]
+where:
+\begin{itemize}
+    \item \( L_j(D) \): Log-likelihood of the data \( D \) under model \( M_j \),
+    \item \( p_j \): Number of free parameters in \( M_j \),
+    \item \( R \): Total number of data points.
+\end{itemize}
+The BIC score is calculated globally to select the best model across all iterations and locally to decide the viability of centroid splits.

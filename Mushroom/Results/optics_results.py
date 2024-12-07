@@ -22,7 +22,7 @@ grid = {
     'algorithm': ['brute', 'ball_tree', 'kd_tree'],
     'xi': [0.1],
     'min_cluster_size': [0.1],
-    'min_samples': [100],
+    'min_samples': [10],
     'Repetitions': 1
 }
 

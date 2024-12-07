@@ -1,2 +1,33 @@
-\subsection{Spectral}
+\subsection{Spectral Clustering}
+Spectral Clustering is a graph-based clustering technique that leverages the spectral properties of the similarity matrix
+ to group data points. It begins by constructing a similarity graph from the input data, where nodes represent data points,
+ and edges encode pairwise similarities based on a given affinity function. The graph Laplacian matrix, derived from the
+ similarity graph, captures the structure of the data. By solving an eigenvalue problem on the Laplacian matrix, the
+ algorithm embeds the data into a lower-dimensional space where traditional clustering methods can be applied to partition the
+  data into distinct clusters. In this work the two clustering methods used for that step were:
+  \begin{itemize}
+    \item \textbf{k-means}: This is the default method and groups points by minimizing the sum of squared distances within clusters. It is effective for well-separated clusters and computationally efficient for most applications.
+    \item \textbf{cluster\_qr}: This method uses QR decomposition to cluster points, providing a numerically stable alternative to 
+    \texttt{k-means}. It can be advantageous for datasets with unique cluster structures or when \textbf{k-means} struggles to
+     converge.
+\end{itemize}
+
+
+The \textit{SpectralClustering} algorithm was implemented from the \textbf{scikit-learn} library due to its robust and
+ efficient approach to graph-based clustering.
+
+In all the scenarios studied, the nearest neighbors affinity method was implemented, with different values for the
+parameter n\_neighbors. It specifies the number of closest data points considered to build the similarity graph,
+so it significantly affects the graph's connectivity and structure. For smaller datasets (Hepatitis), smaller values of
+n\_neighbors were selected, whereas for the bigger datasets (Mushroom and Pen-based) larger values were chosen.
+
+Eigen solvers are computational methods used to compute the eigenvectors and eigenvalues of the graph Laplacian,
+a key step in spectral clustering. The choice of solver affects the computational efficiency and scalability of the algorithm.
+To obtain a better analysis, the following three eigen solvers were studied for all the datasets:
+
+  \begin{itemize}
+    \item \textbf{lobpcg}: This solver is efficient for large-scale problems and works well with sparse matrices. It uses the Locally Optimal Block Preconditioned Conjugate Gradient method, making it suitable for high-dimensional datasets.
+    \item \textbf{amg}: The Algebraic Multigrid solver is another option for large-scale problems. It is particularly effective for problems with a well-structured Laplacian matrix and leverages multilevel techniques for computational efficiency.
+    \item \textbf{arpack}: This is the default solver and works well for small to medium-sized datasets. It employs iterative methods to compute a few eigenvalues and eigenvectors, offering a balance between accuracy and computational cost.
+\end{itemize}
 
