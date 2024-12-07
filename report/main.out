@@ -9,22 +9,27 @@
 \BOOKMARK [2][-]{subsection.2.5}{Global K-Means}{section.2}% 9
 \BOOKMARK [3][-]{subsubsection.2.5.1}{Hyperparameters}{subsection.2.5}% 10
 \BOOKMARK [3][-]{subsubsection.2.5.2}{Clustering Methodology}{subsection.2.5}% 11
-\BOOKMARK [2][-]{subsection.2.6}{Fuzzy C-Means}{section.2}% 12
-\BOOKMARK [2][-]{subsection.2.7}{Metrics}{section.2}% 13
-\BOOKMARK [3][-]{subsubsection.2.7.1}{Adjusted Rand Index \(ARI\)}{subsection.2.7}% 14
-\BOOKMARK [3][-]{subsubsection.2.7.2}{Normalized Mutual Information \(NMI\)}{subsection.2.7}% 15
-\BOOKMARK [3][-]{subsubsection.2.7.3}{Davies-Bouldin Index \(DBI\)}{subsection.2.7}% 16
-\BOOKMARK [3][-]{subsubsection.2.7.4}{Silhouette Score}{subsection.2.7}% 17
-\BOOKMARK [3][-]{subsubsection.2.7.5}{Calinski-Harabasz Score \(CHS\)}{subsection.2.7}% 18
-\BOOKMARK [1][-]{section.3}{Results}{}% 19
-\BOOKMARK [2][-]{subsection.3.1}{K-Means}{section.3}% 20
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Hyperparameter Study}{subsection.3.1}% 21
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Best Runs}{subsection.3.1}% 22
-\BOOKMARK [2][-]{subsection.3.2}{Global K-Means}{section.3}% 23
-\BOOKMARK [3][-]{subsubsection.3.2.1}{Hyperparameter Study}{subsection.3.2}% 24
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Best Runs}{subsection.3.2}% 25
-\BOOKMARK [2][-]{subsection.3.3}{Fuzzy C-Means}{section.3}% 26
-\BOOKMARK [3][-]{subsubsection.3.3.1}{Preliminary Study}{subsection.3.3}% 27
-\BOOKMARK [3][-]{subsubsection.3.3.2}{Unified Study of Parameters}{subsection.3.3}% 28
-\BOOKMARK [3][-]{subsubsection.3.3.3}{Best Runs}{subsection.3.3}% 29
-\BOOKMARK [1][-]{section.4}{Conclusion}{}% 30
+\BOOKMARK [2][-]{subsection.2.6}{X-Means Algorithm}{section.2}% 12
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Core Steps of X-Means Algorithm}{subsection.2.6}% 13
+\BOOKMARK [2][-]{subsection.2.7}{Fuzzy C-Means}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.8}{Metrics}{section.2}% 15
+\BOOKMARK [3][-]{subsubsection.2.8.1}{Adjusted Rand Index \(ARI\)}{subsection.2.8}% 16
+\BOOKMARK [3][-]{subsubsection.2.8.2}{Normalized Mutual Information \(NMI\)}{subsection.2.8}% 17
+\BOOKMARK [3][-]{subsubsection.2.8.3}{Davies-Bouldin Index \(DBI\)}{subsection.2.8}% 18
+\BOOKMARK [3][-]{subsubsection.2.8.4}{Silhouette Score}{subsection.2.8}% 19
+\BOOKMARK [3][-]{subsubsection.2.8.5}{Calinski-Harabasz Score \(CHS\)}{subsection.2.8}% 20
+\BOOKMARK [1][-]{section.3}{Results}{}% 21
+\BOOKMARK [2][-]{subsection.3.1}{K-Means}{section.3}% 22
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Hyperparameter Study}{subsection.3.1}% 23
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Best Runs}{subsection.3.1}% 24
+\BOOKMARK [2][-]{subsection.3.2}{Global K-Means}{section.3}% 25
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Hyperparameter Study}{subsection.3.2}% 26
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Best Runs}{subsection.3.2}% 27
+\BOOKMARK [2][-]{subsection.3.3}{X-Means}{section.3}% 28
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Hyper-parameters}{subsection.3.3}% 29
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Visualization}{subsection.3.3}% 30
+\BOOKMARK [2][-]{subsection.3.4}{Fuzzy C-Means}{section.3}% 31
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Preliminary Study}{subsection.3.4}% 32
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Unified Study of Parameters}{subsection.3.4}% 33
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Best Runs}{subsection.3.4}% 34
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 35
