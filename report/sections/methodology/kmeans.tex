@@ -1,28 +1,16 @@
 \subsection{K-Means}\label{sec:kmeans}
-K-Means intro.
+K-means is a clustering algorithm used to group data into \(k\) clusters based on their features. It works by randomly 
+initializing \(k\) centroids, assigning each data point to the nearest centroid using a distance metric, and then updating
+ the centroids as the mean of the assigned points. This process repeats iteratively until the centroids stabilize or a set
+  number of iterations is reached. The goal is to minimize the within-cluster variance, making the points in each cluster
+   as similar as possible while keeping clusters distinct.
 
 \subsubsection{Hyperparameters}
 \begin{enumerate}
-    \item \textbf{k:}
-    \begin{itemize}
-        \item The number of clusters to partition the dataset. Determines the complexity and granularity of the clustering.
-    \end{itemize}
-    \item \textbf{Distance Metrics:}
-    \begin{itemize}
-        \item \textbf{Euclidean Distance:} Calculates the root of the sum of squared differences between feature values. Standard metric for continuous data:
-        \[
-        d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
-        \]
-        \item \textbf{Manhattan Distance:} Computes the sum of absolute differences between feature values, suitable for both categorical and continuous data:
-        \[
-        d(x, y) = \sum_{i=1}^{n} |x_i - y_i|
-        \]
-        \item \textbf{Clark Distance:} Accounts for proportional differences between feature values, enhancing interpretability for attributes with varying scales:
-        \[
-        d(x, y) = \sqrt{\sum_{i=1}^{n} \left(\frac{|x_i - y_i|}{x_i + y_i + \epsilon}\right)^2}
-        \]
-        where $\epsilon$ is a small constant to avoid division by zero.
-    \end{itemize}
+    \item \textbf{k:} The number of clusters to partition the dataset. Determines the complexity and granularity of the clustering.
+    \item \textbf{Distance Metrics:} It measures the similarity between data points and cluster centroids, helping assign each point to the nearest 
+    cluster. The distance metrics analyzed were the Euclidean distance, the Manhattan distance and the Clark distance, and
+    their definitions can be consulted in the Apendix section \ref{apendix}.
 
     \item \textbf{Additional Parameters:}
     \begin{itemize}
