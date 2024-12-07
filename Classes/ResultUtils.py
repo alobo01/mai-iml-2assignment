@@ -4,6 +4,7 @@ import sys
 import time
 from typing import Iterable
 import numpy as np
+
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from Classes.EvaluationUtils import EvaluationUtils
@@ -48,15 +49,17 @@ class ResultUtils:
                                 combined[sub_param] = sub_value
                                 final_combinations.append(combined)
             else:
+                # No nested keys; use base combinations directly.
                 final_combinations.append(base_combination)
 
+        # Handle Repetitions if present
         if 'Repetitions' in grid:
             repetitions = grid['Repetitions']
             expanded_combinations = []
             for comb in final_combinations:
                 for repetition_index in range(repetitions):
                     expanded_comb = comb.copy()
-                    expanded_comb['Repetition'] = repetition_index
+                    expanded_comb['Repetition'] = repetition_index  # Track repetition index
                     expanded_combinations.append(expanded_comb)
             return expanded_combinations
 
@@ -84,13 +87,34 @@ class ResultUtils:
         Run clustering, evaluate results, and return performance metrics and labels.
         """
         try:
+            # Start timing
             start_time = time.time()
+
+            # Fit the model and predict labels
             cluster_labels = model.fit(X)
+
+            # Filter out rows where labels == -1
+            # # Create a mask to exclude rows where labels == -1
+            # mask = labels != -1
+            # filtered_labels = labels[mask]
+            # filtered_X = X[mask]
+            # filtered_classes = classes[mask]
+            #
+            # # Reset index for clean output (optional)
+            # filtered_X = filtered_X.reset_index(drop=True)
+            # filtered_classes = filtered_classes.reset_index(drop=True)
+
+            # Stop timing
             end_time = time.time()
             execution_time = end_time - start_time
 
+            # Evaluate clustering performance
             metrics = EvaluationUtils.evaluate(X, class_labels, cluster_labels)
+
+            # Add predicted number of clusters (for XMeans)
             metrics['Predicted k'] = len(np.unique(cluster_labels))
+
+            # Add execution time to metrics
             metrics['Time'] = execution_time
 
             return metrics, cluster_labels
