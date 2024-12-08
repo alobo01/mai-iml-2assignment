@@ -1,2 +1,6 @@
 \section{Introduction}
-Introduction.
+\textbf{Clustering} seeks to uncover natural groupings in unlabeled data, but its performance often depends on \textbf{algorithm choice}, \textbf{hyperparameters}, and \textbf{data properties}. Selecting suitable methods and tuning them appropriately can be challenging.
+
+In this work, we compare \textbf{K-Means}, \textbf{Global K-Means}, \textbf{X-Means}, and \textbf{Fuzzy C-Means (FCM)} on three diverse datasets: \textit{\textbf{Hepatitis}} (binary, medical), \textit{\textbf{Mushroom}} (balanced, categorical), and \textit{\textbf{Pen-based}} (multi-class, numeric). We systematically vary \textbf{hyperparameters}, including the \textbf{number of clusters} and \textbf{distance metrics} (\textbf{Euclidean}, \textbf{Manhattan}, \textbf{Clark}), and use both \textbf{supervised} (\textbf{ARI}, \textbf{NMI}) and \textbf{unsupervised} (\textbf{DBI}, \textbf{Silhouette}, \textbf{CHS}) evaluation measures.
+
+To better interpret high-dimensional data, we incorporate \textbf{dimensionality reduction} (\textbf{PCA}, \textbf{UMAP}) for visualization. By examining a range of configurations and datasets, we aim to identify \textbf{effective clustering strategies}, clarify the interplay between \textbf{algorithms} and \textbf{data types}, and offer guidance on adapting clustering methods to specific analysis goals.
