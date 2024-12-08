@@ -122,12 +122,12 @@ python main.py --algorithm <ALGORITHM> --dataset <DATASET> [--run-preprocessing]
 
 1. **Run `KMeans` on the `Hepatitis` dataset with preprocessing**:
    ```bash
-   python main.py --algorithm KMeans --dataset Hepatitis --run-preprocessing
+   python main.py --algorithm kmeans --dataset Hepatitis --run-preprocessing
    ```
 
 2. **Run `SpectralClustering` on the `Mushroom` dataset without preprocessing**:
    ```bash
-   python main.py --algorithm SpectralClustering --dataset Mushroom
+   python main.py --algorithm spectralclustering --dataset Mushroom
    ```
 
 3. **Handle invalid inputs**:
@@ -135,6 +135,8 @@ python main.py --algorithm <ALGORITHM> --dataset <DATASET> [--run-preprocessing]
    ```
    Error: 'InvalidAlgorithm' is not a valid algorithm.
    ```
+   
+**Note**: Pen-based can take a while to complete.
 
 ---
 
@@ -164,7 +166,7 @@ import subprocess
 import sys
 
 datasets = ["Hepatitis", "Mushroom"]
-algorithms = ["KMeans", "SpectralClustering", "Fuzzy", "XMeans", "GlobalKMeans", "Optics"]
+algorithms = ["kmeans", "spectral_clustering", "fuzzy", "xmeans", "global_kmeans", "optics"]
 
 for dataset in datasets:
     for algorithm in algorithms:

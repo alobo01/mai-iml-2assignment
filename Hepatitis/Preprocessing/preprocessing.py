@@ -1,5 +1,7 @@
-from Classes.Reader import DataPreprocessor
 import os
+import sys
+
+from Classes.Reader import DataPreprocessor
 
 if __name__ == "__main__":
     dataset_path = '..'

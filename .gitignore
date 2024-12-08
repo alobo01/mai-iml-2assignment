@@ -165,3 +165,8 @@ report/main.aux
 report/main.fdb_latexmk
 report/main.fls
 report/main.synctex.gz
+report/main.toc
+report/main.log
+report/main.out
+report/main.blg
+report/main.bbl

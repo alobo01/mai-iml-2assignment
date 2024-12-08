@@ -3,7 +3,7 @@ from Classes.KMeans import KMeansAlgorithm
 import os
 import pandas as pd
 
-if __name__ == "__main__" or "__mp_main__":
+if __name__ == "__main__":
     dataset_path = '..'
 else:
     dataset_path = 'Hepatitis'
