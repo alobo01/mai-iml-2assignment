@@ -1,7 +1,7 @@
 | Metric | k | Distance_Metric | N_Buckets | Best Value |
 |---|---|---|---|---|
-| ARI | 14 | euclidean | 4k | 0.619340532840006 |
-| NMI | 20 | euclidean | 2k | 0.7335149072275668 |
-| DBI | 9 | euclidean | 3k | 1.169543485414412 |
-| Silhouette | 12 | euclidean | 3k | 0.3285446238721857 |
-| CHS | 4 | euclidean | 4k | 3357.992949112628 |
+| ARI | 2 | euclidean | 2k | 0.1030085887169921 |
+| NMI | 2 | euclidean | 2k | 0.2236738475512855 |
+| DBI | 2 | euclidean | 2k | 1.947165272325695 |
+| Silhouette | 2 | euclidean | 2k | 0.1909065678915455 |
+| CHS | 2 | euclidean | 2k | 2645.302537014806 |
