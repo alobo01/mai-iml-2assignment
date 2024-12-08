@@ -21,7 +21,7 @@ class SpectralClusteringWrapper:
         n_init: int = 1,
         affinity: str = 'nearest_neighbors',
         n_neighbors: int = 10,
-        eigen_tol: float = 0.0,
+        eigen_tol: float = 1e-3,
         assign_labels: str = 'kmeans',
         n_jobs: int = -1
     ):
@@ -44,7 +44,7 @@ class SpectralClusteringWrapper:
             n_neighbors=n_neighbors,
             eigen_tol=eigen_tol,
             assign_labels=assign_labels,
-            n_jobs=n_jobs
+            n_jobs=n_jobs,
         )
 
     def fit(self, X: np.ndarray) -> "SpectralClusteringWrapper":
