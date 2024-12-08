@@ -27,6 +27,54 @@
   doi       = {10.1007/s00500-009-0457-y}
 }
 
+@article{10.1145/304181.304187,
+author = {Ankerst, Mihael and Breunig, Markus M. and Kriegel, Hans-Peter and Sander, J\"{o}rg},
+title = {OPTICS: ordering points to identify the clustering structure},
+year = {1999},
+issue_date = {June 1999},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {28},
+number = {2},
+issn = {0163-5808},
+url = {https://doi.org/10.1145/304181.304187},
+doi = {10.1145/304181.304187},
+abstract = {Cluster analysis is a primary method for database mining. It is either used as a stand-alone tool to get insight into the distribution of a data set, e.g. to focus further analysis and data processing, or as a preprocessing step for other algorithms operating on the detected clusters. Almost all of the well-known clustering algorithms require input parameters which are hard to determine but have a significant influence on the clustering result. Furthermore, for many real-data sets there does not even exist a global parameter setting for which the result of the clustering algorithm describes the intrinsic clustering structure accurately. We introduce a new algorithm for the purpose of cluster analysis which does not produce a clustering of a data set explicitly; but instead creates an augmented ordering of the database representing its density-based clustering structure. This cluster-ordering contains information which is equivalent to the density-based clusterings corresponding to a broad range of parameter settings. It is a versatile basis for both automatic and interactive cluster analysis. We show how to automatically and efficiently extract not only 'traditional' clustering information (e.g. representative points, arbitrary shaped clusters), but also the intrinsic clustering structure. For medium sized data sets, the cluster-ordering can be represented graphically and for very large data sets, we introduce an appropriate visualization technique. Both are suitable for interactive exploration of the intrinsic clustering structure offering additional insights into the distribution and correlation of the data.},
+journal = {SIGMOD Rec.},
+month = jun,
+pages = {49–60},
+numpages = {12},
+keywords = {cluster analysis, database mining, visualization}
+}
+
+@misc{scikit-learn-optics,
+  title = {sklearn.cluster.OPTICS — scikit-learn 1.3.0 documentation},
+  author = {Scikit-learn Developers},
+  year = {2024},
+  howpublished = {\url{https://scikit-learn.org/dev/modules/generated/sklearn.cluster.OPTICS.html}},
+  note = {Accessed: 2024-11-23}
+}
+
+@misc{scikit-learn-spectralclustering,
+  title = {sklearn.cluster.SpectralClustering — scikit-learn 1.5 documentation},
+  author = {Scikit-learn Developers},
+  year = {2024},
+  howpublished = {\url{https://scikit-learn.org/1.5/modules/generated/sklearn.cluster.SpectralClustering.html}},
+  note = {Accessed: 2024-11-25}
+}
+
+@article{spectral,
+  title={Spectral clustering based on local linear approximations},
+  author={Ery Arias-Castro and Guangliang Chen and Gilad Lerman},
+  journal={Electronic Journal of Statistics},
+  year={2010},
+  volume={5},
+  pages={1537-1587},
+  url={https://api.semanticscholar.org/CorpusID:88518155}
+}
+
+
+
 @article{Szilagyi2014,
   author    = {L\'aszl\'o Szil\'agyi and S\'andor M. Szil\'agyi},
   title     = {Generalization rules for the suppressed fuzzy c-means clustering algorithm},

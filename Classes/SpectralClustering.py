@@ -21,7 +21,7 @@ class SpectralClusteringWrapper:
         n_init: int = 1,
         affinity: str = 'nearest_neighbors',
         n_neighbors: int = 10,
-        eigen_tol: float = 1e-3,
+        eigen_tol: float = 0.0,
         assign_labels: str = 'kmeans',
         n_jobs: int = -1
     ):
