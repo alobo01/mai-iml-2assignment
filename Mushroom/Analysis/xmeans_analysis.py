@@ -4,8 +4,12 @@ from Classes.AnalysisUtils import AnalysisUtils
 
 if __name__ == "__main__":
     dataset_path = '..'
+    # Create output directories
+    base_path = 'plots_and_tables'
 else:
     dataset_path = 'Mushroom'
+    # Create output directories
+    base_path = os.path.join(dataset_path,'Analysis','plots_and_tables')
 
 # Load the K-Means results
 results_path = os.path.join(dataset_path, "Results", "CSVs", "xmeans_results.csv")
@@ -20,8 +24,7 @@ pca_dataset_df = pd.read_csv(pca_dataset_path)
 umap_dataset_path = os.path.join(dataset_path, "Preprocessing", "mushroom_pca.csv")
 umap_dataset_df = pd.read_csv(umap_dataset_path)
 
-# Create output directories
-base_path = 'plots_and_tables'
+
 plots_path = os.path.join(base_path, 'XMeansPlots')
 
 # Ensure output directories exist
