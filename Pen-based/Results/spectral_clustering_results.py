@@ -22,6 +22,7 @@ grid = {
     'n_neighbors': [150, 200, 250],
     'assign_labels': ['kmeans', 'cluster_qr'],
     'eigen_solver': ['lobpcg', 'amg', 'arpack'],
+    'eigen_tol': [1e-3],
     'Repetitions': 10
 }
 
