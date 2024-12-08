@@ -1,76 +1,77 @@
 \subsection{X-Means}
 \subsubsection{Hyper-parameters}
-We have explored the effect of the main hyper-parameter of the X-Means, which is the maximum number of clusters. The results have varied significantly for the different datasets. The results and plots presented here show the number of clusters predicted by the X-Means algorithm (red points) and their averaged value (blue line) over a range of maximum clusters. Each configuration has been run several times to reduce the effects of the stochastic nature of the algorithm.
+We have explored the effect of the main hyper-parameter of X-Means, the maximum number of clusters. The results varied significantly across datasets. The plots below show the number of clusters predicted by the X-Means algorithm (red points) and their average (blue line) over different maximum cluster values. Each configuration was run several times to mitigate the algorithm's stochastic effects.
 
 \begin{figure}[H]
-    \centering
-    \begin{minipage}[b]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/XMeans/hepatitis_max_k_vs_predicted_k.png}
-        \caption{Hepatitis dataset 2D visualization}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/XMeans/mushroom_max_k_vs_predicted_k.png}
-        \caption{Mushroom dataset 3D visualization}
-    \end{minipage}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\linewidth]{figures/XMeans/pen-based_max_k_vs_predicted_k.png}
-    \caption{Pen-based dataset 3D visualization}
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/hepatitis_max_k_vs_predicted_k.png}
+		\caption{Hepatitis dataset}
+		\label{fig:hepatitis_max_k}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/mushroom_max_k_vs_predicted_k.png}
+		\caption{Mushroom dataset}
+		\label{fig:mushroom_max_k}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/pen-based_max_k_vs_predicted_k.png}
+		\caption{Pen-based dataset}
+		\label{fig:pen_based_max_k}
+	\end{subfigure}
+	\caption{Effect of maximum clusters on predicted clusters for different datasets.}
+	\label{fig:xmeans_max_clusters}
 \end{figure}
 
 \begin{enumerate}
-    \item \textbf{Hepatitis:}
-    \\ When analyzing the effect of increasing the maximum number of clusters when processing the hepatitis dataset, we can observe that the algorithm converges to 2 clusters and thus the mean number of predicted clusters does not vary significantly when testing in a range from 2 to 10 for the maximum number of clusters parameter, with the exception of a few runs where the algorithm found 3 clusters.
-
-    \item \textbf{Mushroom:}
-    \\ The results for the mushroom dataset are quite different from the ones obtained in hepatitis. For this experiment each configuration was run 10 times. The plot shows clearly how the runs with a maximum number of clusters lower than 600 always finished with the maximum number of clusters. When the maximum number of clusters was higher than 600 the algorithm would repeatedly converge to a predicted number of clusters lower than the maximum, with this effect being particularly noticeable when plotting the average number of predicted clusters (blue line).
-
-    \item \textbf{Pen-based:}
-    \\ The analysis of the effects of varying the maximum number of clusters when processing the pen-based dataset are similar to the ones obtained in mushroom, with the difference that here the algorithm converges to a lower number of clusters, around 200 (see figure).
-
+	\item \textbf{Hepatitis:}
+	\\ The X-Means algorithm generally converges to 2 clusters. The average predicted clusters remain stable across a range of maximum cluster values from 2 to 10, with rare runs showing 3 clusters.
+	
+	\item \textbf{Mushroom:}
+	\\ For the mushroom dataset, the results are different. Runs with a maximum number of clusters lower than 600 always converged to the maximum. For higher values, the algorithm repeatedly found fewer clusters, particularly noticeable when plotting the average predicted clusters (blue line).
+	
+	\item \textbf{Pen-based:}
+	\\ Similar to the mushroom dataset, the pen-based dataset saw the algorithm converge to a lower number of clusters, around 200 (see Figure~\ref{fig:pen_based_max_k}).
 \end{enumerate}
 
 \subsubsection{Visualization}
 
-Since the datasets we have chosen for this assignment have high dimensionality we have opted for doing Principal Component Analysis (PCA) to be able to plot the points and the predicted clusters. 
-
-For the hepatitis dataset, the fewer samples and the fact that the X-Means converged to a lower number of clusters allows us to easily plot it using the first two principal components. Both the mushroom and pen-based datasets are easier to explore using an interactive 3D plot.
+The datasets' high dimensionality necessitated using Principal Component Analysis (PCA) for visualization. The hepatitis dataset has fewer samples and converges to fewer clusters, allowing for 2D visualization. For the mushroom and pen-based datasets, 3D plots are more informative.
 
 \begin{figure}[H]
-    \centering
-    \begin{minipage}[b]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/XMeans/hepatitis_visualization.png}
-        \caption{Hepatitis dataset 2D visualization}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/XMeans/mushroom_visualization.png}
-        \caption{Mushroom dataset 3D visualization}
-    \end{minipage}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\linewidth]{figures/XMeans/pen-based_visualization.png}
-    \caption{Pen-based dataset 3D visualization}
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/hepatitis_visualization.png}
+		\caption{Hepatitis dataset}
+		\label{fig:hepatitis_visualization}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/mushroom_visualization.png}
+		\caption{Mushroom dataset}
+		\label{fig:mushroom_visualization}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/XMeans/pen-based_visualization.png}
+		\caption{Pen-based dataset}
+		\label{fig:pen_based_visualization}
+	\end{subfigure}
+	\caption{Visualization of clusters using PCA.}
+	\label{fig:xmeans_visualization}
 \end{figure}
 
 \begin{enumerate}
-    \item \textbf{Hepatitis:}
-        \\\\Plotting the points in the hepatitis dataset using the first two principal components we can observe how the points have been clustered divided in the middle.
-
-    \item \textbf{Mushroom:}
-        \\\\The plot of the mushroom dataset helps us understand why the X-Means has converged to such a high number of clusters, when seen from the distance the points seem to form few elongated clusters, however, zooming in we can observe how the big clusters are formed by smaller, clearly separated clusters.
-
-    \item \textbf{Pen-based} 
-    \\\\ Similarly to the visualization of the mushroom dataset, visualizing the pen-based dataset in 3D helps us understand how the algorithm has clustered the data, with big clusters formed by smaller ones.
-
-
+	\item \textbf{Hepatitis:}
+	\\ In the 2D plot (Figure~\ref{fig:hepatitis_visualization}), the clusters are clearly divided along the middle.
+	
+	\item \textbf{Mushroom:}
+	\\ The mushroom dataset (Figure~\ref{fig:mushroom_visualization}) shows large elongated clusters that decompose into smaller, well-separated clusters upon closer inspection.
+	
+	\item \textbf{Pen-based:}
+	\\ Similar to the mushroom dataset, the pen-based dataset (Figure~\ref{fig:pen_based_visualization}) reveals that large clusters are composed of smaller, distinct clusters.
 \end{enumerate}

@@ -1,7 +1,21 @@
 % Preamble
-\documentclass{article}
+\documentclass[10pt]{article}
 
-\usepackage[a4paper, left=2.5cm, right=2cm, top=3cm, bottom=3cm]{geometry}
+% Geometry for reduced margins
+\usepackage[a4paper, left=2cm, right=2cm, top=1.8cm, bottom=1.3cm]{geometry}
+
+% Title spacing adjustments
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.5em}{0.3em} % Left, Before, After
+\titlespacing*{\subsection}{0pt}{0.4em}{0.2em}
+\titlespacing*{\subsubsection}{0pt}{0.3em}{0.1em}
+
+% Paragraph spacing and line stretch adjustments
+\usepackage{setspace}
+\setlength{\parskip}{0pt}    % Remove extra paragraph spacing
+\setlength{\parindent}{0.5cm} % Adjust indentation
+\renewcommand{\baselinestretch}{0.97} % Slightly reduce line spacing
+
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{amssymb}
@@ -37,6 +51,9 @@
     \texttt{antonio.lobo@estudiantat.upc.edu}
 }
 
+% Remove page numbers before ToC
+\pagenumbering{gobble} % Disable page numbers
+
 \begin{abstract}
 \input{sections/abstract} 
 \end{abstract}
@@ -46,6 +63,9 @@
 \tableofcontents
 
 \newpage
+
+\pagenumbering{arabic} % Start page numbering
+\setcounter{page}{1}   % Set page number to 1
 
 \input{sections/introduction}
 \input{sections/methodology}

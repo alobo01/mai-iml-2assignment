@@ -1,6 +1,14 @@
 \section{Conclusion}
-This study offers a comprehensive evaluation of multiple \textbf{clustering algorithms} under various \textbf{hyperparameter} settings across three distinct \textbf{datasets}. \textbf{Global K-Means} provides more stable and consistent partitions than standard \textbf{K-Means}, while \textbf{FCM} adapts effectively to heterogeneous density and structure. \textbf{X-Means} proves valuable for datasets with unclear cluster counts, dynamically refining cluster numbers as needed.
+This work explored the application of \textbf{clustering algorithms}—\textbf{K-Means}, \textbf{Global K-Means}, \textbf{X-Means} \textbf{Optics}, \textbf{Spectral Clustering}, and \textbf{Fuzzy C-Means}—across diverse datasets: \textbf{Hepatitis}, \textbf{Mushroom}, and \textbf{Pen-based}. The study revealed that clustering performance depends strongly on the \textbf{algorithm choice}, \textbf{hyperparameter configurations}, and \textbf{dataset characteristics}. 
 
-\textbf{Euclidean distance} generally outperforms other metrics, especially in higher-dimensional scenarios. \textbf{Data characteristics} strongly influence optimal parameters: lower \textbf{k} suits the binary \textbf{Hepatitis} data, while intermediate or higher \textbf{k} values better capture the complexity of \textbf{Pen-based} data. \textbf{Dimensionality reduction} techniques like \textbf{PCA} and \textbf{UMAP} enhance interpretability, aiding in selecting and refining methods.
+Through this process, we learned that:
+\begin{itemize}
+	\item The \textbf{nature of the data} (e.g., density, dimensionality, and class distribution) significantly influences clustering quality and appropriate parameter selection.
+	\item Careful \textbf{evaluation using multiple metrics} (ARI, NMI, DBI, Silhouette, and CHS) provides a more balanced view of algorithm performance, avoiding over-reliance on any single measure.
+	\item Dimensionality reduction techniques, such as \textbf{PCA} and \textbf{UMAP}, play a crucial role not only in visualization but also in understanding \textbf{hidden structures} within the data.
+	\item Robust clustering outcomes often require a \textbf{systematic approach to hyperparameter tuning}, tailored to the dataset's specific properties.
+\end{itemize}
 
-Ultimately, careful \textbf{tuning} of \textbf{clustering algorithms}, informed by \textbf{data attributes} and proper \textbf{evaluation metrics}, is crucial for uncovering meaningful structures in diverse datasets.
+The main lesson learned is that no single clustering method is universally optimal. Instead, the choice of method and configuration must be \textbf{data-driven} and guided by domain knowledge. Future work could explore integrating clustering algorithms with ensemble methods or hybrid approaches to further enhance performance across complex datasets.
+
+In summary, this study highlights the importance of \textbf{methodological rigor} and \textbf{data-aware experimentation} when applying clustering techniques. The lessons learned can provide practical guidelines for adapting these methods to real-world problems.
