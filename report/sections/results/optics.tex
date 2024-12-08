@@ -3,7 +3,16 @@ We have tested on each dataset 9 different configurations of the OPTICS algorith
 distance metrics (euclidean, manhattan and chebyshev) with 3 different the algorithms for nearest-neighbor search
  during the clustering process. Unlike many algorithms we will see next, OPTICS is deterministic, so it only needs to be run once.
 \subsubsection{Hyperparameter Study}
-For the different datasets, appropriate values for the hyperparameters were selected. The values used are presented in Table \ref{tab:optics}.
+For the different datasets, appropriate values for the hyperparameters were selected. The values used are presented in 
+Table \ref{tab:hyper-choices}. The hyperparameters choice were adjusted to the nature of the dataset. The `xi' parameter, which 
+controls density variation, is higher for Mushroom (0.1), as it presented larger density differences, while Pen-based (0.02) 
+indicates tighter clusters. `min\_samples', defining core point requirements, is smaller for Hepatitis (5) to accommodate smaller
+ clusters, while Mushroom and Pen-based (10) emphasize robustness to noise. 
+ Finally, `min\_cluster\_size' is larger for Mushroom (0.1) to prioritize significant clusters, while Hepatitis and Pen-based (0.05) 
+ allow finer granularity. In the case of Hepatitis because one of the two classes expected is very small and in Pen-based because
+ there are more classes.
+
+
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|c|}
