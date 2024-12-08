@@ -136,7 +136,7 @@ python main.py --algorithm <ALGORITHM> --dataset <DATASET> [--run-preprocessing]
    Error: 'InvalidAlgorithm' is not a valid algorithm.
    ```
    
-**Note**: Pen-based can take a while to complete.
+**Note**: Pen-based and Mushroom can take a while to complete.
 
 ---
 

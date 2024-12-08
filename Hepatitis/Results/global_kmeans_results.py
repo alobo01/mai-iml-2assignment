@@ -10,9 +10,9 @@ else:
 
 # Load dataset
 data_path = os.path.join(dataset_path, "Preprocessing", "hepatitis.csv")
-data = pd.read_csv(data_path)
+data = pd.read_csv(data_path, index_col=0)
 class_labels = data['Class']
-X = data.drop(columns=['Unnamed: 0', 'Class']).values
+X = data.drop(columns=['Class']).values
 
 # Define configurations to test
 max_k_value = 20

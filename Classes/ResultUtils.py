@@ -168,5 +168,5 @@ class ResultUtils:
         pd.DataFrame(results).to_csv(results_file, index=False)
         labels_df.to_csv(labels_file, index=False)
 
-        print(f"Results saved to {results_file}")
+        print(f"\nResults saved to {results_file}")
         print(f"Cluster labels saved to {labels_file}")
